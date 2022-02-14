@@ -5,10 +5,10 @@
  *  Node type codes
  */
 typedef enum {
-    TAG_IDENTIFIER,
-    TAG_EXPRESSION,
-    TAG_ASSIGNMENT,
-    N_TAGS
+    TAG_IDENTIFIER, //
+    TAG_EXPRESSION, //
+    TAG_ASSIGNMENT, //
+    N_TAGS          //
 } item_tag_t;
 
 typedef struct identifier {

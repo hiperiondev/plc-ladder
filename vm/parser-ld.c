@@ -58,7 +58,7 @@ int minmin(const int *arr, int min, int max) {
 //for an array arr of integers ,return the smallest of indices i so that 
 //arr[i] =  min(arr) >= min 
     int i;
-    int v = MAXSTR;		//cant be more than length  of line
+    int v = MAXSTR;        //cant be more than length  of line
     int r = PLC_ERR;
     for (i = max - 1; i >= 0; i--) {
         if (arr[i] <= v && arr[i] >= min) {
@@ -108,7 +108,7 @@ int handle_operand(int operand, uint8_t negate, ld_line_t line) {
     int rv = PLC_OK;
     uint8_t byte = 0;
     uint8_t bit = 0;
-    if (operand >= OP_INPUT && operand < OP_CONTACT) {	//valid input symbol
+    if (operand >= OP_INPUT && operand < OP_CONTACT) {    //valid input symbol
         rv = extract_arguments(line->buf + (++line->cursor), &byte, &bit);
         //extract_number(line->buf, ++line->cursor);
         if (rv == PLC_OK) {
@@ -217,10 +217,10 @@ int parse_ld_line(ld_line_t line) {
     int c = LD_AND; //default character = '-'
     uint8_t n_mode = false;
 
-    while (line->status == STATUS_UNRESOLVED && c != LD_NODE) {	//loop
+    while (line->status == STATUS_UNRESOLVED && c != LD_NODE) {    //loop
         c = read_char(line->buf, line->cursor);
         switch (c) {
-            case LD_NODE:	//PAUSE
+            case LD_NODE:    //PAUSE
                 break;
             case ERR_BADCHAR:
             case (uint8_t) PLC_ERR:
@@ -230,26 +230,26 @@ int parse_ld_line(ld_line_t line) {
             case OP_END:/*this should happen only if line ends without 
              a valid coil*/
                 line->status = STATUS_RESOLVED;
-                line->stmt = NULL;	//clear_tree(line->stmt);
+                line->stmt = NULL;    //clear_tree(line->stmt);
                 break;
             case LD_OR:
-            case LD_BLANK:	//if blank or '|', empty value for the line.
+            case LD_BLANK:    //if blank or '|', empty value for the line.
                 line->cursor++;
-                line->stmt = NULL;	//clear_tree(line->stmt);
+                line->stmt = NULL;    //clear_tree(line->stmt);
                 break;
             case LD_NOT:
-                n_mode = true;	//normally closed mode
+                n_mode = true;    //normally closed mode
                 // No break
             case LD_AND:
                 line->cursor++;
                 break;
-            case LD_COIL:	//see if it is a coil: ()[]
+            case LD_COIL:    //see if it is a coil: ()[]
             case LD_SET:
             case LD_RESET:
             case LD_DOWN:
                 rv = handle_coil(c, line);
                 break;
-            default:	//otherwise operand is expected(i,q,f,r,m,t,c,b)
+            default:    //otherwise operand is expected(i,q,f,r,m,t,c,b)
                 rv = handle_operand(c, n_mode, line);
                 n_mode = false;
                 break;
@@ -302,7 +302,7 @@ int vertical_parse(unsigned int start, unsigned int length, ld_line_t *program) 
     int backtrack = start;
     int last = start;
     //first pass: generate OR expression
-    for (; current < length + 1; current++) {	//for each line
+    for (; current < length + 1; current++) {  //for each line
         if (current == length //overflow
         || program[current]->cursor < cursor || !IS_VERTICAL(read_char(program[current]->buf, cursor))) {
             //vertical line interrupted, reset OR expression

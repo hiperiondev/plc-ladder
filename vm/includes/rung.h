@@ -33,12 +33,12 @@ typedef struct codeline {
 typedef struct rung {
     instruction_t *instructions;
     char *id;
-    codeline_t code; ///original code for visual representation
-    unsigned int insno; ///actual no of active lines
-    struct rung *next; ///linked list of rungs
-    opcode_t stack; ///head of stack
-    struct opcode prealloc[MAXSTACK]; ///preallocated stack
-    union accdata acc;    ///accumulator
+    codeline_t code;                  // original code for visual representation
+    unsigned int insno;               // actual no of active lines
+    struct rung *next;                // linked list of rungs
+    opcode_t stack;                   // head of stack
+    struct opcode prealloc[MAXSTACK]; // preallocated stack
+    union accdata acc;                // accumulator
 } *rung_t;
 
 /**

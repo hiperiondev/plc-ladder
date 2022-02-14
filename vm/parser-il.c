@@ -14,28 +14,28 @@
  parsing:
  2. switch operator:
  valid ones:
- )	pop
+ )    pop
  only boolean:(bitwise if operand is byte)
 
- S 	set
- R 	reset
+ S     set
+ R     reset
 
  AND
  OR
  XOR
  any:
- LD 	load
- ST 	store
+ LD     load
+ ST     store
  ADD
  SUB
  MUL
  DIV
- GT	>
- GE	>=
- NE	<>
- EQ	==
- LE	<=
- LT	<
+ GT    >
+ GE    >=
+ NE    <>
+ EQ    ==
+ LE    <=
+ LT    <
  JMP
  unimplemented:
  CAL
@@ -51,18 +51,18 @@
  if '(' push stack
  4. switch operand
  valid ones:
- BOOL_DI	digital input
- R	rising edge
- F	falling edge
- DQ	digital output
- MH	memory high byte
- ML	memory low byte
- MP	pulse byte: 0000-SET-RESET-EDGE-VALUE
- B	blinker
- TQ	timer output
- TI	timer start
- W	serial output
- C	serial input
+ BOOL_DI    digital input
+ R   rising edge
+ F   falling edge
+ DQ  digital output
+ MH  memory high byte
+ ML  memory low byte
+ MP  pulse byte: 0000-SET-RESET-EDGE-VALUE
+ B   blinker
+ TQ  timer output
+ TI  timer start
+ W   serial output
+ C   serial input
  5. resolve operand byte: 0 to MAX
  6. resolve operand bit: 0 to BYTESIZE
  7. execute command if no errors

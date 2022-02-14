@@ -5,11 +5,11 @@
  *possible LD line statuses
  */
 enum {
-    STATUS_UNRESOLVED,
-    STATUS_RESOLVED,
-    STATUS_FINAL,
-    STATUS_ERROR,
-    N_STATUS
+    STATUS_UNRESOLVED, //
+    STATUS_RESOLVED,   //
+    STATUS_FINAL,      //
+    STATUS_ERROR,      //
+    N_STATUS           //
 };
 
 /**
@@ -17,16 +17,16 @@ enum {
  */
 enum {
     /// LD specific operators:
-    LD_BLANK = 10,  ///blank character
-    LD_AND,         ///-
-    LD_NOT,         ///!
-    LD_OR,          ///|
-    LD_NODE,        ///+
-    LD_COIL,        ///( contact coil
-    LD_SET,         ///[ set
-    LD_RESET,       ///] reset,
-    LD_DOWN,        ///) negate coil
-    N_LD_SYMBOLS
+    LD_BLANK = 10,  // blank character
+    LD_AND,         // -
+    LD_NOT,         // !
+    LD_OR,          // |
+    LD_NODE,        // +
+    LD_COIL,        // ( contact coil
+    LD_SET,         // [ set
+    LD_RESET,       // ] reset,
+    LD_DOWN,        // ) negate coil
+    N_LD_SYMBOLS    //
 };
 
 /**

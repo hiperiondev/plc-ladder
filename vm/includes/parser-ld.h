@@ -2,10 +2,10 @@
 #define _PARSER_LD_H_
 
 /*TODO: factor these out*/
-#define RESOLVED 	-1
-#define FINAL	2
+#define RESOLVED -1
+#define FINAL     2
 
-#define IS_COIL(x)  (x>=LD_COIL && x<=LD_DOWN) 
+#define IS_COIL(x)      (x>=LD_COIL && x<=LD_DOWN)
 #define IS_VERTICAL(x)  (x>=LD_OR && x<=LD_NODE)
 
 typedef struct ld_line {

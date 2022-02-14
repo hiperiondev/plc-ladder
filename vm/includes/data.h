@@ -9,11 +9,11 @@
 
 #define NEGATE     128 // negate second operand, not return value.
 #define BOOLEAN    64
-#define NOP	       0
+#define NOP           0
 
 #define MAXBUF     256
-#define MAXSTR	   512
-#define MEDSTR	   256
+#define MAXSTR       512
+#define MEDSTR       256
 #define SMALLSTR   128
 #define SMALLBUF   64
 #define TINYBUF    24
@@ -71,18 +71,18 @@ typedef enum {
 #define FIRST_ARITHMETIC IL_ADD
 #define FIRST_COMPARISON IL_GT
 
-#define IS_BITWISE(x) (x >= FIRST_BITWISE && x < FIRST_ARITHMETIC)
+#define IS_BITWISE(x)    (x >= FIRST_BITWISE && x < FIRST_ARITHMETIC)
 #define IS_ARITHMETIC(x) (x >= FIRST_ARITHMETIC && x < FIRST_COMPARISON)
 #define IS_COMPARISON(x) (x >= FIRST_COMPARISON && x < N_IL_INSN)
-#define IS_OPERATION(x) (x >= FIRST_BITWISE && x < N_IL_INSN) 
+#define IS_OPERATION(x)  (x >= FIRST_BITWISE && x < N_IL_INSN)
 
 typedef enum {
-    T_BOOL,  //- 1 bit
-    T_BYTE,  //- 8 bit (1 byte)
-    T_WORD,  //- 16 bit (2 byte)
-    T_DWORD, //- 32 bit (4 byte)
-    T_LWORD, //- 64 bit (8 byte)
-    T_REAL,  //- (8 byte) double floating point number
+    T_BOOL,  // 1 bit
+    T_BYTE,  // 8 bit (1 byte)
+    T_WORD,  // 16 bit (2 byte)
+    T_DWORD, // 32 bit (4 byte)
+    T_LWORD, // 64 bit (8 byte)
+    T_REAL,  // (8 byte) double floating point number
 
     N_TYPES
 } DATATYPES;
@@ -91,14 +91,14 @@ typedef enum {
 // operands
     OP_INPUT = 20,    // i
     OP_REAL_INPUT,    // if 21
-    OP_FALLING, 	  // f  22
+    OP_FALLING,       // f  22
     OP_RISING,        // r  23
-    OP_MEMORY,  	  // m  24
+    OP_MEMORY,        // m  24
     OP_REAL_MEMORY,   // mf 25
     OP_COMMAND,       // c  26
     OP_BLINKOUT,      // b  27
     OP_TIMEOUT,       // t  28
-    OP_OUTPUT,   	  // q  29
+    OP_OUTPUT,        // q  29
     OP_REAL_OUTPUT,   // qf 30
     // coils
     OP_CONTACT,       // Q  31
@@ -112,11 +112,11 @@ typedef enum {
 } IL_OPERANDS;
 
 #define OP_VALID(x) x >= OP_INPUT && x < N_OPERANDS
-#define OP_REAL(x) x == OP_REAL_INPUT \
-                || x == OP_REAL_MEMORY \
-                || x == OP_REAL_OUTPUT \
-                || x == OP_REAL_CONTACT \
-                || x == OP_REAL_MEMIN
+#define OP_REAL(x)  x == OP_REAL_INPUT \
+                        || x == OP_REAL_MEMORY \
+                        || x == OP_REAL_OUTPUT \
+                        || x == OP_REAL_CONTACT \
+                        || x == OP_REAL_MEMIN
 
 //TODO: add type for checkings and castings
 typedef union accdata {

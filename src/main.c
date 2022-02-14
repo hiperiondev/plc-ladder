@@ -7,12 +7,10 @@
 
 #include "plclib.h"
 
-// plc_t parse_ld_program(const char *name, const char lines[][MAXSTR], plc_t p);
-
-plc_t plc1, plc2;
+plc_t plc;
 
 int main() {
-    plc1 = malloc(sizeof(plc_t));
+    plc = malloc(sizeof(plc_t));
 
     char lines[MAXBUF][MAXSTR];
     memset(lines, 0, MAXBUF * MAXSTR);
@@ -25,8 +23,8 @@ int main() {
     sprintf(lines[6], "%s\n", " i0/4-------------------------------+         ");
 
     printf("-- parse START\n\n");
-    plc_t r = parse_ld_program("test", lines, plc1);
+    plc = parse_ld_program("test", lines, plc);
 
-    printf("-- parse END: %d\n", r->rungno);
+    printf("-- parse END: %d\n", plc->rungno);
 
 }
