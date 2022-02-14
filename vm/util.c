@@ -26,8 +26,7 @@ void plc_log(const char *msg, ...) {
         fflush(ErrLog);
     }
     //if(UiReady)
-    //ui_display_message(msgstr);
-    printf("%s\n", msgstr);
+    printf(msgstr);
     //else
     //    printf("%s\n",msgstr);
 }

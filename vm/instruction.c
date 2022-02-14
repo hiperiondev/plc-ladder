@@ -6,49 +6,49 @@
 #include "instruction.h"
 
 const char IlCommands[N_IL_INSN][LABELLEN] = {
-        "",    //
-        ")",   //
+        "",  //
+        ")", //
         "RET", //
         "JMP", //
         "CAL", //
-        "S",   //
-        "R",   //
-        "LD",  //
-        "ST",  //
+        "S", //
+        "R", //
+        "LD", //
+        "ST", //
         "AND", //
-        "OR",  //
+        "OR", //
         "XOR", //
         "ADD", //
         "SUB", //
         "MUL", //
         "DIV", //
-        "GT",  //
-        "GE",  //
-        "EQ",  //
-        "NE",  //
-        "LT",  //
-        "LE"   //
+        "GT", //
+        "GE", //
+        "EQ", //
+        "NE", //
+        "LT", //
+        "LE" //
         };
 
 const char IlOperands[N_OPERANDS][3] = {
-        "i",  //
+        "i", //
         "if", //
-        "f",  //
-        "r",  //
-        "m",  //
+        "f", //
+        "r", //
+        "m", //
         "mf", //
-        "c",  //
-        "b",  //
-        "t",  //
-        "q",  //
+        "c", //
+        "b", //
+        "t", //
+        "q", //
         "qf", //
-        "Q",  //
+        "Q", //
         "QF", //
-        "T",  //
-        "M",  //
+        "T", //
+        "M", //
         "MF", //
-        "W",  //
-        "",   //
+        "W", //
+        "", //
         };
 
 const char IlModifiers[N_IL_MODIFIERS][2] = {
@@ -120,7 +120,6 @@ void dump_instruction(instruction_t ins, char *dump) {
     char buf[8] = "";
     dump_label(ins->label, dump);
     strcat(dump, IlCommands[ins->operation]);
-    strcat(dump, " ");
     if (ins->operation >= IL_RET) {
         strcat(dump, IlModifiers[ins->modifier - 1]);
         if (ins->operation == IL_JMP) {

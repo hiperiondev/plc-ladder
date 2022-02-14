@@ -1,12 +1,11 @@
 #ifndef _RUNG_H_
 #define _RUNG_H_
 
+#include "instruction.h"
+
 #define MAXSTACK 256
 #define PLC_OK 0
 #define PLC_ERR -1
-
-#include "instruction.h"
-#include "data.h"
 
 /**
  * @brief The opcode struct
@@ -15,9 +14,9 @@
  *if op > 128 then value is negated first.
  */
 typedef struct opcode {
-    uint8_t operation;
-    uint8_t type;
-    uint8_t depth;
+    BYTE operation;
+    BYTE type;
+    BYTE depth;
     union accdata value;
     struct opcode *next;
 } *opcode_t;
@@ -33,12 +32,12 @@ typedef struct codeline {
 typedef struct rung {
     instruction_t *instructions;
     char *id;
-    codeline_t code;                  // original code for visual representation
-    unsigned int insno;               // actual no of active lines
-    struct rung *next;                // linked list of rungs
-    opcode_t stack;                   // head of stack
-    struct opcode prealloc[MAXSTACK]; // preallocated stack
-    union accdata acc;                // accumulator
+    codeline_t code; ///original code for visual representation
+    unsigned int insno; ///actual no of active lines
+    struct rung *next; ///linked list of rungs
+    opcode_t stack; ///head of stack
+    struct opcode prealloc[MAXSTACK]; ///preallocated stack
+    union accdata acc;    ///accumulator
 } *rung_t;
 
 /**
@@ -62,7 +61,7 @@ void give(opcode_t head);
  * @param the rung //pointer to head of stack
  * @return OK or error
  */
-int push(uint8_t op, uint8_t t, const data_t val, rung_t r);
+int push(BYTE op, BYTE t, const data_t val, rung_t r);
 
 /**
  * @brief retrieve stack heads operation and operand,

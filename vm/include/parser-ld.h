@@ -1,16 +1,46 @@
 #ifndef _PARSER_LD_H_
 #define _PARSER_LD_H_
 
-/*TODO: factor these out*/
-#define RESOLVED -1
-#define FINAL     2
+#include "data.h"
 
-#define IS_COIL(x)      (x>=LD_COIL && x<=LD_DOWN)
+/*TODO: factor these out*/
+#define RESOLVED 	-1
+#define FINAL	2
+
+/**
+ *possible LD line statuses
+ */
+enum {
+    STATUS_UNRESOLVED, //
+    STATUS_RESOLVED, //
+    STATUS_FINAL, //
+    STATUS_ERROR, //
+    N_STATUS //
+};
+
+/**
+ *accepted LD symbols: 0-9 for digits, and
+ */
+enum {
+    /// LD specific operators:
+    LD_BLANK = 10,  ///blank character
+    LD_AND,         ///-
+    LD_NOT,         ///!
+    LD_OR,          ///|
+    LD_NODE,        ///+
+    LD_COIL,        ///( contact coil
+    LD_SET,         ///[ set
+    LD_RESET,       ///] reset,
+    LD_DOWN,    	///) negate coil
+    N_LD_SYMBOLS
+};
+
+#define IS_COIL(x)  (x>=LD_COIL && x<=LD_DOWN) 
 #define IS_VERTICAL(x)  (x>=LD_OR && x<=LD_NODE)
 
 typedef struct ld_line {
     char *buf;
-    uint8_t status;
+    BYTE status;
     unsigned int cursor;
     item_t stmt;
 } *ld_line_t;
@@ -57,7 +87,7 @@ void destroy_program(unsigned int length, ld_line_t *program);
  * @param c index
  * @return LD symbol
  */
-uint8_t read_char(const char *line, unsigned int c);
+BYTE read_char(const char *line, unsigned int c);
 
 /**
  * @brief parse each program line horizontally up to coil or '+'

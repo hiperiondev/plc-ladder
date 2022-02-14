@@ -21,7 +21,7 @@ void give(opcode_t head) {
     memset(head, 0, sizeof(struct opcode));
 }
 
-int push(uint8_t op, uint8_t t, const data_t val, rung_t r) {
+int push( BYTE op, BYTE t, const data_t val, rung_t r) {
 //push an opcode and a value into stack.
     struct opcode *p = take(r);
     if (!p)
@@ -166,4 +166,5 @@ void dump_rung(rung_t r, char *dump) {
         strcat(dump, buf);
         dump_instruction(ins, dump);
     }
+    //printf("%s", dump);
 }

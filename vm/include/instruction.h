@@ -1,17 +1,17 @@
 #ifndef _INSTRUCTION_H_
 #define _INSTRUCTION_H_ 
 
-#define LABELLEN  4
-//#define NICKLEN  16
+#define LABELLEN 4
+//#define NICKLEN	16
 /**
  *IL modifiers
  */
 typedef enum {
-    IL_NEG = 1,     // '!'
-    IL_PUSH,        // '('
-    IL_NORM,        // ' '
-    IL_COND,        // '?'
-    N_IL_MODIFIERS  //
+    IL_NEG = 1, /// '!'
+    IL_PUSH,    /// '('
+    IL_NORM,    /// ' '
+    IL_COND,    ///'?'
+    N_IL_MODIFIERS
 } IL_MODIFIERS;
 
 #define IS_MODIFIER(x) (x >= IL_NEG && x < N_IL_MODIFIERS) 

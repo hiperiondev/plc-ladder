@@ -3,7 +3,7 @@
 /*************************data_t**************************************/
 data_t negate(unsigned char *op, data_t b) {
     data_t r = b;
-    if (*op & NEGATE) {        //negate b
+    if (*op & NEGATE) {	    //negate b
         *op -= NEGATE;
         r.u = -1 - (b.u);
         //magic?
@@ -16,15 +16,15 @@ uint64_t operate_u(unsigned char op, uint64_t a, uint64_t b) {
 
     switch (op) {
         //boolean or bitwise, all modifiers,
-        case IL_AND:    //AND
+        case IL_AND:	//AND
             r = a & b;
             break;
 
-        case IL_OR:    //OR
+        case IL_OR:	//OR
             r = a | b;
             break;
 
-        case IL_XOR:    //XOR
+        case IL_XOR:	//XOR
             r = a ^ b;
             break;
             //arithmetic
@@ -127,7 +127,7 @@ double operate_d(unsigned char op, double a, double b) {
 }
 
 data_t operate(unsigned char op, unsigned char type, const data_t a, const data_t b) {
-    data_t r;  //return value
+    data_t r;	    //return value
     data_t n = negate(&op, b);
     uint64_t modulo = 1;
     switch (type) {
@@ -155,7 +155,7 @@ data_t operate(unsigned char op, unsigned char type, const data_t a, const data_
             r.u = operate_u(op, a.u % modulo, n.u % modulo) % modulo;
             break;
 
-        default:  //64bit uint
+        default:	    //64bit uint
             r.u = operate_u(op, a.u, n.u);
             break;
     }

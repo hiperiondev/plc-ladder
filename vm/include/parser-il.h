@@ -1,6 +1,8 @@
 #ifndef _PARSER_IL_H_
 #define _PARSER_IL_H_
 
+#include "data.h"
+
 /**
  * @brief read an unsigned integer value from string
  * starting @ position start
@@ -16,7 +18,7 @@ int extract_number(const char *line);
  * @param the bit
  * @return OK or error
  */
-int extract_arguments(const char *buf, uint8_t *byte, uint8_t *bit);
+int extract_arguments(const char *buf, BYTE *byte, BYTE *bit);
 
 /**
  * @brief read optional descriptor (currently only f) 
@@ -27,7 +29,8 @@ int extract_arguments(const char *buf, uint8_t *byte, uint8_t *bit);
  * @param c index
  * @return IL operand symbol
  */
-uint8_t read_type(const char *line, uint8_t *operand, unsigned int index);
+BYTE read_type(const char *line,
+BYTE *operand, unsigned int index);
 
 /**
  * @brief read operand  
@@ -37,7 +40,7 @@ uint8_t read_type(const char *line, uint8_t *operand, unsigned int index);
  * @param c index
  * @return IL operand symbol
  */
-uint8_t read_operand(const char *line, unsigned int index);
+BYTE read_operand(const char *line, unsigned int index);
 
 /**
  * @brief read up to ';' or /n
@@ -65,7 +68,7 @@ char* trunk_whitespace(char *line);
  * @param pos points to where was the modifier found
  * @return the modifier
  */
-uint8_t read_modifier(const char *buf, char **pos);
+BYTE read_modifier(const char *buf, char **pos);
 
 /**
  * @brief read operator from beginning to modifier, check if invalid. 
@@ -73,7 +76,7 @@ uint8_t read_modifier(const char *buf, char **pos);
  * @param stop points to end of operator
  * @return error code if invalid, otherwise the operator
  */
-uint8_t read_operator(const char *buf, const char *stop);
+BYTE read_operator(const char *buf, const char *stop);
 
 /**
  * @brief check modifier for correctness
@@ -97,7 +100,7 @@ int check_operand(instruction_t op);
  * @param bit
  * @return error code on failure
  */
-int find_arguments(const char *buf, uint8_t *operand, uint8_t *byte, uint8_t *bit);
+int find_arguments(const char *buf, BYTE *operand, BYTE *byte, BYTE *bit);
 
 /**
  * @brief parse IL line and generate microcode

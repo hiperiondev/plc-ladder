@@ -2,6 +2,7 @@
 
 #include "util.h"
 #include "config.h"
+#include "hardware.h"
 #include "data.h"
 #include "instruction.h"
 #include "rung.h"
@@ -10,7 +11,6 @@
 #include "parser-il.h"
 #include "parser-ld.h"
 #include "codegen.h"
-
 
 /******************parse ladder files!**********************/
 /*
@@ -58,7 +58,7 @@ int minmin(const int *arr, int min, int max) {
 //for an array arr of integers ,return the smallest of indices i so that 
 //arr[i] =  min(arr) >= min 
     int i;
-    int v = MAXSTR;        //cant be more than length  of line
+    int v = MAXSTR;		//cant be more than length  of line
     int r = PLC_ERR;
     for (i = max - 1; i >= 0; i--) {
         if (arr[i] <= v && arr[i] >= min) {
@@ -69,7 +69,7 @@ int minmin(const int *arr, int min, int max) {
     return r;
 }
 
-uint8_t digits(unsigned int i) {
+BYTE digits(unsigned int i) {
     if (i > 100)
         return 3;
     else if (i > 10)
@@ -81,8 +81,8 @@ uint8_t digits(unsigned int i) {
 int handle_coil(const int type, ld_line_t line) {
 //(expect Q,T,M,W followed by byte / bit)
     int rv = PLC_OK;
-    uint8_t byte = 0;
-    uint8_t bit = 0;
+    BYTE byte = 0;
+    BYTE bit = 0;
     int c = read_char(line->buf, ++line->cursor);
     if (c >= OP_CONTACT && c < OP_END) {
         int operand = c;
@@ -104,11 +104,11 @@ int handle_coil(const int type, ld_line_t line) {
     return rv;
 }
 
-int handle_operand(int operand, uint8_t negate, ld_line_t line) {
+int handle_operand(int operand, BYTE negate, ld_line_t line) {
     int rv = PLC_OK;
-    uint8_t byte = 0;
-    uint8_t bit = 0;
-    if (operand >= OP_INPUT && operand < OP_CONTACT) {    //valid input symbol
+    BYTE byte = 0;
+    BYTE bit = 0;
+    if (operand >= OP_INPUT && operand < OP_CONTACT) {	//valid input symbol
         rv = extract_arguments(line->buf + (++line->cursor), &byte, &bit);
         //extract_number(line->buf, ++line->cursor);
         if (rv == PLC_OK) {
@@ -129,7 +129,7 @@ int handle_operand(int operand, uint8_t negate, ld_line_t line) {
     return rv;
 }
 
-uint8_t read_char(const char *line, unsigned int c) {
+BYTE read_char(const char *line, unsigned int c) {
 //read ONE character from line[idx]
 //parse grammatically:
     int r = 0;
@@ -203,7 +203,7 @@ uint8_t read_char(const char *line, unsigned int c) {
             r = OP_WRITE;
             break;
         default:
-            r = (uint8_t) ERR_BADCHAR; //error
+            r = (BYTE) ERR_BADCHAR; //error
     }
 //return value or error
     return r;
@@ -215,43 +215,43 @@ int parse_ld_line(ld_line_t line) {
         return PLC_ERR;
 
     int c = LD_AND; //default character = '-'
-    uint8_t n_mode = false;
+    BYTE n_mode = FALSE;
 
-    while (line->status == STATUS_UNRESOLVED && c != LD_NODE) {    //loop
+    while (line->status == STATUS_UNRESOLVED && c != LD_NODE) {	//loop
         c = read_char(line->buf, line->cursor);
         switch (c) {
-            case LD_NODE:    //PAUSE
+            case LD_NODE:	//PAUSE
                 break;
             case ERR_BADCHAR:
-            case (uint8_t) PLC_ERR:
+            case (BYTE) PLC_ERR:
                 rv = PLC_ERR;
                 line->status = STATUS_ERROR;
                 break;
             case OP_END:/*this should happen only if line ends without 
              a valid coil*/
                 line->status = STATUS_RESOLVED;
-                line->stmt = NULL;    //clear_tree(line->stmt);
+                line->stmt = NULL;	//clear_tree(line->stmt);
                 break;
             case LD_OR:
-            case LD_BLANK:    //if blank or '|', empty value for the line.
+            case LD_BLANK:	//if blank or '|', empty value for the line.
                 line->cursor++;
-                line->stmt = NULL;    //clear_tree(line->stmt);
+                line->stmt = NULL;	//clear_tree(line->stmt);
                 break;
             case LD_NOT:
-                n_mode = true;    //normally closed mode
-                // No break
+                n_mode = TRUE;	//normally closed mode
+                // no break
             case LD_AND:
                 line->cursor++;
                 break;
-            case LD_COIL:    //see if it is a coil: ()[]
+            case LD_COIL:	//see if it is a coil: ()[]
             case LD_SET:
             case LD_RESET:
             case LD_DOWN:
                 rv = handle_coil(c, line);
                 break;
-            default:    //otherwise operand is expected(i,q,f,r,m,t,c,b)
+            default:	//otherwise operand is expected(i,q,f,r,m,t,c,b)
                 rv = handle_operand(c, n_mode, line);
-                n_mode = false;
+                n_mode = FALSE;
                 break;
         }
     }
@@ -302,7 +302,7 @@ int vertical_parse(unsigned int start, unsigned int length, ld_line_t *program) 
     int backtrack = start;
     int last = start;
     //first pass: generate OR expression
-    for (; current < length + 1; current++) {  //for each line
+    for (; current < length + 1; current++) {	//for each line
         if (current == length //overflow
         || program[current]->cursor < cursor || !IS_VERTICAL(read_char(program[current]->buf, cursor))) {
             //vertical line interrupted, reset OR expression
@@ -368,9 +368,9 @@ plc_t generate_code(unsigned int length, const char *name, const ld_line_t *prog
     int i = 0;
     for (; i < length && rv == PLC_OK; i++) {
         r->code = append_line(trunk_whitespace(program[i]->buf), r->code);
-        if (program[i]->stmt != NULL && program[i]->stmt->tag == TAG_ASSIGNMENT) {
+        if (program[i]->stmt != NULL && program[i]->stmt->tag == TAG_ASSIGNMENT)
             rv = gen_ass(program[i]->stmt, r);
-        }
+        //clear_tree(program[i]->stmt);
     }
     p->status = rv;
 
@@ -403,7 +403,6 @@ plc_t parse_ld_program(const char *name, const char lines[][MAXSTR], plc_t p) {
 
         p->status = rv;
     } else {
-
         p = generate_code(len, name, program, p);
 
         char dump[MAXBUF];

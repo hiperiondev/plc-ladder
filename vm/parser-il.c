@@ -1,6 +1,7 @@
 #include <ctype.h>
 
 #include "config.h"
+#include "hardware.h"
 #include "data.h"
 #include "instruction.h"
 #include "rung.h"
@@ -14,28 +15,28 @@
  parsing:
  2. switch operator:
  valid ones:
- )    pop
+ )	pop
  only boolean:(bitwise if operand is byte)
 
- S     set
- R     reset
+ S 	set
+ R 	reset
 
  AND
  OR
  XOR
  any:
- LD     load
- ST     store
+ LD 	load
+ ST 	store
  ADD
  SUB
  MUL
  DIV
- GT    >
- GE    >=
- NE    <>
- EQ    ==
- LE    <=
- LT    <
+ GT	>
+ GE	>=
+ NE	<>
+ EQ	==
+ LE	<=
+ LT	<
  JMP
  unimplemented:
  CAL
@@ -51,18 +52,18 @@
  if '(' push stack
  4. switch operand
  valid ones:
- BOOL_DI    digital input
- R   rising edge
- F   falling edge
- DQ  digital output
- MH  memory high byte
- ML  memory low byte
- MP  pulse byte: 0000-SET-RESET-EDGE-VALUE
- B   blinker
- TQ  timer output
- TI  timer start
- W   serial output
- C   serial input
+ BOOL_DI	digital input
+ R	rising edge
+ F	falling edge
+ DQ	digital output
+ MH	memory high byte
+ ML	memory low byte
+ MP	pulse byte: 0000-SET-RESET-EDGE-VALUE
+ B	blinker
+ TQ	timer output
+ TI	timer start
+ W	serial output
+ C	serial input
  5. resolve operand byte: 0 to MAX
  6. resolve operand bit: 0 to BYTESIZE
  7. execute command if no errors
@@ -71,13 +72,13 @@
 extern const char IlCommands[N_IL_INSN][LABELLEN];
 
 const char *IlErrors[N_IE] = {
-        "Unknown error",         //
-        "Invalid operator",      //
-        "Invalid output",        //
+        "Unknown error", //
+        "Invalid operator", //
+        "Invalid output", //
         "Invalid numeric index", //
-        "Invalid operand",       //
-        "File does not exist",   //
-        "Unreadable character"   //
+        "Invalid operand", //
+        "File does not exist", //
+        "Unreadable character" //
         };
 
 //TODO: IL multi byte type operations
@@ -105,11 +106,13 @@ int extract_number(const char *line) { //read characters from string line
 //return number read or error 
 }
 
-int extract_arguments(const char *buf, uint8_t *byte, uint8_t *bit) {
+int extract_arguments(const char *buf,
+BYTE *byte,
+BYTE *bit) {
     //read first numeric chars after operand
     //store byte
     *byte = extract_number(buf);
-    if (*byte == (uint8_t) PLC_ERR) {
+    if (*byte == (BYTE) PLC_ERR) {
 
         return ERR_BADINDEX;
     }
@@ -127,7 +130,7 @@ int extract_arguments(const char *buf, uint8_t *byte, uint8_t *bit) {
     return PLC_OK;
 }
 
-uint8_t read_operand(const char *line, unsigned int index) { //read ONE character from line[idx]
+BYTE read_operand(const char *line, unsigned int index) { //read ONE character from line[idx]
 //parse grammatically:
     int r = PLC_OK;
     if (line == NULL || index > strlen(line))
@@ -161,13 +164,14 @@ uint8_t read_operand(const char *line, unsigned int index) { //read ONE characte
             r = OP_OUTPUT;
             break;
         default:
-            r = (uint8_t) ERR_BADCHAR; //error
+            r = (BYTE) ERR_BADCHAR; //error
     }
 //return value or error
     return r;
 }
 
-uint8_t read_type(const char *line, uint8_t *operand, unsigned int index) { //read characters from line[idx]
+BYTE read_type(const char *line,
+BYTE *operand, unsigned int index) { //read characters from line[idx]
 //parse grammatically:
     int r = PLC_OK;
     if (line == NULL || index > strlen(line))
@@ -251,8 +255,8 @@ char* trunk_whitespace(char *line) {
     return line;
 }
 
-uint8_t read_modifier(const char *buf, char **pos) {
-    uint8_t modifier = 0;
+BYTE read_modifier(const char *buf, char **pos) {
+    BYTE modifier = 0;
     if (buf == NULL || pos == NULL)
         return PLC_ERR;
 
@@ -280,8 +284,8 @@ uint8_t read_modifier(const char *buf, char **pos) {
     return modifier;
 }
 
-uint8_t read_operator(const char *buf, const char *stop) {
-    uint8_t op = 0;
+BYTE read_operator(const char *buf, const char *stop) {
+    BYTE op = 0;
     int i = 0;
     char *cursor = 0;
     char op_buf[LABELLEN];
@@ -311,7 +315,7 @@ uint8_t read_operator(const char *buf, const char *stop) {
     return op;
 }
 
-int find_arguments(const char *buf, uint8_t *operand, uint8_t *byte, uint8_t *bit) {
+int find_arguments(const char *buf, BYTE *operand, BYTE *byte, BYTE *bit) {
     int ret = PLC_OK;
 
     if (buf == NULL)
@@ -330,7 +334,7 @@ int find_arguments(const char *buf, uint8_t *operand, uint8_t *byte, uint8_t *bi
 
         return ERR_BADOPERAND;
     }
-    if (*operand == (uint8_t) ERR_BADCHAR) {
+    if (*operand == (BYTE) ERR_BADCHAR) {
 
         return ERR_BADCHAR;
     }
@@ -357,11 +361,11 @@ int parse_il_line(const char *line, rung_t r) { //    line format:[label:]<opera
     char buf[MAXSTR];
     char label_buf[MAXSTR];
     char *pos = NULL;
-    uint8_t byte = 0;
-    uint8_t bit = 0;
-    uint8_t modifier = 0;
-    uint8_t operand = 0;
-    uint8_t oper = 0;
+    BYTE byte = 0;
+    BYTE bit = 0;
+    BYTE modifier = 0;
+    BYTE operand = 0;
+    BYTE oper = 0;
     struct instruction op;
 
     memset(&op, 0, sizeof(struct instruction));
