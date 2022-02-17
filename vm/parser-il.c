@@ -9,6 +9,7 @@
 #include "data.h"
 #include "instruction.h"
 #include "rung.h"
+#include "rung_other.h"
 #include "parser-tree.h"
 #include "parser-il.h"
 #include "parser-ld.h"
