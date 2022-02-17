@@ -1,4 +1,7 @@
 #include <ctype.h>
+#include <stddef.h>
+#include <string.h>
+#include <stdlib.h>
 
 #include "util.h"
 #include "config.h"
@@ -6,11 +9,12 @@
 #include "data.h"
 #include "instruction.h"
 #include "rung.h"
-#include "plclib.h"
+#include "rung_other.h"
 #include "parser-tree.h"
 #include "parser-il.h"
 #include "parser-ld.h"
 #include "codegen.h"
+#include "plc_common.h"
 
 /******************parse ladder files!**********************/
 /*
@@ -24,7 +28,7 @@
  b. if blank or 0,'|', empty value for the line. if 0 set it resolved.
  c. if '(',
  i. see if it is a coil. (expect Q,S,R,T,D,M,W followed by number)
- ii. resolve coils as an IL assgignment statement.
+ ii. resolve coils as an IL assignment statement.
  iii. mark line as resolved.
  d. if '-' do nothing and go to next character.
  e. if '+' stop and continue with next line.

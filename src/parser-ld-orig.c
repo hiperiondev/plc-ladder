@@ -10,8 +10,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-#include "plclib.h"
+#include "plc_common.h"
 #include "parser-tree.h"
 #include "parser-ld.h"
 
@@ -33,7 +34,7 @@ int main() {
 
     printf("-- parse START\n\n");
     plc = parse_ld_program("test", lines, plc);
-    printf("-- parse END: %d\n", plc->rungno);
+    printf("-- parse END: %d\n", plc-> rungno);
 
     int result;
     struct ld_line line;

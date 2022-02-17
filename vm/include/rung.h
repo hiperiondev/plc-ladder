@@ -1,6 +1,7 @@
 #ifndef _RUNG_H_
 #define _RUNG_H_
 
+#include "data.h"
 #include "instruction.h"
 
 #define MAXSTACK 256
@@ -121,5 +122,7 @@ int lookup(const char *label, rung_t r);
 int intern(rung_t r);
 
 void dump_rung(rung_t ins, char *dump);
+
+
 
 #endif //_RUNG_H_

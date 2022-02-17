@@ -1,9 +1,10 @@
+#include <stddef.h>
+
 #include "config.h"
 #include "hardware.h"
 #include "data.h"
 #include "instruction.h"
 #include "rung.h"
-#include "plclib.h"
 #include "parser-tree.h"
 
 /*TODO: memory optimization: create a factory to allocate different

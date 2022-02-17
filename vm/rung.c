@@ -5,6 +5,7 @@
 #include "data.h"
 #include "instruction.h"
 #include "rung.h"
+#include "plc_common.h"
 
 /*****************************rung***********************************/
 

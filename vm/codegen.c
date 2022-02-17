@@ -1,12 +1,14 @@
+#include <string.h>
+
 #include "config.h"
 #include "hardware.h"
 #include "data.h"
 #include "instruction.h"
 #include "rung.h"
-#include "plclib.h"
 #include "parser-tree.h"
 #include "parser-ld.h"
 #include "codegen.h"
+#include "plc_common.h"
 
 int gen_expr(const item_t expression, rung_t rung, BYTE recursive) {
     int rv = PLC_OK;

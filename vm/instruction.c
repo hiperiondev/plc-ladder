@@ -6,49 +6,49 @@
 #include "instruction.h"
 
 const char IlCommands[N_IL_INSN][LABELLEN] = {
-        "",  //
-        ")", //
+        "",    //
+        ")",   //
         "RET", //
         "JMP", //
         "CAL", //
-        "S", //
-        "R", //
-        "LD", //
-        "ST", //
+        "S",   //
+        "R",   //
+        "LD",  //
+        "ST",  //
         "AND", //
-        "OR", //
+        "OR",  //
         "XOR", //
         "ADD", //
         "SUB", //
         "MUL", //
         "DIV", //
-        "GT", //
-        "GE", //
-        "EQ", //
-        "NE", //
-        "LT", //
-        "LE" //
+        "GT",  //
+        "GE",  //
+        "EQ",  //
+        "NE",  //
+        "LT",  //
+        "LE"   //
         };
 
 const char IlOperands[N_OPERANDS][3] = {
-        "i", //
+        "i",  //
         "if", //
-        "f", //
-        "r", //
-        "m", //
+        "f",  //
+        "r",  //
+        "m",  //
         "mf", //
-        "c", //
-        "b", //
-        "t", //
-        "q", //
+        "c",  //
+        "b",  //
+        "t",  //
+        "q",  //
         "qf", //
-        "Q", //
+        "Q",  //
         "QF", //
-        "T", //
-        "M", //
+        "T",  //
+        "M",  //
         "MF", //
-        "W", //
-        "", //
+        "W",  //
+        "",   //
         };
 
 const char IlModifiers[N_IL_MODIFIERS][2] = {
@@ -93,7 +93,6 @@ int get_type(const instruction_t ins) {
 }
 
 void deepcopy(const instruction_t from, instruction_t to) {
-    //deepcopy        
     to->operation = from->operation;
     to->operand = from->operand;
     to->modifier = from->modifier;
