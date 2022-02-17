@@ -1,3 +1,4 @@
+
 #include <ctype.h>
 #include <stddef.h>
 #include <string.h>
@@ -5,16 +6,17 @@
 #include <stdlib.h>
 
 #include "config.h"
-#include "hardware.h"
+
 #include "data.h"
+#include "hardware.h"
 #include "instruction.h"
+#include "parser-ld.h"
+#include "parser-tree.h"
+#include "plc_common.h"
 #include "rung.h"
 #include "rung_other.h"
-#include "parser-tree.h"
-#include "parser-il.h"
-#include "parser-ld.h"
 #include "util.h"
-#include "plc_common.h"
+#include "parser-il.h"
 
 /*IL_task
  parsing:

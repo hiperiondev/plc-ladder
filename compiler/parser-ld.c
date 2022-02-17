@@ -1,20 +1,23 @@
+
+
 #include <ctype.h>
 #include <stddef.h>
 #include <string.h>
 #include <stdlib.h>
 
-#include "util.h"
 #include "config.h"
-#include "hardware.h"
+
+#include "codegen.h"
 #include "data.h"
+#include "hardware.h"
 #include "instruction.h"
+#include "parser-il.h"
+#include "parser-tree.h"
+#include "parser-ld.h"
+#include "plc_common.h"
 #include "rung.h"
 #include "rung_other.h"
-#include "parser-tree.h"
-#include "parser-il.h"
-#include "parser-ld.h"
-#include "codegen.h"
-#include "plc_common.h"
+#include "util.h"
 
 /******************parse ladder files!**********************/
 /*

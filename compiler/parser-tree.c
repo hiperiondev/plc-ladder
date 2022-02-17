@@ -1,10 +1,12 @@
+
 #include <stddef.h>
 #include <string.h>
 #include <stdlib.h>
 
 #include "config.h"
-#include "hardware.h"
+
 #include "data.h"
+#include "hardware.h"
 #include "instruction.h"
 #include "rung.h"
 #include "parser-tree.h"

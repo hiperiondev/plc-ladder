@@ -12,9 +12,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "plc_common.h"
-#include "parser-tree.h"
 #include "parser-ld.h"
+#include "parser-tree.h"
+#include "plc_common.h"
 
 
 plc_t plc;

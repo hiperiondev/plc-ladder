@@ -9,8 +9,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "rung.h"
 #include "plc_common.h"
+#include "rung.h"
 
 rung_t mk_rung(const char *name, plc_t p) {
     rung_t r = (rung_t) malloc(sizeof(struct rung));

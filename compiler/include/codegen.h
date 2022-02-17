@@ -1,6 +1,10 @@
 #ifndef _CODEGEN_H_
 #define _CODEGEN_H_
 
+#include "parser-tree.h"
+#include "data.h"
+#include "rung.h"
+
 /**
  * @brief generate code from an expression
  * @param expression

@@ -3,6 +3,7 @@
 
 #include "data.h"
 #include "plc_common.h"
+#include "parser-tree.h"
 
 /*TODO: factor these out*/
 #define RESOLVED 	-1
