@@ -13,17 +13,7 @@
 #include "data.h"
 #include "rung.h"
 
-#define MILLION 1000000
-#define THOUSAND 1000
-
-#define MAXRUNG 256
-
-#define FLOAT_PRECISION 0.000001
-
-typedef enum {
-    ST_STOPPED, //
-    ST_RUNNING  //
-} STATUSES;
+#define MAXRUNG  256
 
 typedef enum {
     N_ERR = -20,     // ERROR CODES are negative
@@ -49,5 +39,33 @@ typedef enum {
     IE_BADCHAR,     //
     N_IE            //
 } IL_ERRORCODES;
+
+/**
+ *possible LD line statuses
+ */
+enum {
+    STATUS_UNRESOLVED, //
+    STATUS_RESOLVED,   //
+    STATUS_FINAL,      //
+    STATUS_ERROR,      //
+    N_STATUS           //
+};
+
+/**
+ *accepted LD symbols: 0-9 for digits, and
+ */
+enum {
+    // LD specific operators:
+    LD_BLANK = 10,  // blank character
+    LD_AND,         // -
+    LD_NOT,         // !
+    LD_OR,          // |
+    LD_NODE,        // +
+    LD_COIL,        // ( contact coil
+    LD_SET,         // [ set
+    LD_RESET,       // ] reset,
+    LD_DOWN,        // ) negate coil
+    N_LD_SYMBOLS    //
+};
 
 #endif /* INCLUDE_COMMON_H_ */

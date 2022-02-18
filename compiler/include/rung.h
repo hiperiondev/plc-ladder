@@ -5,8 +5,8 @@
 #include "instruction.h"
 
 #define MAXSTACK 256
-#define PLC_OK 0
-#define PLC_ERR -1
+#define PLC_OK   0
+#define PLC_ERR  -1
 
 typedef struct codeline {
     char *line;
@@ -90,7 +90,5 @@ rung_t mk_rung(const char *name, rung_t *rungs, BYTE *rungno);
 rung_t get_rung(rung_t *rungs, BYTE *rungno, const unsigned int idx);
 
 void dump_rung(rung_t ins, char *dump);
-
-
 
 #endif //_RUNG_H_

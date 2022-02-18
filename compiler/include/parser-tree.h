@@ -7,7 +7,7 @@
  *  Node type codes
  */
 typedef enum {
-    TAG_IDENTIFIER,  //
+    TAG_IDENTIFIER, //
     TAG_EXPRESSION, //
     TAG_ASSIGNMENT, //
     N_TAGS //

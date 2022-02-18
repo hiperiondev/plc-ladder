@@ -7,10 +7,10 @@
  *IL modifiers
  */
 typedef enum {
-    IL_NEG = 1, /// '!'
-    IL_PUSH,    /// '('
-    IL_NORM,    /// ' '
-    IL_COND,    ///'?'
+    IL_NEG = 1, // '!'
+    IL_PUSH,    // '('
+    IL_NORM,    // ' '
+    IL_COND,    // '?'
     N_IL_MODIFIERS
 } IL_MODIFIERS;
 

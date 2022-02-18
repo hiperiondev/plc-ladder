@@ -20,12 +20,12 @@ int append(const instruction_t i, rung_t r) {
     if (r == NULL || r->insno == MAXSTACK)
         return PLC_ERR;
     if (i != NULL) {
-        if (r->instructions == NULL) { //lazy allocation
+        if (r->instructions == NULL) { // lazy allocation
             r->instructions = (instruction_t*) malloc(MAXSTACK * sizeof(instruction_t));
             memset(r->instructions, 0, MAXSTACK * sizeof(instruction_t));
         }
         if (lookup(i->label, r) >= 0)
-            return PLC_ERR; //dont allow duplicate labels
+            return PLC_ERR; // don't allow duplicate labels
 
         instruction_t ins = (instruction_t) malloc(sizeof(struct instruction));
         memset(ins, 0, sizeof(struct instruction));
@@ -70,7 +70,7 @@ void clear_rung(rung_t r) {
         free(r->code);
         r->instructions = NULL;
         r->insno = 0;
-        //TODO: also free rung, return null
+        // TODO: also free rung, return null
     }
 }
 
@@ -129,7 +129,7 @@ rung_t mk_rung(const char *name, rung_t *rungs, BYTE *rungno) {
     rung_t r = (rung_t) malloc(sizeof(struct rung));
     memset(r, 0, sizeof(struct rung));
     r->id = strdup(name);
-    if (rungs == NULL) {     //lazy allocation
+    if (rungs == NULL) {     // lazy allocation
         rungs = (rung_t*) malloc(MAXRUNG * sizeof(rung_t));
         memset(rungs, 0, MAXRUNG * sizeof(rung_t));
     }
