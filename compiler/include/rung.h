@@ -72,6 +72,23 @@ int lookup(const char *label, rung_t r);
  */
 int intern(rung_t r);
 
+/**
+ * @brief add a new rung to a plc
+ * @param a unique identifier
+ * @param the plc
+ * @return reference to the new rung
+ */
+rung_t mk_rung(const char *name, rung_t *rungs, BYTE *rungno);
+
+/**
+ * @brief get rung reference from plc
+ * @param p a plc
+ * @param r the rung reference
+ * @param idx the index
+ * @return reference to rung or NULL
+ */
+rung_t get_rung(rung_t *rungs, BYTE *rungno, const unsigned int idx);
+
 void dump_rung(rung_t ins, char *dump);
 
 
