@@ -360,7 +360,7 @@ int find_arguments(const char *buf, BYTE *operand, BYTE *byte, BYTE *bit) {
 }
 
 /***PARSE & GENERATE CODE**/
-int parse_il_line(const char *line, rung_t r) { //    line format:[label:]<operator>[<modifier>[%<operand><byte>[/<bit>]]|<label>][;comment]
+int parse_il_line(const char *line, rung_t r) { // line format:[label:]<operator>[<modifier>[%<operand><byte>[/<bit>]]|<label>][;comment]
     char tmp[MAXSTR];
     char buf[MAXSTR];
     char label_buf[MAXSTR];

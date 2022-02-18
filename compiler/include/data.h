@@ -62,7 +62,7 @@ typedef enum {
 } IL_INSN;
 
 #define FALSE 0
-#define TRUE 1
+#define TRUE  1
 
 #define BOOL(x) x > 0 ? TRUE : FALSE 
 
@@ -70,10 +70,10 @@ typedef enum {
 #define FIRST_ARITHMETIC IL_ADD
 #define FIRST_COMPARISON IL_GT
 
-#define IS_BITWISE(x) (x >= FIRST_BITWISE && x < FIRST_ARITHMETIC)
+#define IS_BITWISE(x)    (x >= FIRST_BITWISE && x < FIRST_ARITHMETIC)
 #define IS_ARITHMETIC(x) (x >= FIRST_ARITHMETIC && x < FIRST_COMPARISON)
 #define IS_COMPARISON(x) (x >= FIRST_COMPARISON && x < N_IL_INSN)
-#define IS_OPERATION(x) (x >= FIRST_BITWISE && x < N_IL_INSN)
+#define IS_OPERATION(x)  (x >= FIRST_BITWISE && x < N_IL_INSN)
 
 typedef enum {
     T_BOOL,  // 1 bit
