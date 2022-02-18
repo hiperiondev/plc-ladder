@@ -61,6 +61,9 @@
  
  */
 
+rung_t r;
+rung_t *rungs;
+
 int minmin(const int *arr, int min, int max) {
 //for an array arr of integers ,return the smallest of indices i so that 
 //arr[i] =  min(arr) >= min 
@@ -368,29 +371,26 @@ void destroy_program(unsigned int length, ld_line_t *program) {
     free(program);
 }
 
-plc_t generate_code(unsigned int length, const char *name, const ld_line_t *program, plc_t p) {
+rung_t* generate_code(unsigned int length, const char *name, const ld_line_t *program, rung_t *rungs, BYTE *rungno) {
     int rv = PLC_OK;
-    rung_t r = mk_rung(name, p);
+    r = mk_rung(name, rungs, rungno);
 
     int i = 0;
     for (; i < length && rv == PLC_OK; i++) {
         r->code = append_line(trunk_whitespace(program[i]->buf), r->code);
         if (program[i]->stmt != NULL && program[i]->stmt->tag == TAG_ASSIGNMENT)
             rv = gen_ass(program[i]->stmt, r);
-        //clear_tree(program[i]->stmt);
     }
-    p->status = rv;
-
-    return p;
+    return &r;
 }
 
 /***************************entry point*******************************/
-plc_t parse_ld_program(const char *name, const char lines[][MAXSTR], plc_t p) {
-    int rv = PLC_OK;
-    if (p == NULL) {
+rung_t* parse_ld_program(const char *name, const char lines[][MAXSTR]) {
+    rungs = NULL;
+    BYTE rungno = 0;
 
-        return NULL;
-    }
+    int rv = PLC_OK;
+
     unsigned int len = program_length(lines, MAXBUF);
     ld_line_t *program = construct_program(lines, len);
 
@@ -406,17 +406,14 @@ plc_t parse_ld_program(const char *name, const char lines[][MAXSTR], plc_t p) {
             rv = vertical_parse(node, len, program);
         }
     }
-    if (rv < PLC_OK) {
-
-        p->status = rv;
-    } else {
-        p = generate_code(len, name, program, p);
+    if (rv == PLC_OK) {
+        rungs = generate_code(len, name, program, rungs, &rungno);
 
         char dump[MAXBUF];
         memset(dump, 0, MAXBUF);
-        dump_rung(p->rungs[0], dump);
+        dump_rung(rungs[0], dump);
         plc_log(dump);
     }
     destroy_program(len, program);
-    return p;
+    return rungs;
 }

@@ -16,7 +16,7 @@
  * @param the plc
  * @return reference to the new rung
  */
-rung_t mk_rung(const char *name, plc_t p);
+rung_t mk_rung(const char *name, rung_t *rungs, BYTE *rungno);
 
 /**
  * @brief get rung reference from plc
@@ -25,8 +25,6 @@ rung_t mk_rung(const char *name, plc_t p);
  * @param idx the index
  * @return reference to rung or NULL
  */
-rung_t get_rung(const plc_t p, unsigned int idx);
-
-
+rung_t get_rung(rung_t *rungs, BYTE *rungno, const unsigned int idx);
 
 #endif /* INCLUDE_RUNG_OTHER_H_ */

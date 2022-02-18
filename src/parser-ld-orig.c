@@ -16,11 +16,9 @@
 #include "parser-tree.h"
 #include "plc_common.h"
 
-
-plc_t plc;
-
 int main() {
-    plc = malloc(sizeof(plc_t));
+
+    rung_t *rungs;
 
     char lines[MAXBUF][MAXSTR];
     memset(lines, 0, MAXBUF * MAXSTR);
@@ -33,8 +31,10 @@ int main() {
     sprintf(lines[6], "%s\n", " i0/4-------------------------------+         ");
 
     printf("-- parse START\n\n");
-    plc = parse_ld_program("test", lines, plc);
-    printf("-- parse END: %d\n", plc-> rungno);
+    rungs = parse_ld_program("test", lines);
+    if (rungs == NULL)
+        printf("rungs error\n");
+    printf("-- parse END: \n");
 
     int result;
     struct ld_line line;
@@ -56,5 +56,4 @@ int main() {
     printf("test: %d\n",line.stmt->v.ass.right->v.exp.a->v.id.byte == 0);
     printf("test: %d\n",line.stmt->v.ass.right->v.exp.a->v.id.bit == 5);
     printf("test: %d\n",line.stmt->v.ass.right->v.exp.b == NULL);
-
 }

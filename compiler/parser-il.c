@@ -426,7 +426,10 @@ int parse_il_line(const char *line, rung_t r) { //    line format:[label:]<opera
 plc_t parse_il_program(const char *name, const char lines[][MAXSTR], plc_t p) {
     int rv = PLC_OK;
     unsigned int i = 0;
-    rung_t r = mk_rung(name, p);
+    rung_t *rungs = NULL;;
+    BYTE rungno = 0;
+
+    rung_t r = mk_rung(name, rungs, &rungno);
     while (rv == PLC_OK && i < MAXBUF && lines[i][0] != 0) {
         const char *line = lines[i++];
         rv = parse_il_line(line, r);
