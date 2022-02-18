@@ -407,6 +407,7 @@ rung_t* parse_ld_program(const char *name, const char lines[][MAXSTR]) {
     if (rv == PLC_OK) {
         rungs = generate_code(len, name, program, rungs, &rungno);
     }
+
     destroy_program(len, program);
     return rungs;
 }

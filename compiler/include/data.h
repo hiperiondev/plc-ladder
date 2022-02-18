@@ -6,7 +6,7 @@
 #define BYTE   unsigned char
 #define BIT(x) unsigned char x:1
 
-#define NEGATE 128 //negate second operand, not return value.
+#define NEGATE     128 //negate second operand, not return value.
 #define BOOLEAN    64
 #define NOP	       0
 
@@ -73,7 +73,7 @@ typedef enum {
 #define IS_BITWISE(x) (x >= FIRST_BITWISE && x < FIRST_ARITHMETIC)
 #define IS_ARITHMETIC(x) (x >= FIRST_ARITHMETIC && x < FIRST_COMPARISON)
 #define IS_COMPARISON(x) (x >= FIRST_COMPARISON && x < N_IL_INSN)
-#define IS_OPERATION(x) (x >= FIRST_BITWISE && x < N_IL_INSN) 
+#define IS_OPERATION(x) (x >= FIRST_BITWISE && x < N_IL_INSN)
 
 typedef enum {
     T_BOOL,  // 1 bit
@@ -115,27 +115,5 @@ typedef enum {
                         || x == OP_REAL_OUTPUT  \
                         || x == OP_REAL_CONTACT \
                         || x == OP_REAL_MEMIN
-
-//TODO: add type for checkings and castings
-typedef union accdata {
-    uint64_t u;
-    double r;
-} data_t; //what can the accumulator be
-
-uint64_t operate_u(unsigned char op, uint64_t a, uint64_t b);
-
-double operate_d(unsigned char op, double a, double b);
-
-float operate_f(unsigned char op, float a, float b);
-
-/**
- * @brief operate operator op of type t on data a and b
- * @param operator
- * @param type
- * @param a
- * @param b
- * @return result if available
- */
-data_t operate(unsigned char op, unsigned char t, const data_t a, const data_t b);
 
 #endif //_DATA_H_
