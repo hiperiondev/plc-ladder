@@ -79,13 +79,13 @@ rung_t il_r;
 extern const char IlCommands[N_IL_INSN][LABELLEN];
 
 const char *IlErrors[N_IE] = {
-        "Unknown error", //
-        "Invalid operator", //
-        "Invalid output", //
+        "Unknown error",         //
+        "Invalid operator",      //
+        "Invalid output",        //
         "Invalid numeric index", //
-        "Invalid operand", //
-        "File does not exist", //
-        "Unreadable character" //
+        "Invalid operand",       //
+        "File does not exist",   //
+        "Unreadable character"   //
         };
 
 //TODO: IL multi byte type operations
@@ -113,9 +113,7 @@ int extract_number(const char *line) { //read characters from string line
 //return number read or error 
 }
 
-int extract_arguments(const char *buf,
-BYTE *byte,
-BYTE *bit) {
+int extract_arguments(const char *buf, BYTE *byte, BYTE *bit) {
     //read first numeric chars after operand
     //store byte
     *byte = extract_number(buf);
@@ -177,8 +175,7 @@ BYTE read_operand(const char *line, unsigned int index) { //read ONE character f
     return r;
 }
 
-BYTE read_type(const char *line,
-BYTE *operand, unsigned int index) { //read characters from line[idx]
+BYTE read_type(const char *line, BYTE *operand, unsigned int index) { //read characters from line[idx]
 //parse grammatically:
     int r = PLC_OK;
     if (line == NULL || index > strlen(line))
