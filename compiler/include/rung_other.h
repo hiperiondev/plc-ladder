@@ -8,7 +8,7 @@
 #ifndef INCLUDE_RUNG_OTHER_H_
 #define INCLUDE_RUNG_OTHER_H_
 
-#include "plc_common.h"
+#include <common.h>
 
 /**
  * @brief add a new rung to a plc

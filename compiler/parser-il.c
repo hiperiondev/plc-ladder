@@ -1,4 +1,5 @@
 
+#include <common.h>
 #include <ctype.h>
 #include <stddef.h>
 #include <string.h>
@@ -8,11 +9,9 @@
 #include "config.h"
 
 #include "data.h"
-#include "hardware.h"
 #include "instruction.h"
 #include "parser-ld.h"
 #include "parser-tree.h"
-#include "plc_common.h"
 #include "rung.h"
 #include "rung_other.h"
 #include "util.h"
@@ -75,6 +74,8 @@
  6. resolve operand bit: 0 to BYTESIZE
  7. execute command if no errors
  */
+
+rung_t il_r;
 
 extern const char IlCommands[N_IL_INSN][LABELLEN];
 
@@ -423,16 +424,16 @@ int parse_il_line(const char *line, rung_t r) { //    line format:[label:]<opera
     return PLC_OK;
 }
 /****************entry point**************************/
-plc_t parse_il_program(const char *name, const char lines[][MAXSTR], plc_t p) {
+rung_t* parse_il_program(const char *name, const char lines[][MAXSTR]) {
     int rv = PLC_OK;
     unsigned int i = 0;
     rung_t *rungs = NULL;;
     BYTE rungno = 0;
 
-    rung_t r = mk_rung(name, rungs, &rungno);
+    il_r = mk_rung(name, rungs, &rungno);
     while (rv == PLC_OK && i < MAXBUF && lines[i][0] != 0) {
         const char *line = lines[i++];
-        rv = parse_il_line(line, r);
+        rv = parse_il_line(line, il_r);
         switch (rv) {
             case PLC_ERR:
                 plc_log("Line %d :%s %s", i, IlErrors[IE_PLC], line);
@@ -459,12 +460,12 @@ plc_t parse_il_program(const char *name, const char lines[][MAXSTR], plc_t p) {
                 break;
         }
     }
-    rv = intern(r);
+    rv = intern(il_r);
     if (rv < PLC_OK) {
         plc_log("Labels are messed up");
     }
-    p->status = rv;
-    return p;
+    //p->status = rv;
+    return &il_r;
 }
 
 /***CHECK**/

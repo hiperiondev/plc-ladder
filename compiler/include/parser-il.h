@@ -111,4 +111,6 @@ int find_arguments(const char *buf, BYTE *operand, BYTE *byte, BYTE *bit);
  */
 int parse_il_line(const char *line, rung_t r);
 
+rung_t* parse_il_program(const char *name, const char lines[][MAXSTR]);
+
 #endif //_PARSER-IL_H

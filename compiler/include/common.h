@@ -5,13 +5,12 @@
  *      Author: egonzalez
  */
 
-#ifndef INCLUDE_PLC_COMMON_H_
-#define INCLUDE_PLC_COMMON_H_
+#ifndef INCLUDE_COMMON_H_
+#define INCLUDE_COMMON_H_
 
 #include <poll.h>
 
 #include "data.h"
-#include "hardware.h"
 #include "rung.h"
 
 #define MILLION 1000000
@@ -54,7 +53,7 @@ typedef enum {
 /**
  * @brief The timer struct.
  * struct which represents  a timer state at a given cycle
- */
+
 typedef struct timer {
     long S; ///scale; S=1000=>increase every 1000 cycles. STEP= 10 msec=> increase every 10 sec
     long sn;    ///internal counter used for scaling
@@ -67,11 +66,11 @@ typedef struct timer {
     //BIT(MASK);///true if timer is forced to up or down
     char *nick;    //[NICKLEN];
 } *dt_t;
-
+ */
 /***********************plc_t*****************************/
 /**
  * @brief The digital_input struct
- */
+
 typedef struct digital_input {
     BIT(I);   ///contact value
     BIT(RE);   ///rising edge
@@ -81,10 +80,10 @@ typedef struct digital_input {
     BIT(N_MASK); /// true if forced 0
     char *nick; //[NICKLEN];///nickname
 } *di_t;
-
+ */
 /**
  * @brief The digital_output struct
- */
+
 typedef struct digital_output {
     BIT(Q); //contact
     BIT(SET); //set
@@ -93,10 +92,9 @@ typedef struct digital_output {
     BIT(N_MASK); /// true if forced false
     char *nick; //[NICKLEN];//nickname
 } *do_t;
-
+ */
 /**
  * @brief The analog_io  struct
- */
 typedef struct analog_io {
     double V; /// data value
     double min; ///range for conversion to/from raw data
@@ -104,22 +102,22 @@ typedef struct analog_io {
     double mask; ///forced value mask
     char *nick; //[NICKLEN];///nickname
 } *aio_t;
-
+*/
 /**
  * @brief The blink struct
  * struct which represents a blinker
- */
+
 typedef struct blink {
     BIT(Q); ///output
     long S; ///scale; S=1000=>toggle every 1000 cycles. STEP= 10 msec=> toggle every 10 sec
     long sn;    ///internal counter for scaling
     char *nick; //[NICKLEN];
 } *blink_t;
-
+*/
 /**
  * @brief The mvar struct
  * struct which represents a memory register / counter
- */
+
 typedef struct mvar {
     uint64_t V;     ///TODO: add type
     BIT(RO);    ///1 if read only;
@@ -131,24 +129,24 @@ typedef struct mvar {
     //BIT(MASK); ///true if pulse is set
     char *nick;    //[NICKLEN];   ///nickname
 } *mvar_t;
-
+ */
 /**
  * @brief The mreal struct
  * struct which represents a real number memory register
- */
+
 typedef struct mreal {
     double V;     ///TODO: add type
     BIT(RO);    ///1 if read only;
     char *nick; //[NICKLEN];   ///nickname
 } *mreal_t;
-
+ */
 /**
  * @brief The PLC_regs struct
  * The struct which contains all the software PLC registers
- */
+
 //TODO: should masks and edges be packed inside di_t, dq_t?
 typedef struct PLC_regs {
-    hardware_t hw;
+    //hardware_t hw;
     ///hardware interface
     BYTE *inputs;   ///digital input values buffer
     uint64_t *real_in; ///analog raw input values buffer
@@ -196,6 +194,6 @@ typedef struct PLC_regs {
                            //FIXME: throw this feature away
     struct PLC_regs *old; //pointer to previous state
 } *plc_t;
+ */
 
-
-#endif /* INCLUDE_PLC_COMMON_H_ */
+#endif /* INCLUDE_COMMON_H_ */

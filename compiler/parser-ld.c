@@ -1,5 +1,6 @@
 
 
+#include <common.h>
 #include <ctype.h>
 #include <stddef.h>
 #include <string.h>
@@ -9,12 +10,10 @@
 
 #include "codegen.h"
 #include "data.h"
-#include "hardware.h"
 #include "instruction.h"
 #include "parser-il.h"
 #include "parser-tree.h"
 #include "parser-ld.h"
-#include "plc_common.h"
 #include "rung.h"
 #include "rung_other.h"
 #include "util.h"

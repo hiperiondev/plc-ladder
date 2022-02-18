@@ -5,11 +5,11 @@
  *      Author: egonzalez
  */
 
+#include <common.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "plc_common.h"
 #include "rung.h"
 
 rung_t mk_rung(const char *name, rung_t *rungs, BYTE *rungno) {

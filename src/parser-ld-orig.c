@@ -8,13 +8,13 @@
  ============================================================================
  */
 
+#include <common.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "parser-ld.h"
 #include "parser-tree.h"
-#include "plc_common.h"
 
 int main() {
 
@@ -41,14 +41,10 @@ int main() {
     unsigned int pc = 0;
     char buf[4] = "";
     for (; pc < rungs[0]->insno; pc++) {
-        if (get(rungs[0], pc, &ins) < PLC_OK) {
-            printf("get error\n");
-            return 0;
-        }
+        ins = rungs[0]->instructions[pc];
         sprintf(buf, "%d.", pc);
         strcat(dump, buf);
-
-        printf("[pc: %03d] operation %02d, modifier %02d, operand %02d\n", pc, ins->operation, ins->modifier, ins->operand);
+        printf("[pc: %02d] operation %02d, modifier %02d, operand %02d\n", pc, ins->operation, ins->modifier, ins->operand);
         char buf[8] = "";
         dump_label(ins->label, dump);
         strcat(dump, IlCommands[ins->operation]);

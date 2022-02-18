@@ -8,20 +8,6 @@
 #define PLC_OK 0
 #define PLC_ERR -1
 
-/**
- * @brief The opcode struct
- *AND, OR, XOR, ANDN, ORN, XORN.
- *TODO: byte type operations.
- *if op > 128 then value is negated first.
- */
-typedef struct opcode {
-    BYTE operation;
-    BYTE type;
-    BYTE depth;
-    union accdata value;
-    struct opcode *next;
-} *opcode_t;
-
 typedef struct codeline {
     char *line;
     struct codeline *next;
@@ -33,45 +19,10 @@ typedef struct codeline {
 typedef struct rung {
     instruction_t *instructions;
     char *id;
-    codeline_t code; ///original code for visual representation
-    unsigned int insno; ///actual no of active lines
-    struct rung *next; ///linked list of rungs
-    opcode_t stack; ///head of stack
-    struct opcode prealloc[MAXSTACK]; ///preallocated stack
-    union accdata acc;    ///accumulator
+    codeline_t code;    // original code for visual representation
+    unsigned int insno; // actual no of active lines
+    struct rung *next;  // linked list of rungs
 } *rung_t;
-
-/**
- * @brief take the next available member in the preallocated stack
- * @param the rung where the stack belongs
- * @return the candidate stack head
- */
-opcode_t take(rung_t r);
-
-/**
- * @brief give the stack head back to the stack
- * @param the head to give
- */
-void give(opcode_t head);
-
-/**
- * @brief push an opcode and a value into rung's stack.
- * @param op the operation
- * @param t the type
- * @param val
- * @param the rung //pointer to head of stack
- * @return OK or error
- */
-int push(BYTE op, BYTE t, const data_t val, rung_t r);
-
-/**
- * @brief retrieve stack heads operation and operand,
- * apply it to val and return result
- * @param val
- * @param pointer to head of stack
- * @return result
- */
-data_t pop(const data_t val, opcode_t *stack);
 
 /**
  * @brief get instruction reference from rung

@@ -1,59 +1,14 @@
 
+#include <common.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
 #include "data.h"
 #include "instruction.h"
-#include "plc_common.h"
 #include "include/rung.h"
 
 /*****************************rung***********************************/
-
-opcode_t take(rung_t r) {
-    if (r->stack == NULL)
-        return &(r->prealloc[0]);
-    else if (r->stack->depth < MAXSTACK - 1)
-        return &(r->prealloc[r->stack->depth]);
-    else
-        return NULL;
-}
-
-void give(opcode_t head) {
-    memset(head, 0, sizeof(struct opcode));
-}
-
-int push( BYTE op, BYTE t, const data_t val, rung_t r) {
-//push an opcode and a value into stack.
-    struct opcode *p = take(r);
-    if (!p)
-        return PLC_ERR;
-    //initialize
-    p->operation = op;
-    p->value = val;
-    p->type = t;
-    p->next = r->stack; //*stack;
-    p->depth = (r->stack == NULL) ? 1 : r->stack->depth + 1;
-    //set stack head pointer to point at it
-    r->stack = p;
-    return PLC_OK;
-}
-
-data_t pop(const data_t val, opcode_t *stack) {
-//retrieve stack heads operation and operand, apply it to val and return result
-    data_t r = val; //return value
-    opcode_t p;
-    if (*stack != NULL) {
-        //safety
-        r = operate((*stack)->operation, (*stack)->type, (*stack)->value, val); //execute instruction
-        p = *stack;
-        *stack = (*stack)->next;
-        //set stack head to point to next opcode in stack
-        give(p);
-    }
-    return r;
-}
-
 int get(const rung_t r, const unsigned int idx, instruction_t *i) {
     if (r == NULL || idx >= r->insno)
         return PLC_ERR;

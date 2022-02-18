@@ -1,8 +1,8 @@
 #ifndef _PARSER_LD_H_
 #define _PARSER_LD_H_
 
+#include <common.h>
 #include "data.h"
-#include "plc_common.h"
 #include "parser-tree.h"
 
 /*TODO: factor these out*/

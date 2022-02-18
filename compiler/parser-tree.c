@@ -6,7 +6,6 @@
 #include "config.h"
 
 #include "data.h"
-#include "hardware.h"
 #include "instruction.h"
 #include "rung.h"
 #include "parser-tree.h"
