@@ -345,18 +345,14 @@ static unsigned int program_length(const char lines[][MAXSTR], unsigned int max)
 }
 
 ld_line_t* construct_program(const char lines[][MAXSTR], unsigned int length) {
-    //ld_line_t *program = (ld_line_t*) malloc(length * sizeof(ld_line_t));
-    //memset(program, 0, length * sizeof(ld_line_t));
     ld_line_t * program = (ld_line_t *)calloc(length, sizeof(ld_line_t));
 
     int i = 0;
     for (; i < length; i++) {/* for each line construct ld_line*/
         if (lines != NULL) {
-            //ld_line_t line = (ld_line_t) malloc(sizeof(struct ld_line));
             ld_line_t line  = (ld_line_t)calloc(1, sizeof(struct ld_line));
             line->cursor = 0;
             line->status = STATUS_UNRESOLVED;
-            //line->buf = strdup(lines[i]);
             line->buf = (char *)calloc(1, MAXSTR);
             memcpy(line->buf, lines[i],MAXSTR);
             line->stmt = NULL;
@@ -413,10 +409,10 @@ rung_t* parse_ld_program(const char *name, const char lines[][MAXSTR]) {
     if (rv == PLC_OK) {
         rungs = generate_code(len, name, program, rungs, &rungno);
 
-        char dump[MAXBUF];
-        memset(dump, 0, MAXBUF);
-        dump_rung(rungs[0], dump);
-        plc_log(dump);
+        //char dump[MAXBUF];
+        //memset(dump, 0, MAXBUF);
+        //dump_rung(rungs[0], dump);
+        //plc_log(dump);
     }
     destroy_program(len, program);
     return rungs;

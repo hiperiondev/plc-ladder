@@ -168,5 +168,4 @@ void dump_rung(rung_t r, char *dump) {
         strcat(dump, buf);
         dump_instruction(ins, dump);
     }
-    //printf("%s", dump);
 }

@@ -30,11 +30,44 @@ int main() {
     sprintf(lines[5], "%s\n", "          +------i1/2------------+  |         ");
     sprintf(lines[6], "%s\n", " i0/4-------------------------------+         ");
 
-    printf("-- parse START\n\n");
+    printf("-- parse_ld_program START\n\n");
     rungs = parse_ld_program("test", lines);
     if (rungs == NULL)
         printf("rungs error\n");
-    printf("-- parse END: \n");
+
+    char dump[MAXBUF];
+    memset(dump, 0, MAXBUF);
+    instruction_t ins;
+    unsigned int pc = 0;
+    char buf[4] = "";
+    for (; pc < rungs[0]->insno; pc++) {
+        if (get(rungs[0], pc, &ins) < PLC_OK) {
+            printf("get error\n");
+            return 0;
+        }
+        sprintf(buf, "%d.", pc);
+        strcat(dump, buf);
+
+        printf("[pc: %03d] operation %02d, modifier %02d, operand %02d\n", pc, ins->operation, ins->modifier, ins->operand);
+        char buf[8] = "";
+        dump_label(ins->label, dump);
+        strcat(dump, IlCommands[ins->operation]);
+        if (ins->operation >= IL_RET) {
+            strcat(dump, IlModifiers[ins->modifier - 1]);
+            if (ins->operation == IL_JMP) {
+                sprintf(buf, "%d", ins->operand);
+                strcat(dump, buf);
+            } else {
+                strcat(dump, IlOperands[ins->operand - OP_INPUT]);
+                sprintf(buf, "%d/%d", ins->byte, ins->bit);
+                strcat(dump, buf);
+            }
+        }
+        strcat(dump, "\n");
+    }
+    printf("\n%s", dump);
+
+    printf("\n-- parse_ld_program END\n\n");
 
     int result;
     struct ld_line line;
@@ -43,17 +76,17 @@ int main() {
     line.buf = " ---!i0/5--(Q0/3 ";
     result = parse_ld_line(&line);
 
-    printf("test: %d\n",result == PLC_OK);
-    printf("test: %d\n",line.cursor == strlen(line.buf) - 4);
-    printf("test: %d\n",line.status == STATUS_RESOLVED);
-    printf("test: %d\n",line.stmt->tag == TAG_ASSIGNMENT);
-    printf("test: %d\n",line.stmt->v.ass.type == LD_COIL);
+    printf("test  1: %s\n", result == PLC_OK ? "ok" : "error");
+    printf("test  2: %s\n", line.cursor == strlen(line.buf) - 4 ? "ok" : "error");
+    printf("test  3: %s\n", line.status == STATUS_RESOLVED ? "ok" : "error");
+    printf("test  4: %s\n", line.stmt->tag == TAG_ASSIGNMENT ? "ok" : "error");
+    printf("test  5: %s\n", line.stmt->v.ass.type == LD_COIL ? "ok" : "error");
 
-    printf("test: %d\n",line.stmt->v.ass.right->v.exp.op == IL_AND);
-    printf("test: %d\n",line.stmt->v.ass.right->v.exp.mod == IL_NEG);
-    printf("test: %d\n",line.stmt->v.ass.right->v.exp.a->tag == TAG_IDENTIFIER);
-    printf("test: %d\n",line.stmt->v.ass.right->v.exp.a->v.id.operand == OP_INPUT);
-    printf("test: %d\n",line.stmt->v.ass.right->v.exp.a->v.id.byte == 0);
-    printf("test: %d\n",line.stmt->v.ass.right->v.exp.a->v.id.bit == 5);
-    printf("test: %d\n",line.stmt->v.ass.right->v.exp.b == NULL);
+    printf("test  6: %s\n", line.stmt->v.ass.right->v.exp.op == IL_AND ? "ok" : "error");
+    printf("test  7: %s\n", line.stmt->v.ass.right->v.exp.mod == IL_NEG ? "ok" : "error");
+    printf("test  8: %s\n", line.stmt->v.ass.right->v.exp.a->tag == TAG_IDENTIFIER ? "ok" : "error");
+    printf("test  9: %s\n", line.stmt->v.ass.right->v.exp.a->v.id.operand == OP_INPUT ? "ok" : "error");
+    printf("test 10: %s\n", line.stmt->v.ass.right->v.exp.a->v.id.byte == 0 ? "ok" : "error");
+    printf("test 11: %s\n", line.stmt->v.ass.right->v.exp.a->v.id.bit == 5 ? "ok" : "error");
+    printf("test 12: %s\n", line.stmt->v.ass.right->v.exp.b == NULL ? "ok" : "error");
 }

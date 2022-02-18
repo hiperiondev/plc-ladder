@@ -31,6 +31,10 @@ typedef struct instruction {
     unsigned char bit;
 } *instruction_t;
 
+extern const char IlCommands[N_IL_INSN][LABELLEN];
+extern const char IlOperands[N_OPERANDS][3];
+extern const char IlModifiers[N_IL_MODIFIERS][2];
+
 /**
  * @brief get type of instruction
  * @convention type is encoded in the instruction
@@ -49,5 +53,6 @@ int get_type(const instruction_t ins);
 void deepcopy(const instruction_t from, instruction_t to);
 
 void dump_instruction(instruction_t ins, char *dump);
+void dump_label(char *label, char *dump);
 
 #endif // _INSTRUCTION_H_
