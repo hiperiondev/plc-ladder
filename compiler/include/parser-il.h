@@ -31,8 +31,7 @@ int extract_arguments(const char *buf, BYTE *byte, BYTE *bit);
  * @param c index
  * @return IL operand symbol
  */
-BYTE read_type(const char *line,
-BYTE *operand, unsigned int index);
+BYTE read_type(const char *line, BYTE *operand, unsigned int index);
 
 /**
  * @brief read operand  

@@ -57,8 +57,7 @@
 
  */
 
-rung_t r;
-rung_t *rungs;
+rung_t r, *rungs;
 
 int minmin(const int *arr, int min, int max) {
 //for an array arr of integers ,return the smallest of indices i so that 
@@ -83,6 +82,7 @@ BYTE digits(unsigned int i) {
     else
         return 1;
 }
+
 /***********************************************************************/
 int handle_coil(const int type, ld_line_t line) {
 //(expect Q,T,M,W followed by byte / bit)

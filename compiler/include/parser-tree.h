@@ -10,7 +10,7 @@ typedef enum {
     TAG_IDENTIFIER, //
     TAG_EXPRESSION, //
     TAG_ASSIGNMENT, //
-    N_TAGS //
+    N_TAGS          //
 } item_tag_t;
 
 typedef struct identifier {
@@ -22,14 +22,14 @@ typedef struct identifier {
 typedef struct expression {
     struct item *a;
     struct item *b;
-    BYTE op;
-    BYTE mod;
+           BYTE op;
+           BYTE mod;
 } *expression_t;
 
 typedef struct assignment {
     struct item *left;
     struct item *right;
-    BYTE type; //contact, down, set, reset
+           BYTE type; //contact, down, set, reset
 } *assignment_t;
 
 /**

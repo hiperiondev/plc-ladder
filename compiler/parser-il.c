@@ -226,7 +226,6 @@ void trunk_label(const char *line, char *buf, char *label_buf) {
 }
 
 #define IS_WHITESPACE(x) (x == ' ' || x == '\t' || x == '\n' || x == '\r')
-
 char* trunk_whitespace(char *line) {
     if (line == NULL) {
 
@@ -416,6 +415,7 @@ int parse_il_line(const char *line, rung_t r) { // line format:[label:]<operator
     }
     return PLC_OK;
 }
+
 /****************entry point**************************/
 rung_t* parse_il_program(const char *name, const char lines[][MAXSTR]) {
     int rv = PLC_OK;

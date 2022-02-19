@@ -5,8 +5,8 @@
  *      Author: egonzalez
  */
 
-#ifndef COMMON_H_
-#define COMMON_H_
+#ifndef _COMMON_H_
+#define _COMMON_H_
 
 #include <poll.h>
 #include <inttypes.h>
@@ -14,7 +14,7 @@
 #define BYTE       unsigned char
 #define BIT(x)     unsigned char x:1
 
-#define NEGATE     128 //negate second operand, not return value.
+#define NEGATE     128 // negate second operand, not return value.
 #define BOOLEAN    64
 #define NOP        0
 
@@ -178,4 +178,4 @@ enum {
     N_LD_SYMBOLS    //
 };
 
-#endif /* COMMON_H_ */
+#endif /* _COMMON_H_ */

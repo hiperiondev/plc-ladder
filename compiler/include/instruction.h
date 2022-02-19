@@ -9,23 +9,22 @@
  *IL modifiers
  */
 typedef enum {
-    IL_NEG = 1, // '!'
-    IL_PUSH,    // '('
-    IL_NORM,    // ' '
-    IL_COND,    // '?'
-    N_IL_MODIFIERS
+    IL_NEG = 1,    // '!'
+    IL_PUSH,       // '('
+    IL_NORM,       // ' '
+    IL_COND,       // '?'
+    N_IL_MODIFIERS //
 } IL_MODIFIERS;
 
 #define IS_MODIFIER(x) (x >= IL_NEG && x < N_IL_MODIFIERS) 
-
 #define MAX_LABEL 1024
 
 /**
  * @brief The instruction struct
  */
 typedef struct instruction {
-    char label[MAX_LABEL];
-    char lookup[MAX_LABEL]; //label to lookup (applies to JMP etc.)
+             char label[MAX_LABEL];
+             char lookup[MAX_LABEL]; //label to lookup (applies to JMP etc.)
     unsigned char operation;
     unsigned char operand;
     unsigned char modifier;

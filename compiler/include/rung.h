@@ -9,7 +9,7 @@
 #define PLC_ERR  -1
 
 typedef struct codeline {
-    char *line;
+               char *line;
     struct codeline *next;
 } *codeline_t;
 
@@ -18,10 +18,10 @@ typedef struct codeline {
  */
 typedef struct rung {
     instruction_t *instructions;
-    char *id;
-    codeline_t code;    // original code for visual representation
-    unsigned int insno; // actual no of active lines
-    struct rung *next;  // linked list of rungs
+             char *id;
+       codeline_t code;    // original code for visual representation
+     unsigned int insno; // actual no of active lines
+      struct rung *next;  // linked list of rungs
 } *rung_t;
 
 /**

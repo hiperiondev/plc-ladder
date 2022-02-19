@@ -9,10 +9,10 @@
 #define IS_VERTICAL(x)  (x>=LD_OR && x<=LD_NODE)
 
 typedef struct ld_line {
-    char *buf;
-    BYTE status;
+            char *buf;
+            BYTE status;
     unsigned int cursor;
-    item_t stmt;
+          item_t stmt;
 } *ld_line_t;
 
 /**
