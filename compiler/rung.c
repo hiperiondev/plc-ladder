@@ -124,7 +124,7 @@ void dump_rung(rung_t r, char *dump) {
     }
 }
 
-rung_t mk_rung(const char *name, rung_t *rungs, BYTE *rungno) {
+rung_t mk_rung(const char *name, rung_t *rungs, uint8_t *rungno) {
     rung_t r = (rung_t) malloc(sizeof(struct rung));
     memset(r, 0, sizeof(struct rung));
     r->id = strdup(name);
@@ -137,7 +137,7 @@ rung_t mk_rung(const char *name, rung_t *rungs, BYTE *rungno) {
     return r;
 }
 
-rung_t get_rung(rung_t *rungs, BYTE *rungno, const unsigned int idx) {
+rung_t get_rung(rung_t *rungs, uint8_t *rungno, const unsigned int idx) {
     if (rungs == NULL || idx >= *rungno) {
         return NULL;
     }

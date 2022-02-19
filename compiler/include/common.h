@@ -11,8 +11,7 @@
 #include <poll.h>
 #include <inttypes.h>
 
-#define BYTE       unsigned char
-#define BIT(x)     unsigned char x:1
+#define BIT(x)     uint8_t x:1
 
 #define NEGATE     128 // negate second operand, not return value.
 #define BOOLEAN    64
@@ -33,11 +32,11 @@
 #define WORDSIZE   16
 #define BYTESIZE   8
 
-#define FALSE 0
-#define TRUE  1
-#define BOOL(x) x > 0 ? TRUE : FALSE
+#define MAXRUNG    256
 
-#define FIRST_BITWISE IL_AND
+#define BOOL(x) x > 0 ? true : false
+
+#define FIRST_BITWISE    IL_AND
 #define FIRST_ARITHMETIC IL_ADD
 #define FIRST_COMPARISON IL_GT
 
@@ -52,8 +51,6 @@
                         || x == OP_REAL_OUTPUT  \
                         || x == OP_REAL_CONTACT \
                         || x == OP_REAL_MEMIN
-
-#define MAXRUNG  256
 
 typedef enum {
     N_ERR = -20,     // ERROR CODES are negative

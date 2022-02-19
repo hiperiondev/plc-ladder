@@ -111,11 +111,11 @@ int extract_number(const char *line) { //read characters from string line
 //return number read or error 
 }
 
-int extract_arguments(const char *buf, BYTE *byte, BYTE *bit) {
+int extract_arguments(const char *buf, uint8_t *byte, uint8_t *bit) {
     //read first numeric chars after operand
     //store byte
     *byte = extract_number(buf);
-    if (*byte == (BYTE) PLC_ERR) {
+    if (*byte == (uint8_t) PLC_ERR) {
 
         return ERR_BADINDEX;
     }
@@ -133,7 +133,7 @@ int extract_arguments(const char *buf, BYTE *byte, BYTE *bit) {
     return PLC_OK;
 }
 
-BYTE read_operand(const char *line, unsigned int index) { //read ONE character from line[idx]
+uint8_t read_operand(const char *line, unsigned int index) { //read ONE character from line[idx]
 //parse grammatically:
     int r = PLC_OK;
     if (line == NULL || index > strlen(line))
@@ -167,13 +167,13 @@ BYTE read_operand(const char *line, unsigned int index) { //read ONE character f
             r = OP_OUTPUT;
             break;
         default:
-            r = (BYTE) ERR_BADCHAR; //error
+            r = (uint8_t) ERR_BADCHAR; //error
     }
 //return value or error
     return r;
 }
 
-BYTE read_type(const char *line, BYTE *operand, unsigned int index) { //read characters from line[idx]
+uint8_t read_type(const char *line, uint8_t *operand, unsigned int index) { //read characters from line[idx]
 //parse grammatically:
     int r = PLC_OK;
     if (line == NULL || index > strlen(line))
@@ -256,8 +256,8 @@ char* trunk_whitespace(char *line) {
     return line;
 }
 
-BYTE read_modifier(const char *buf, char **pos) {
-    BYTE modifier = 0;
+uint8_t read_modifier(const char *buf, char **pos) {
+    uint8_t modifier = 0;
     if (buf == NULL || pos == NULL)
         return PLC_ERR;
 
@@ -285,8 +285,8 @@ BYTE read_modifier(const char *buf, char **pos) {
     return modifier;
 }
 
-BYTE read_operator(const char *buf, const char *stop) {
-    BYTE op = 0;
+uint8_t read_operator(const char *buf, const char *stop) {
+    uint8_t op = 0;
     int i = 0;
     char *cursor = 0;
     char op_buf[LABELLEN];
@@ -315,7 +315,7 @@ BYTE read_operator(const char *buf, const char *stop) {
     return op;
 }
 
-int find_arguments(const char *buf, BYTE *operand, BYTE *byte, BYTE *bit) {
+int find_arguments(const char *buf, uint8_t *operand, uint8_t *byte, uint8_t *bit) {
     int ret = PLC_OK;
 
     if (buf == NULL)
@@ -334,7 +334,7 @@ int find_arguments(const char *buf, BYTE *operand, BYTE *byte, BYTE *bit) {
 
         return ERR_BADOPERAND;
     }
-    if (*operand == (BYTE) ERR_BADCHAR) {
+    if (*operand == (uint8_t) ERR_BADCHAR) {
 
         return ERR_BADCHAR;
     }
@@ -361,11 +361,11 @@ int parse_il_line(const char *line, rung_t r) { // line format:[label:]<operator
     char buf[MAXSTR];
     char label_buf[MAXSTR];
     char *pos = NULL;
-    BYTE byte = 0;
-    BYTE bit = 0;
-    BYTE modifier = 0;
-    BYTE operand = 0;
-    BYTE oper = 0;
+    uint8_t byte = 0;
+    uint8_t bit = 0;
+    uint8_t modifier = 0;
+    uint8_t operand = 0;
+    uint8_t oper = 0;
     struct instruction op;
 
     memset(&op, 0, sizeof(struct instruction));
@@ -421,7 +421,7 @@ rung_t* parse_il_program(const char *name, const char lines[][MAXSTR]) {
     int rv = PLC_OK;
     unsigned int i = 0;
     rung_t *rungs = NULL;;
-    BYTE rungno = 0;
+    uint8_t rungno = 0;
 
     il_r = mk_rung(name, rungs, &rungno);
     while (rv == PLC_OK && i < MAXBUF && lines[i][0] != 0) {

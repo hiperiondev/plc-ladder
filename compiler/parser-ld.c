@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 #include "common.h"
 #include "config.h"
@@ -74,7 +75,7 @@ int minmin(const int *arr, int min, int max) {
     return r;
 }
 
-BYTE digits(unsigned int i) {
+uint8_t digits(unsigned int i) {
     if (i > 100)
         return 3;
     else if (i > 10)
@@ -87,8 +88,8 @@ BYTE digits(unsigned int i) {
 int handle_coil(const int type, ld_line_t line) {
 //(expect Q,T,M,W followed by byte / bit)
     int rv = PLC_OK;
-    BYTE byte = 0;
-    BYTE bit = 0;
+    uint8_t byte = 0;
+    uint8_t bit = 0;
     int c = read_char(line->buf, ++line->cursor);
     if (c >= OP_CONTACT && c < OP_END) {
         int operand = c;
@@ -109,10 +110,10 @@ int handle_coil(const int type, ld_line_t line) {
     return rv;
 }
 
-int handle_operand(int operand, BYTE negate, ld_line_t line) {
+int handle_operand(int operand, uint8_t negate, ld_line_t line) {
     int rv = PLC_OK;
-    BYTE byte = 0;
-    BYTE bit = 0;
+    uint8_t byte = 0;
+    uint8_t bit = 0;
     if (operand >= OP_INPUT && operand < OP_CONTACT) {	//valid input symbol
         rv = extract_arguments(line->buf + (++line->cursor), &byte, &bit);
         if (rv == PLC_OK) {
@@ -133,7 +134,7 @@ int handle_operand(int operand, BYTE negate, ld_line_t line) {
     return rv;
 }
 
-BYTE read_char(const char *line, unsigned int c) {
+uint8_t read_char(const char *line, unsigned int c) {
 //read ONE character from line[idx]
 //parse grammatically:
     int r = 0;
@@ -207,7 +208,7 @@ BYTE read_char(const char *line, unsigned int c) {
             r = OP_WRITE;
             break;
         default:
-            r = (BYTE) ERR_BADCHAR; // error
+            r = (uint8_t) ERR_BADCHAR; // error
     }
 // return value or error
     return r;
@@ -219,7 +220,7 @@ int parse_ld_line(ld_line_t line) {
         return PLC_ERR;
 
     int c = LD_AND; //default character = '-'
-    BYTE n_mode = FALSE;
+    uint8_t n_mode = false;
 
     while (line->status == STATUS_UNRESOLVED && c != LD_NODE) {	// loop
         c = read_char(line->buf, line->cursor);
@@ -227,7 +228,7 @@ int parse_ld_line(ld_line_t line) {
             case LD_NODE:	// PAUSE
                 break;
             case ERR_BADCHAR:
-            case (BYTE) PLC_ERR:
+            case (uint8_t) PLC_ERR:
                 rv = PLC_ERR;
                 line->status = STATUS_ERROR;
                 break;
@@ -242,7 +243,7 @@ int parse_ld_line(ld_line_t line) {
                 line->stmt = NULL;	//clear_tree(line->stmt);
                 break;
             case LD_NOT:
-                n_mode = TRUE;	// normally closed mode
+                n_mode = true;	// normally closed mode
                 // no break
             case LD_AND:
                 line->cursor++;
@@ -255,7 +256,7 @@ int parse_ld_line(ld_line_t line) {
                 break;
             default:	// otherwise operand is expected(i,q,f,r,m,t,c,b)
                 rv = handle_operand(c, n_mode, line);
-                n_mode = FALSE;
+                n_mode = false;
                 break;
         }
     }
@@ -365,7 +366,7 @@ void destroy_program(unsigned int length, ld_line_t *program) {
     free(program);
 }
 
-rung_t* generate_code(unsigned int length, const char *name, const ld_line_t *program, rung_t *rungs, BYTE *rungno) {
+rung_t* generate_code(unsigned int length, const char *name, const ld_line_t *program, rung_t *rungs, uint8_t *rungno) {
     int rv = PLC_OK;
     r = mk_rung(name, rungs, rungno);
 
@@ -381,7 +382,7 @@ rung_t* generate_code(unsigned int length, const char *name, const ld_line_t *pr
 /***************************entry point*******************************/
 rung_t* parse_ld_program(const char *name, const char lines[][MAXSTR]) {
     rungs = NULL;
-    BYTE rungno = 0;
+    uint8_t rungno = 0;
 
     int rv = PLC_OK;
 

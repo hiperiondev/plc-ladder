@@ -78,7 +78,7 @@ int intern(rung_t r);
  * @param the plc
  * @return reference to the new rung
  */
-rung_t mk_rung(const char *name, rung_t *rungs, BYTE *rungno);
+rung_t mk_rung(const char *name, rung_t *rungs, uint8_t *rungno);
 
 /**
  * @brief get rung reference from plc
@@ -87,7 +87,7 @@ rung_t mk_rung(const char *name, rung_t *rungs, BYTE *rungno);
  * @param idx the index
  * @return reference to rung or NULL
  */
-rung_t get_rung(rung_t *rungs, BYTE *rungno, const unsigned int idx);
+rung_t get_rung(rung_t *rungs, uint8_t *rungno, const unsigned int idx);
 
 void dump_rung(rung_t ins, char *dump);
 

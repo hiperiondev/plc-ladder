@@ -9,7 +9,7 @@
 #include "parser-tree.h"
 #include "rung.h"
 
-int gen_expr(const item_t expression, rung_t rung, BYTE recursive) {
+int gen_expr(const item_t expression, rung_t rung, uint8_t recursive) {
     int rv = PLC_OK;
     if (expression == NULL || rung == NULL)
         return PLC_ERR;
@@ -17,11 +17,11 @@ int gen_expr(const item_t expression, rung_t rung, BYTE recursive) {
     if (expression->tag != TAG_EXPRESSION)
         return PLC_ERR;
 
-    BYTE operator = expression->v.exp.op;
+    uint8_t operator = expression->v.exp.op;
     if (!IS_OPERATION(operator))
         return ERR_BADOPERATOR;
 
-    BYTE modifier = expression->v.exp.mod;
+    uint8_t modifier = expression->v.exp.mod;
     if (!IS_MODIFIER(modifier))
         return ERR_BADOPERATOR;
     //left operand
@@ -42,12 +42,12 @@ int gen_expr(const item_t expression, rung_t rung, BYTE recursive) {
     return rv;
 }
 
-int gen_expr_left(const item_t left, rung_t rung, BYTE recursive) {
+int gen_expr_left(const item_t left, rung_t rung, uint8_t recursive) {
     int rv = PLC_OK;
     if (left == NULL)
         return ERR_BADOPERAND;
-    BYTE inner = IL_LD;
-    BYTE mod = IL_NORM;
+    uint8_t inner = IL_LD;
+    uint8_t mod = IL_NORM;
     if (IS_OPERATION(recursive)) {
         inner = recursive;
         mod = IL_PUSH;
@@ -73,7 +73,7 @@ int gen_expr_left(const item_t left, rung_t rung, BYTE recursive) {
     return rv;
 }
 
-int gen_expr_right(const item_t right, rung_t rung, BYTE op, BYTE mod) {
+int gen_expr_right(const item_t right, rung_t rung, uint8_t op, uint8_t mod) {
     int rv = PLC_OK;
 
     if (right != NULL) {
@@ -108,7 +108,7 @@ int gen_ass(const item_t assignment, rung_t rung) {
     if (assignment->v.ass.left == NULL || assignment->v.ass.left->tag != TAG_IDENTIFIER)
         return ERR_BADOPERAND;
 
-    BYTE type = assignment->v.ass.type;
+    uint8_t type = assignment->v.ass.type;
     if (!IS_COIL(type))
         return ERR_BADCOIL;
 

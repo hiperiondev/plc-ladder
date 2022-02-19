@@ -12,7 +12,7 @@
  * @param the operation to generate if called in a recursion
  * @return ok or error code
  */
-int gen_expr(const item_t expression, rung_t rung, BYTE recursive);
+int gen_expr(const item_t expression, rung_t rung, uint8_t recursive);
 
 /**
  * @brief generate code for the left side of an expression
@@ -21,7 +21,7 @@ int gen_expr(const item_t expression, rung_t rung, BYTE recursive);
  * @param the operation to generate if called in a recursion
  * @return ok or error code
  */
-int gen_expr_left(const item_t left, rung_t rung, BYTE recursive);
+int gen_expr_left(const item_t left, rung_t rung, uint8_t recursive);
 
 /**
  * @brief generate code for the right side of an expression
@@ -31,7 +31,7 @@ int gen_expr_left(const item_t left, rung_t rung, BYTE recursive);
  * @param the modifier 
  * @return ok or error code
  */
-int gen_expr_right(const item_t right, rung_t rung, BYTE op, BYTE mod);
+int gen_expr_right(const item_t right, rung_t rung, uint8_t op, uint8_t mod);
 
 /**
  * @brief generate code from an assignment statement
