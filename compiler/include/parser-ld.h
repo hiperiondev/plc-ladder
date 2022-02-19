@@ -1,9 +1,9 @@
 #ifndef _PARSER_LD_H_
 #define _PARSER_LD_H_
 
-#include <common.h>
-#include "data.h"
+#include "compiler_common.h"
 #include "parser-tree.h"
+#include "rung.h"
 
 /*TODO: factor these out*/
 #define RESOLVED  -1

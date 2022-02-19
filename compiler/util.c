@@ -6,7 +6,7 @@
 
 #include "config.h"
 #include "util.h"
-#include "data.h"
+#include "compiler_common.h"
 
 FILE *ErrLog = NULL;
 

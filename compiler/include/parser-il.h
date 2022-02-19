@@ -1,7 +1,9 @@
 #ifndef _PARSER_IL_H_
 #define _PARSER_IL_H_
 
-#include "data.h"
+#include "compiler_common.h"
+#include "instruction.h"
+#include "rung.h"
 
 /**
  * @brief read an unsigned integer value from string

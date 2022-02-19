@@ -1,5 +1,4 @@
 
-#include <common.h>
 #include <ctype.h>
 #include <stddef.h>
 #include <string.h>
@@ -7,9 +6,8 @@
 #include <stdio.h>
 
 #include "config.h"
-
+#include "compiler_common.h"
 #include "codegen.h"
-#include "data.h"
 #include "instruction.h"
 #include "parser-il.h"
 #include "parser-tree.h"

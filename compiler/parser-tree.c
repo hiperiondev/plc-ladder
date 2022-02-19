@@ -4,8 +4,7 @@
 #include <stdlib.h>
 
 #include "config.h"
-
-#include "data.h"
+#include "compiler_common.h"
 #include "instruction.h"
 #include "rung.h"
 #include "parser-tree.h"

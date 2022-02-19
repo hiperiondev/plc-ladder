@@ -1,7 +1,7 @@
 #ifndef _PARSER_TREE_H_
 #define _PARSER_TREE_H_
 
-#include "data.h"
+#include "compiler_common.h"
 
 /*
  *  Node type codes

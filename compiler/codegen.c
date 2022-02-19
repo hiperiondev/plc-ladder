@@ -1,10 +1,9 @@
 
-#include <common.h>
 #include <string.h>
 
+#include "compiler_common.h"
 #include "config.h"
 #include "codegen.h"
-#include "data.h"
 #include "instruction.h"
 #include "parser-ld.h"
 #include "parser-tree.h"

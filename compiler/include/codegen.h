@@ -2,7 +2,7 @@
 #define _CODEGEN_H_
 
 #include "parser-tree.h"
-#include "data.h"
+#include "compiler_common.h"
 #include "rung.h"
 
 /**

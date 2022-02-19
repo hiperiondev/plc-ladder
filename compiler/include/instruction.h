@@ -1,6 +1,8 @@
 #ifndef _INSTRUCTION_H_
 #define _INSTRUCTION_H_ 
 
+#include "compiler_common.h"
+
 #define LABELLEN 4
 //#define NICKLEN	16
 /**

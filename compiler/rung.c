@@ -1,12 +1,11 @@
 
-#include <common.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-#include "data.h"
+#include "compiler_common.h"
 #include "instruction.h"
-#include "include/rung.h"
+#include "rung.h"
 
 /*****************************rung***********************************/
 int get(const rung_t r, const unsigned int idx, instruction_t *i) {
