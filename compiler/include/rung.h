@@ -5,6 +5,8 @@
 #include "instruction.h"
 
 #define MAXSTACK 256
+#define MAXRUNG  256
+
 #define PLC_OK   0
 #define PLC_ERR  -1
 

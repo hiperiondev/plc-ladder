@@ -232,13 +232,12 @@ int parse_ld_line(ld_line_t line) {
                 rv = PLC_ERR;
                 line->status = STATUS_ERROR;
                 break;
-            case OP_END:/*this should happen only if line ends without 
-             a valid coil*/
+            case OP_END: //this should happen only if line ends without a valid coil
                 line->status = STATUS_RESOLVED;
                 line->stmt = NULL;	// clear_tree(line->stmt);
                 break;
             case LD_OR:
-            case LD_BLANK:	// if blank or '|', empty value for the line.
+            case LD_BLANK:  // if blank or '|', empty value for the line.
                 line->cursor++;
                 line->stmt = NULL;	//clear_tree(line->stmt);
                 break;
@@ -254,7 +253,7 @@ int parse_ld_line(ld_line_t line) {
             case LD_DOWN:
                 rv = handle_coil(c, line);
                 break;
-            default:	// otherwise operand is expected(i,q,f,r,m,t,c,b)
+            default:  // otherwise operand is expected(i,q,f,r,m,t,c,b)
                 rv = handle_operand(c, n_mode, line);
                 n_mode = false;
                 break;
@@ -286,7 +285,6 @@ int find_next_node(const ld_line_t *program, unsigned int start, unsigned int li
             found = PLC_OK;
         } else
             cursors[i] = -1;
-        //printf("%d\n", cursors[i]);
     }
     if (found == PLC_OK)
         return minmin(cursors, start, lines);

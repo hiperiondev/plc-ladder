@@ -32,8 +32,6 @@
 #define WORDSIZE   16
 #define BYTESIZE   8
 
-#define MAXRUNG    256
-
 #define BOOL(x) x > 0 ? true : false
 
 #define FIRST_BITWISE    IL_AND
@@ -45,12 +43,12 @@
 #define IS_COMPARISON(x) (x >= FIRST_COMPARISON && x < N_IL_INSN)
 #define IS_OPERATION(x)  (x >= FIRST_BITWISE && x < N_IL_INSN)
 
-#define OP_VALID(x) x >= OP_INPUT && x < N_OPERANDS
-#define OP_REAL(x)  x == OP_REAL_INPUT          \
-                        || x == OP_REAL_MEMORY  \
-                        || x == OP_REAL_OUTPUT  \
-                        || x == OP_REAL_CONTACT \
-                        || x == OP_REAL_MEMIN
+#define OP_VALID(x)      x >= OP_INPUT && x < N_OPERANDS
+#define OP_REAL(x)       x == OP_REAL_INPUT          \
+                             || x == OP_REAL_MEMORY  \
+                             || x == OP_REAL_OUTPUT  \
+                             || x == OP_REAL_CONTACT \
+                             || x == OP_REAL_MEMIN
 
 typedef enum {
     N_ERR = -20,     // ERROR CODES are negative
@@ -74,6 +72,7 @@ typedef enum {
     IE_BADOPERAND,  //
     IE_BADFILE,     //
     IE_BADCHAR,     //
+
     N_IE            //
 } IL_ERRORCODES;
 
@@ -84,6 +83,7 @@ typedef enum {
     T_DWORD, // 32 bit (4 byte)
     T_LWORD, // 64 bit (8 byte)
     T_REAL,  // (8 byte) double floating point number
+
     N_TYPES  //
 } DATATYPES;
 
@@ -100,6 +100,7 @@ typedef enum {
     OP_TIMEOUT,      // t  28
     OP_OUTPUT,       // q  29
     OP_REAL_OUTPUT,  // qf 30
+
     // coils
     OP_CONTACT,      // Q  31
     OP_REAL_CONTACT, // QF 32
@@ -108,6 +109,7 @@ typedef enum {
     OP_REAL_MEMIN,   // MF 35
     OP_WRITE,        // W  36
     OP_END,          // 0  37
+
     N_OPERANDS       //
 } IL_OPERANDS;
 
@@ -119,16 +121,21 @@ typedef enum {
     IL_NOP,   // no operand
     IL_POP,   // )
     IL_RET,   // RET
+
     //arithmetic LABEL
     IL_JMP,   // JMP
+
     //subroutine call (unimplemented)
     IL_CAL,   // CAL
+
     //boolean, no modifier
     IL_SET,   // S
     IL_RESET, // R
+
     //any operand, only negation
     IL_LD,    // LD
     IL_ST,    // ST
+
     //any operand, only push
     //boolean, all modifiers
     IL_AND,   // AND
@@ -144,6 +151,7 @@ typedef enum {
     IL_NE,    // NOT EQUAL
     IL_LT,    // LESS THAN
     IL_LE,    // LESS OR EQUAL
+
     N_IL_INSN //
 } IL_INSN;
 
@@ -155,6 +163,7 @@ enum {
     STATUS_RESOLVED,   //
     STATUS_FINAL,      //
     STATUS_ERROR,      //
+
     N_STATUS           //
 };
 
@@ -172,6 +181,7 @@ enum {
     LD_SET,         // [ set
     LD_RESET,       // ] reset,
     LD_DOWN,        // ) negate coil
+
     N_LD_SYMBOLS    //
 };
 

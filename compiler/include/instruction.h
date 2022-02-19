@@ -13,6 +13,7 @@ typedef enum {
     IL_PUSH,       // '('
     IL_NORM,       // ' '
     IL_COND,       // '?'
+
     N_IL_MODIFIERS //
 } IL_MODIFIERS;
 
