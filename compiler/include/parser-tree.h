@@ -23,8 +23,8 @@ typedef struct identifier {
 typedef struct expression {
     struct item *a;
     struct item *b;
-          uint8_t op;
-          uint8_t mod;
+        uint8_t op;
+        uint8_t mod;
 } *expression_t;
 
 typedef struct assignment {

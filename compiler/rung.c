@@ -10,21 +10,21 @@
 /*****************************rung***********************************/
 int get(const rung_t r, const unsigned int idx, instruction_t *i) {
     if (r == NULL || idx >= r->insno)
-        return PLC_ERR;
+        return STATUS_ERR;
     *i = r->instructions[idx];
-    return PLC_OK;
+    return STATUS_OK;
 }
 
 int append(const instruction_t i, rung_t r) {
     if (r == NULL || r->insno == MAXSTACK)
-        return PLC_ERR;
+        return STATUS_ERR;
     if (i != NULL) {
         if (r->instructions == NULL) { // lazy allocation
             r->instructions = (instruction_t*) malloc(MAXSTACK * sizeof(instruction_t));
             memset(r->instructions, 0, MAXSTACK * sizeof(instruction_t));
         }
         if (lookup(i->label, r) >= 0)
-            return PLC_ERR; // don't allow duplicate labels
+            return STATUS_ERR; // don't allow duplicate labels
 
         instruction_t ins = (instruction_t) malloc(sizeof(struct instruction));
         memset(ins, 0, sizeof(struct instruction));
@@ -32,7 +32,7 @@ int append(const instruction_t i, rung_t r) {
 
         r->instructions[(r->insno)++] = ins;
     }
-    return PLC_OK;
+    return STATUS_OK;
 }
 
 codeline_t append_line(const char *l, codeline_t code) {
@@ -74,7 +74,7 @@ void clear_rung(rung_t r) {
 }
 
 int lookup(const char *label, rung_t r) {
-    int ret = PLC_ERR;
+    int ret = STATUS_ERR;
     if (label == NULL || r == NULL)
         return ret;
 
@@ -92,7 +92,7 @@ int lookup(const char *label, rung_t r) {
 
 int intern(rung_t r) {
     if (r == NULL)
-        return PLC_ERR;
+        return STATUS_ERR;
 
     int i = 0;
     instruction_t ins = NULL;
@@ -101,12 +101,12 @@ int intern(rung_t r) {
         if (strlen(ins->lookup) > 0) {
             int l = lookup(ins->lookup, r);
             if (l < 0)
-                return PLC_ERR;
+                return STATUS_ERR;
             else
                 ins->operand = l;
         }
     }
-    return PLC_OK;
+    return STATUS_OK;
 }
 
 void dump_rung(rung_t r, char *dump) {
@@ -116,7 +116,7 @@ void dump_rung(rung_t r, char *dump) {
     unsigned int pc = 0;
     char buf[4] = "";
     for (; pc < r->insno; pc++) {
-        if (get(r, pc, &ins) < PLC_OK)
+        if (get(r, pc, &ins) < STATUS_OK)
             return;
         sprintf(buf, "%d.", pc);
         strcat(dump, buf);

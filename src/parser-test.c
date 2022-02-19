@@ -51,7 +51,7 @@ int main() {
     line.buf = " ---!i0/5--(Q0/3 ";
     result = parse_ld_line(&line);
 
-    printf("test  1: %s\n",                                        result == PLC_OK               ? "ok" : "error");
+    printf("test  1: %s\n",                                        result == STATUS_OK               ? "ok" : "error");
     printf("test  2: %s\n",                                   line.cursor == strlen(line.buf) - 4 ? "ok" : "error");
     printf("test  3: %s\n",                                   line.status == STATUS_RESOLVED      ? "ok" : "error");
     printf("test  4: %s\n",                                line.stmt->tag == TAG_ASSIGNMENT       ? "ok" : "error");

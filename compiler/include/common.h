@@ -11,6 +11,11 @@
 #include <poll.h>
 #include <inttypes.h>
 
+//#define LOG_TO_FILE
+
+#define STATUS_OK   0
+#define STATUS_ERR  -1
+
 #define NEGATE     128 // negate second operand, not return value.
 #define BOOLEAN    64
 #define NOP        0

@@ -10,12 +10,12 @@
 #include "rung.h"
 
 int gen_expr(const item_t expression, rung_t rung, uint8_t recursive) {
-    int rv = PLC_OK;
+    int rv = STATUS_OK;
     if (expression == NULL || rung == NULL)
-        return PLC_ERR;
+        return STATUS_ERR;
 
     if (expression->tag != TAG_EXPRESSION)
-        return PLC_ERR;
+        return STATUS_ERR;
 
     uint8_t operator = expression->v.exp.op;
     if (!IS_OPERATION(operator))
@@ -35,7 +35,7 @@ int gen_expr(const item_t expression, rung_t rung, uint8_t recursive) {
     struct instruction ins;
     memset(&ins, 0, sizeof(struct instruction));
 
-    if (rv == PLC_OK && modifier == IL_PUSH && IS_OPERATION(operator) && expression->v.exp.b != NULL) {
+    if (rv == STATUS_OK && modifier == IL_PUSH && IS_OPERATION(operator) && expression->v.exp.b != NULL) {
         ins.operation = IL_POP;
         rv = append(&ins, rung);
     }
@@ -43,7 +43,7 @@ int gen_expr(const item_t expression, rung_t rung, uint8_t recursive) {
 }
 
 int gen_expr_left(const item_t left, rung_t rung, uint8_t recursive) {
-    int rv = PLC_OK;
+    int rv = STATUS_OK;
     if (left == NULL)
         return ERR_BADOPERAND;
     uint8_t inner = IL_LD;
@@ -74,7 +74,7 @@ int gen_expr_left(const item_t left, rung_t rung, uint8_t recursive) {
 }
 
 int gen_expr_right(const item_t right, rung_t rung, uint8_t op, uint8_t mod) {
-    int rv = PLC_OK;
+    int rv = STATUS_OK;
 
     if (right != NULL) {
         struct instruction ins;
@@ -100,10 +100,10 @@ int gen_expr_right(const item_t right, rung_t rung, uint8_t op, uint8_t mod) {
 }
 
 int gen_ass(const item_t assignment, rung_t rung) {
-    int rv = PLC_OK;
+    int rv = STATUS_OK;
 
     if (rung == NULL || assignment == NULL || assignment->tag != TAG_ASSIGNMENT)
-        return PLC_ERR;
+        return STATUS_ERR;
 
     if (assignment->v.ass.left == NULL || assignment->v.ass.left->tag != TAG_IDENTIFIER)
         return ERR_BADOPERAND;
@@ -137,7 +137,7 @@ int gen_ass(const item_t assignment, rung_t rung) {
             return ERR_BADOPERATOR;
     }
 
-    if (rv == PLC_OK) {
+    if (rv == STATUS_OK) {
         switch (type) {
             case LD_DOWN:
                 ins.operation = IL_ST;

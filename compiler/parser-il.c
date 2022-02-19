@@ -98,14 +98,14 @@ int extract_number(const char *line) { //read characters from string line
     int i, n = 0;
     if (line == NULL) {
 
-        return PLC_ERR;
+        return STATUS_ERR;
     }
     for (i = 0; isdigit(line[i]); i++) {
         n = 10 * n + (line[i] - '0');
     }
     if (i == 0) {
         //no digits read
-        return PLC_ERR;
+        return STATUS_ERR;
     }
     return n;
 //return number read or error 
@@ -115,7 +115,7 @@ int extract_arguments(const char *buf, uint8_t *byte, uint8_t *bit) {
     //read first numeric chars after operand
     //store byte
     *byte = extract_number(buf);
-    if (*byte == (uint8_t) PLC_ERR) {
+    if (*byte == (uint8_t) STATUS_ERR) {
 
         return ERR_BADINDEX;
     }
@@ -130,14 +130,14 @@ int extract_arguments(const char *buf, uint8_t *byte, uint8_t *bit) {
             *bit = cursor[1] - '0';
         }
     }
-    return PLC_OK;
+    return STATUS_OK;
 }
 
 uint8_t read_operand(const char *line, unsigned int index) { //read ONE character from line[idx]
 //parse grammatically:
-    int r = PLC_OK;
+    int r = STATUS_OK;
     if (line == NULL || index > strlen(line))
-        return PLC_ERR;
+        return STATUS_ERR;
 
     char c = tolower(line[index]);
 
@@ -175,9 +175,9 @@ uint8_t read_operand(const char *line, unsigned int index) { //read ONE characte
 
 uint8_t read_type(const char *line, uint8_t *operand, unsigned int index) { //read characters from line[idx]
 //parse grammatically:
-    int r = PLC_OK;
+    int r = STATUS_OK;
     if (line == NULL || index > strlen(line))
-        return PLC_ERR;
+        return STATUS_ERR;
 
     if (tolower(line[index]) == 'f') {
         switch (*operand) {
@@ -191,7 +191,7 @@ uint8_t read_type(const char *line, uint8_t *operand, unsigned int index) { //re
                 *operand = OP_REAL_OUTPUT;
                 break;
             default:
-                r = PLC_ERR;
+                r = STATUS_ERR;
                 break;
         }
     }
@@ -259,7 +259,7 @@ char* trunk_whitespace(char *line) {
 uint8_t read_modifier(const char *buf, char **pos) {
     uint8_t modifier = 0;
     if (buf == NULL || pos == NULL)
-        return PLC_ERR;
+        return STATUS_ERR;
 
     char *str = strchr(buf, '(');
     if (str) //push stack
@@ -292,7 +292,7 @@ uint8_t read_operator(const char *buf, const char *stop) {
     char op_buf[LABELLEN];
     memset(op_buf, 0, LABELLEN);
     if (buf == NULL)
-        return PLC_ERR;
+        return STATUS_ERR;
     if (stop) {
         cursor = (char*) buf;
         i = 0;
@@ -316,10 +316,10 @@ uint8_t read_operator(const char *buf, const char *stop) {
 }
 
 int find_arguments(const char *buf, uint8_t *operand, uint8_t *byte, uint8_t *bit) {
-    int ret = PLC_OK;
+    int ret = STATUS_OK;
 
     if (buf == NULL)
-        return PLC_ERR;
+        return STATUS_ERR;
 
     char *str = strchr(buf, '%');
     if (!str)
@@ -341,7 +341,7 @@ int find_arguments(const char *buf, uint8_t *operand, uint8_t *byte, uint8_t *bi
     if (isalpha(str[index])) {
         ret = read_type(str, operand, index);
         index++;
-        if (ret != PLC_OK) {
+        if (ret != STATUS_OK) {
 
             return ret;
         }
@@ -374,7 +374,7 @@ int parse_il_line(const char *line, rung_t r) { // line format:[label:]<operator
     memset(buf, 0, MAXSTR);
 
     if (line == NULL || r == NULL)
-        return PLC_ERR;
+        return STATUS_ERR;
 
     sprintf(tmp, "%s", line);
 
@@ -413,22 +413,22 @@ int parse_il_line(const char *line, rung_t r) { // line format:[label:]<operator
     if (op.operation != IL_NOP) {
         append(&op, r);
     }
-    return PLC_OK;
+    return STATUS_OK;
 }
 
 /****************entry point**************************/
 rung_t* parse_il_program(const char *name, const char lines[][MAXSTR]) {
-    int rv = PLC_OK;
+    int rv = STATUS_OK;
     unsigned int i = 0;
     rung_t *rungs = NULL;;
     uint8_t rungno = 0;
 
     il_r = mk_rung(name, rungs, &rungno);
-    while (rv == PLC_OK && i < MAXBUF && lines[i][0] != 0) {
+    while (rv == STATUS_OK && i < MAXBUF && lines[i][0] != 0) {
         const char *line = lines[i++];
         rv = parse_il_line(line, il_r);
         switch (rv) {
-            case PLC_ERR:
+            case STATUS_ERR:
                 plc_log("Line %d :%s %s", i, IlErrors[IE_PLC], line);
                 break;
             case ERR_BADOPERATOR:
@@ -454,7 +454,7 @@ rung_t* parse_il_program(const char *name, const char lines[][MAXSTR]) {
         }
     }
     rv = intern(il_r);
-    if (rv < PLC_OK) {
+    if (rv < STATUS_OK) {
         plc_log("Labels are messed up");
     }
     return &il_r;

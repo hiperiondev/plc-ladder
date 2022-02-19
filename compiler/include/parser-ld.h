@@ -10,7 +10,7 @@
 
 typedef struct ld_line {
             char *buf;
-            uint8_t status;
+         uint8_t status;
     unsigned int cursor;
           item_t stmt;
 } *ld_line_t;

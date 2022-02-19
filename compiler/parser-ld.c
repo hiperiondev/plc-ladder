@@ -65,7 +65,7 @@ int minmin(const int *arr, int min, int max) {
 //arr[i] =  min(arr) >= min 
     int i;
     int v = MAXSTR;		//cant be more than length  of line
-    int r = PLC_ERR;
+    int r = STATUS_ERR;
     for (i = max - 1; i >= 0; i--) {
         if (arr[i] <= v && arr[i] >= min) {
             v = arr[i];
@@ -87,7 +87,7 @@ uint8_t digits(unsigned int i) {
 /***********************************************************************/
 int handle_coil(const int type, ld_line_t line) {
 //(expect Q,T,M,W followed by byte / bit)
-    int rv = PLC_OK;
+    int rv = STATUS_OK;
     uint8_t byte = 0;
     uint8_t bit = 0;
     int c = read_char(line->buf, ++line->cursor);
@@ -95,7 +95,7 @@ int handle_coil(const int type, ld_line_t line) {
         int operand = c;
         c = read_char(line->buf, line->cursor);
         rv = extract_arguments(line->buf + (++line->cursor), &byte, &bit);
-        if (rv == PLC_OK) {
+        if (rv == STATUS_OK) {
             item_t identifier = mk_identifier(operand, byte, bit);
             line->stmt = mk_assignment(identifier, line->stmt, type);
             line->status = STATUS_RESOLVED;
@@ -111,12 +111,12 @@ int handle_coil(const int type, ld_line_t line) {
 }
 
 int handle_operand(int operand, uint8_t negate, ld_line_t line) {
-    int rv = PLC_OK;
+    int rv = STATUS_OK;
     uint8_t byte = 0;
     uint8_t bit = 0;
     if (operand >= OP_INPUT && operand < OP_CONTACT) {	//valid input symbol
         rv = extract_arguments(line->buf + (++line->cursor), &byte, &bit);
-        if (rv == PLC_OK) {
+        if (rv == STATUS_OK) {
             /*byte + slash + bit*/
             line->cursor += digits((unsigned int) byte) + 2;
 
@@ -139,7 +139,7 @@ uint8_t read_char(const char *line, unsigned int c) {
 //parse grammatically:
     int r = 0;
     if (line == NULL || c > strlen(line))
-        return PLC_ERR;
+        return STATUS_ERR;
     if (line[c] == 0 || line[c] == ';' || line[c] == '\n' || line[c] == '\r')
         return OP_END;
     if (line[c] == ' ' || line[c] == '.' || line[c] == '#' || line[c] == '\t')
@@ -215,9 +215,9 @@ uint8_t read_char(const char *line, unsigned int c) {
 }
 
 int parse_ld_line(ld_line_t line) {
-    int rv = PLC_OK;
+    int rv = STATUS_OK;
     if (line == (ld_line_t) NULL)
-        return PLC_ERR;
+        return STATUS_ERR;
 
     int c = LD_AND; //default character = '-'
     uint8_t n_mode = false;
@@ -228,8 +228,8 @@ int parse_ld_line(ld_line_t line) {
             case LD_NODE:	// PAUSE
                 break;
             case ERR_BADCHAR:
-            case (uint8_t) PLC_ERR:
-                rv = PLC_ERR;
+            case (uint8_t) STATUS_ERR:
+                rv = STATUS_ERR;
                 line->status = STATUS_ERROR;
                 break;
             case OP_END: //this should happen only if line ends without a valid coil
@@ -259,7 +259,7 @@ int parse_ld_line(ld_line_t line) {
                 break;
         }
     }
-    if (rv < PLC_OK)
+    if (rv < STATUS_OK)
         line->stmt = clear_tree(line->stmt);
     return rv;
 }
@@ -269,7 +269,7 @@ int horizontal_parse(unsigned int length, ld_line_t *program) {
     int i = 0;
     for (; i < length; i++) {
         rv = parse_ld_line(program[i]);
-        if (rv < PLC_OK)
+        if (rv < STATUS_OK)
             return rv;
     }
     return rv;
@@ -278,26 +278,26 @@ int horizontal_parse(unsigned int length, ld_line_t *program) {
 int find_next_node(const ld_line_t *program, unsigned int start, unsigned int lines) {
     int cursors[lines];
     int i = 0;
-    int found = PLC_ERR;
+    int found = STATUS_ERR;
     for (; i < lines && program != NULL; i++) {
         if (program[i] != NULL && program[i]->status == STATUS_UNRESOLVED) {
             cursors[i] = program[i]->cursor;
-            found = PLC_OK;
+            found = STATUS_OK;
         } else
             cursors[i] = -1;
     }
-    if (found == PLC_OK)
+    if (found == STATUS_OK)
         return minmin(cursors, start, lines);
     return found;
 }
 
 int vertical_parse(unsigned int start, unsigned int length, ld_line_t *program) {
-    int rv = PLC_OK;
+    int rv = STATUS_OK;
     if (program == NULL)
-        return PLC_ERR;
+        return STATUS_ERR;
 
     if (program[start] == NULL)
-        return PLC_ERR;
+        return STATUS_ERR;
 
     item_t or = NULL;
     int cursor = program[start]->cursor;
@@ -365,11 +365,11 @@ void destroy_program(unsigned int length, ld_line_t *program) {
 }
 
 rung_t* generate_code(unsigned int length, const char *name, const ld_line_t *program, rung_t *rungs, uint8_t *rungno) {
-    int rv = PLC_OK;
+    int rv = STATUS_OK;
     r = mk_rung(name, rungs, rungno);
 
     int i = 0;
-    for (; i < length && rv == PLC_OK; i++) {
+    for (; i < length && rv == STATUS_OK; i++) {
         r->code = append_line(trunk_whitespace(program[i]->buf), r->code);
         if (program[i]->stmt != NULL && program[i]->stmt->tag == TAG_ASSIGNMENT)
             rv = gen_ass(program[i]->stmt, r);
@@ -382,15 +382,15 @@ rung_t* parse_ld_program(const char *name, const char lines[][MAXSTR]) {
     rungs = NULL;
     uint8_t rungno = 0;
 
-    int rv = PLC_OK;
+    int rv = STATUS_OK;
 
     unsigned int len = program_length(lines, MAXBUF);
     ld_line_t *program = construct_program(lines, len);
 
     int node = 0;
-    while (rv >= PLC_OK && node >= 0) {
+    while (rv >= STATUS_OK && node >= 0) {
         rv = horizontal_parse(len, program);
-        if (rv >= PLC_OK) {
+        if (rv >= STATUS_OK) {
 
             node = find_next_node(program, node, len);
         }
@@ -399,7 +399,7 @@ rung_t* parse_ld_program(const char *name, const char lines[][MAXSTR]) {
             rv = vertical_parse(node, len, program);
         }
     }
-    if (rv == PLC_OK) {
+    if (rv == STATUS_OK) {
         rungs = generate_code(len, name, program, rungs, &rungno);
     }
 

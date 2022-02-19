@@ -8,7 +8,10 @@
 #include "config.h"
 #include "util.h"
 
-//FILE *ErrLog = NULL;
+#ifdef LOG_TO_FILE
+FILE *ErrLog = NULL;
+#define LOG "plcemu.log"
+#endif
 
 void plc_log(const char *msg, ...) {
     va_list arg;
@@ -19,14 +22,18 @@ void plc_log(const char *msg, ...) {
     va_start(arg, msg);
     vsprintf(msgstr, msg, arg);
     va_end(arg);
-    //if (!ErrLog)
-    //    ErrLog = fopen(LOG, "w+");
-    //if (ErrLog) {
-    //    fprintf(ErrLog, "%s", msgstr);
-    //    fprintf(ErrLog, ":%s", ctime(&now));
-    //    fflush(ErrLog);
-    //}
-    printf("%s\n",msgstr);
+
+#ifdef LOG_TO_FILE
+    if (!ErrLog)
+        ErrLog = fopen(LOG, "w+");
+    if (ErrLog) {
+        fprintf(ErrLog, "%s", msgstr);
+        fprintf(ErrLog, ":%s", ctime(&now));
+        fflush(ErrLog);
+    }
+#endif
+
+    printf("%s\n", msgstr);
 }
 
 void close_log() {
