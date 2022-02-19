@@ -1,7 +1,7 @@
 #ifndef _PARSER_IL_H_
 #define _PARSER_IL_H_
 
-#include "compiler_common.h"
+#include "common.h"
 #include "instruction.h"
 #include "rung.h"
 

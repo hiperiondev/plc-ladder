@@ -1,8 +1,8 @@
 #ifndef _RUNG_H_
 #define _RUNG_H_
 
+#include "common.h"
 #include "instruction.h"
-#include "compiler_common.h"
 
 #define MAXSTACK 256
 #define PLC_OK   0

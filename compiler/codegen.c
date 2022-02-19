@@ -1,7 +1,7 @@
 
 #include <string.h>
 
-#include "compiler_common.h"
+#include "common.h"
 #include "config.h"
 #include "codegen.h"
 #include "instruction.h"

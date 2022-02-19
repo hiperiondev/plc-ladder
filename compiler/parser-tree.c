@@ -3,8 +3,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "common.h"
 #include "config.h"
-#include "compiler_common.h"
 #include "instruction.h"
 #include "rung.h"
 #include "parser-tree.h"

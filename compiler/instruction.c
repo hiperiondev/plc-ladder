@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "compiler_common.h"
+#include "common.h"
 #include "instruction.h"
 
 const char IlCommands[N_IL_INSN][LABELLEN] = {

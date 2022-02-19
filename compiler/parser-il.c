@@ -5,8 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "common.h"
 #include "config.h"
-#include "compiler_common.h"
 #include "instruction.h"
 #include "parser-ld.h"
 #include "parser-tree.h"
@@ -308,7 +308,6 @@ BYTE read_operator(const char *buf, const char *stop) {
         else
             return N_IL_INSN;
     }
-//printf("operator:%s\n",op_buf);
     op = N_IL_INSN;
     for (i = 0; i < N_IL_INSN; ++i) {
         if (!strcmp(op_buf, IlCommands[i]))
@@ -458,7 +457,6 @@ rung_t* parse_il_program(const char *name, const char lines[][MAXSTR]) {
     if (rv < PLC_OK) {
         plc_log("Labels are messed up");
     }
-    //p->status = rv;
     return &il_r;
 }
 

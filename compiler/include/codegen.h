@@ -1,8 +1,8 @@
 #ifndef _CODEGEN_H_
 #define _CODEGEN_H_
 
+#include "common.h"
 #include "parser-tree.h"
-#include "compiler_common.h"
 #include "rung.h"
 
 /**

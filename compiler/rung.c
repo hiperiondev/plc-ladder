@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "compiler_common.h"
+#include "common.h"
 #include "instruction.h"
 #include "rung.h"
 

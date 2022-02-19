@@ -11,8 +11,6 @@
 #include <poll.h>
 #include <inttypes.h>
 
-//#include "rung.h"
-
 #define BYTE       unsigned char
 #define BIT(x)     unsigned char x:1
 
@@ -35,45 +33,8 @@
 #define WORDSIZE   16
 #define BYTESIZE   8
 
-/**
- *IL instructions
- */
-typedef enum {
-    // IL OPCODES:
-    IL_NOP,   // no operand
-    IL_POP,   // )
-    IL_RET,   // RET
-    //arithmetic LABEL
-    IL_JMP,   // JMP
-    //subroutine call (unimplemented)
-    IL_CAL,   // CAL
-    //boolean, no modifier
-    IL_SET,   // S
-    IL_RESET, // R
-    //any operand, only negation
-    IL_LD,    // LD
-    IL_ST,    // ST
-    //any operand, only push
-    //boolean, all modifiers
-    IL_AND,   // AND
-    IL_OR,    // OR
-    IL_XOR,   // XOR
-    IL_ADD,   // ADD
-    IL_SUB,   // SUBTRACT
-    IL_MUL,   // MULTIPLY
-    IL_DIV,   // DIVIDE
-    IL_GT,    // GREATER THAN
-    IL_GE,    // GREATER OR EQUAL
-    IL_EQ,    // EQUAL
-    IL_NE,    // NOT EQUAL
-    IL_LT,    // LESS THAN
-    IL_LE,    // LESS OR EQUAL
-    N_IL_INSN //
-} IL_INSN;
-
 #define FALSE 0
 #define TRUE  1
-
 #define BOOL(x) x > 0 ? TRUE : FALSE
 
 #define FIRST_BITWISE IL_AND
@@ -152,6 +113,42 @@ typedef enum {
     OP_END,          // 0  37
     N_OPERANDS       //
 } IL_OPERANDS;
+
+/**
+ *IL instructions
+ */
+typedef enum {
+    // IL OPCODES:
+    IL_NOP,   // no operand
+    IL_POP,   // )
+    IL_RET,   // RET
+    //arithmetic LABEL
+    IL_JMP,   // JMP
+    //subroutine call (unimplemented)
+    IL_CAL,   // CAL
+    //boolean, no modifier
+    IL_SET,   // S
+    IL_RESET, // R
+    //any operand, only negation
+    IL_LD,    // LD
+    IL_ST,    // ST
+    //any operand, only push
+    //boolean, all modifiers
+    IL_AND,   // AND
+    IL_OR,    // OR
+    IL_XOR,   // XOR
+    IL_ADD,   // ADD
+    IL_SUB,   // SUBTRACT
+    IL_MUL,   // MULTIPLY
+    IL_DIV,   // DIVIDE
+    IL_GT,    // GREATER THAN
+    IL_GE,    // GREATER OR EQUAL
+    IL_EQ,    // EQUAL
+    IL_NE,    // NOT EQUAL
+    IL_LT,    // LESS THAN
+    IL_LE,    // LESS OR EQUAL
+    N_IL_INSN //
+} IL_INSN;
 
 /**
  *possible LD line statuses

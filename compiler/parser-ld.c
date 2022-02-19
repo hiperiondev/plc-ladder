@@ -5,8 +5,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "common.h"
 #include "config.h"
-#include "compiler_common.h"
 #include "codegen.h"
 #include "instruction.h"
 #include "parser-il.h"
@@ -93,7 +93,6 @@ int handle_coil(const int type, ld_line_t line) {
     if (c >= OP_CONTACT && c < OP_END) {
         int operand = c;
         c = read_char(line->buf, line->cursor);
-        //int idx = extract_number(line->buf, ++line->cursor);
         rv = extract_arguments(line->buf + (++line->cursor), &byte, &bit);
         if (rv == PLC_OK) {
             item_t identifier = mk_identifier(operand, byte, bit);
@@ -116,7 +115,6 @@ int handle_operand(int operand, BYTE negate, ld_line_t line) {
     BYTE bit = 0;
     if (operand >= OP_INPUT && operand < OP_CONTACT) {	//valid input symbol
         rv = extract_arguments(line->buf + (++line->cursor), &byte, &bit);
-        //extract_number(line->buf, ++line->cursor);
         if (rv == PLC_OK) {
             /*byte + slash + bit*/
             line->cursor += digits((unsigned int) byte) + 2;

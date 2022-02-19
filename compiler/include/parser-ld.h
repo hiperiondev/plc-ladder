@@ -1,13 +1,9 @@
 #ifndef _PARSER_LD_H_
 #define _PARSER_LD_H_
 
-#include "compiler_common.h"
+#include "common.h"
 #include "parser-tree.h"
 #include "rung.h"
-
-/*TODO: factor these out*/
-#define RESOLVED  -1
-#define FINAL     2
 
 #define IS_COIL(x)      (x>=LD_COIL && x<=LD_DOWN)
 #define IS_VERTICAL(x)  (x>=LD_OR && x<=LD_NODE)
@@ -103,8 +99,6 @@ int find_next_node(const ld_line_t *program, unsigned int start, unsigned int li
  * @return plc with updated status
  */
 rung_t* parse_ld_program(const char *name, const char lines[][MAXSTR]);
-
-//ld_line_t * mk_lines(char lines[MAXBUF][MAXSTR]);
 
 #endif //_PARSER_LD_H
 
