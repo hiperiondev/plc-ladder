@@ -11,8 +11,6 @@
 #include <poll.h>
 #include <inttypes.h>
 
-#define BIT(x)     uint8_t x:1
-
 #define NEGATE     128 // negate second operand, not return value.
 #define BOOLEAN    64
 #define NOP        0
@@ -158,7 +156,7 @@ typedef enum {
 /**
  *possible LD line statuses
  */
-enum {
+enum LD_STATUS {
     STATUS_UNRESOLVED, //
     STATUS_RESOLVED,   //
     STATUS_FINAL,      //
@@ -170,7 +168,7 @@ enum {
 /**
  *accepted LD symbols: 0-9 for digits, and
  */
-enum {
+enum LD_SYMBOLS {
     // LD specific operators:
     LD_BLANK = 10,  // blank character
     LD_AND,         // -
