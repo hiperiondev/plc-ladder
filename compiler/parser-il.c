@@ -14,7 +14,7 @@
 #include "util.h"
 #include "parser-il.h"
 
-/*IL_task
+/* IL_task
  parsing:
  2. switch operator:
  valid ones:
@@ -90,7 +90,7 @@ const char *IlErrors[N_IE] = {
 // literals
 // MOD
 
-///////////////////// INSTRUCTION LIST /////////////////////
+///////////////////// instruction list /////////////////////
 
 /// LEX ///
 
@@ -355,7 +355,7 @@ int parse_il_find_arguments(const char *buf, uint8_t *operand, uint8_t *byte, ui
     return ret;
 }
 
-/// PARSE & GENERATE CODE ///
+/// parse & generate code ///
 int parse_il_line(const char *line, rung_t r) { // line format:[label:]<operator>[<modifier>[%<operand><byte>[/<bit>]]|<label>][;comment]
     char tmp[MAXSTR];
     char buf[MAXSTR];
@@ -460,7 +460,7 @@ rung_t* parse_il_program(const char *name, const char lines[][MAXSTR]) {
     return &il_r;
 }
 
-/// CHECK ///
+/// check ///
 int parse_il_check_modifier(const instruction_t op) {
     int r = 0;
     if (op->operation > IL_XOR && op->operation < IL_ADD && op->modifier != IL_NEG && op->modifier != IL_NORM) //only negation

@@ -12,9 +12,7 @@ typedef struct codeline {
     struct codeline *next;
 } *codeline_t;
 
-/**
- * @brief The instruction list executable rung
- */
+// the instruction list executable rung
 typedef struct rung {
     instruction_t *instructions;
              char *id;
@@ -88,6 +86,13 @@ rung_t rung_make(const char *name, rung_t *rungs, uint8_t *rungno);
  */
 rung_t rung_get(rung_t *rungs, uint8_t *rungno, const unsigned int idx);
 
+
+/**
+ * @brief
+ * @param
+ * @param
+ * @return
+ */
 void rung_dump(rung_t ins, char *dump);
 
 #endif //_RUNG_H_

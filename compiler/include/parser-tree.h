@@ -3,14 +3,11 @@
 
 #include "common.h"
 
-/*
- *  Node type codes
- */
+// node type codes
 typedef enum {
     TAG_IDENTIFIER, //
     TAG_EXPRESSION, //
     TAG_ASSIGNMENT, //
-
     N_TAGS          //
 } item_tag_t;
 
@@ -30,12 +27,10 @@ typedef struct expression {
 typedef struct assignment {
     struct item *left;
     struct item *right;
-        uint8_t type; //contact, down, set, reset
+        uint8_t type; // contact, down, set, reset
 } *assignment_t;
 
-/**
- * a syntax tree node
- */
+// a syntax tree node
 typedef struct item {
     item_tag_t tag;
     union {
@@ -79,4 +74,4 @@ item_t mk_assignment(const item_t identifier, const item_t expression, const uin
  */
 item_t clear_tree(item_t root);
 
-#endif //__PARSER_TREE_H_
+#endif //_PARSER_TREE_H_

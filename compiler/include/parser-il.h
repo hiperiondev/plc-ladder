@@ -112,6 +112,12 @@ int parse_il_find_arguments(const char *buf, uint8_t *operand, uint8_t *byte, ui
  */
 int parse_il_line(const char *line, rung_t r);
 
+/**
+ * @brief
+ * @param
+ * @param
+ * @return
+ */
 rung_t* parse_il_program(const char *name, const char lines[][MAXSTR]);
 
 #endif //_PARSER-IL_H

@@ -75,7 +75,6 @@ typedef enum {
     IE_BADOPERAND,  //
     IE_BADFILE,     //
     IE_BADCHAR,     //
-
     N_IE            //
 } IL_ERRORCODES;
 
@@ -86,7 +85,6 @@ typedef enum {
     T_DWORD, // 32 bit (4 byte)
     T_LWORD, // 64 bit (8 byte)
     T_REAL,  // (8 byte) double floating point number
-
     N_TYPES  //
 } DATATYPES;
 
@@ -116,31 +114,29 @@ typedef enum {
     N_OPERANDS       //
 } IL_OPERANDS;
 
-/**
- *IL instructions
- */
+// IL instructions
 typedef enum {
     // IL OPCODES:
     IL_NOP,   // no operand
     IL_POP,   // )
     IL_RET,   // RET
 
-    //arithmetic LABEL
+    // arithmetic LABEL
     IL_JMP,   // JMP
 
-    //subroutine call (unimplemented)
+    // subroutine call (unimplemented)
     IL_CAL,   // CAL
 
-    //boolean, no modifier
+    // boolean, no modifier
     IL_SET,   // S
     IL_RESET, // R
 
-    //any operand, only negation
+    // any operand, only negation
     IL_LD,    // LD
     IL_ST,    // ST
 
-    //any operand, only push
-    //boolean, all modifiers
+    // any operand, only push
+    // boolean, all modifiers
     IL_AND,   // AND
     IL_OR,    // OR
     IL_XOR,   // XOR
@@ -158,21 +154,16 @@ typedef enum {
     N_IL_INSN //
 } IL_INSN;
 
-/**
- *possible LD line statuses
- */
+// possible LD line statuses
 enum LD_STATUS {
     STATUS_UNRESOLVED, //
     STATUS_RESOLVED,   //
     STATUS_FINAL,      //
     STATUS_ERROR,      //
-
     N_STATUS           //
 };
 
-/**
- *accepted LD symbols: 0-9 for digits, and
- */
+// accepted LD symbols: 0-9 for digits, and
 enum LD_SYMBOLS {
     // LD specific operators:
     LD_BLANK = 10,  // blank character
