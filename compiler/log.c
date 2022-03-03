@@ -6,7 +6,7 @@
 
 #include "common.h"
 #include "config.h"
-#include "util.h"
+#include "log.h"
 
 #ifdef LOG_TO_FILE
 FILE *ErrLog = NULL;

@@ -14,7 +14,7 @@
 #include "parser-tree.h"
 #include "parser-ld.h"
 #include "rung.h"
-#include "util.h"
+#include "log.h"
 
 ///////////////////// parse ladder files /////////////////////
 /*

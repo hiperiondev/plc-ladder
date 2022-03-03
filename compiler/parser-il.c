@@ -11,7 +11,7 @@
 #include "parser-ld.h"
 #include "parser-tree.h"
 #include "rung.h"
-#include "util.h"
+#include "log.h"
 #include "parser-il.h"
 
 /* IL_task
