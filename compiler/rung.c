@@ -7,15 +7,15 @@
 #include "instruction.h"
 #include "rung.h"
 
-/*****************************rung***********************************/
-int get(const rung_t r, const unsigned int idx, instruction_t *i) {
+///////////////////// rung /////////////////////
+int rung_get_instruction(const rung_t r, const unsigned int idx, instruction_t *i) {
     if (r == NULL || idx >= r->insno)
         return STATUS_ERR;
     *i = r->instructions[idx];
     return STATUS_OK;
 }
 
-int append(const instruction_t i, rung_t r) {
+int rung_append(const instruction_t i, rung_t r) {
     if (r == NULL || r->insno == MAXSTACK)
         return STATUS_ERR;
     if (i != NULL) {
@@ -23,19 +23,19 @@ int append(const instruction_t i, rung_t r) {
             r->instructions = (instruction_t*) malloc(MAXSTACK * sizeof(instruction_t));
             memset(r->instructions, 0, MAXSTACK * sizeof(instruction_t));
         }
-        if (lookup(i->label, r) >= 0)
+        if (rung_lookup(i->label, r) >= 0)
             return STATUS_ERR; // don't allow duplicate labels
 
         instruction_t ins = (instruction_t) malloc(sizeof(struct instruction));
         memset(ins, 0, sizeof(struct instruction));
-        deepcopy(i, ins);
+        instruction_deepcopy(i, ins);
 
         r->instructions[(r->insno)++] = ins;
     }
     return STATUS_OK;
 }
 
-codeline_t append_line(const char *l, codeline_t code) {
+codeline_t rung_append_line(const char *l, codeline_t code) {
     if (l == NULL) {
 
         return code;
@@ -58,7 +58,7 @@ codeline_t append_line(const char *l, codeline_t code) {
     return r;
 }
 
-void clear_rung(rung_t r) {
+void rung_clear(rung_t r) {
     int i = 0;
     if (r != NULL && r->instructions != NULL) {
         for (; i < MAXSTACK; i++) {
@@ -73,7 +73,7 @@ void clear_rung(rung_t r) {
     }
 }
 
-int lookup(const char *label, rung_t r) {
+int rung_lookup(const char *label, rung_t r) {
     int ret = STATUS_ERR;
     if (label == NULL || r == NULL)
         return ret;
@@ -81,7 +81,7 @@ int lookup(const char *label, rung_t r) {
     int i = 0;
     instruction_t ins = NULL;
     for (; i < r->insno; i++) {
-        get(r, i, &ins);
+        rung_get_instruction(r, i, &ins);
         if (strlen(ins->label) > 0 && strcmp(ins->label, label) == 0) {
             ret = i;
             break;
@@ -90,16 +90,16 @@ int lookup(const char *label, rung_t r) {
     return ret;
 }
 
-int intern(rung_t r) {
+int rung_intern(rung_t r) {
     if (r == NULL)
         return STATUS_ERR;
 
     int i = 0;
     instruction_t ins = NULL;
     for (; i < r->insno; i++) {
-        get(r, i, &ins);
+        rung_get_instruction(r, i, &ins);
         if (strlen(ins->lookup) > 0) {
-            int l = lookup(ins->lookup, r);
+            int l = rung_lookup(ins->lookup, r);
             if (l < 0)
                 return STATUS_ERR;
             else
@@ -109,26 +109,11 @@ int intern(rung_t r) {
     return STATUS_OK;
 }
 
-void dump_rung(rung_t r, char *dump) {
-    if (r == NULL || dump == NULL)
-        return;
-    instruction_t ins;
-    unsigned int pc = 0;
-    char buf[4] = "";
-    for (; pc < r->insno; pc++) {
-        if (get(r, pc, &ins) < STATUS_OK)
-            return;
-        sprintf(buf, "%d.", pc);
-        strcat(dump, buf);
-        dump_instruction(ins, dump);
-    }
-}
-
-rung_t mk_rung(const char *name, rung_t *rungs, uint8_t *rungno) {
+rung_t rung_make(const char *name, rung_t *rungs, uint8_t *rungno) {
     rung_t r = (rung_t) malloc(sizeof(struct rung));
     memset(r, 0, sizeof(struct rung));
     r->id = strdup(name);
-    if (rungs == NULL) {     // lazy allocation
+    if (rungs == NULL) { // lazy allocation
         rungs = (rung_t*) malloc(MAXRUNG * sizeof(rung_t));
         memset(rungs, 0, MAXRUNG * sizeof(rung_t));
     }
@@ -137,9 +122,24 @@ rung_t mk_rung(const char *name, rung_t *rungs, uint8_t *rungno) {
     return r;
 }
 
-rung_t get_rung(rung_t *rungs, uint8_t *rungno, const unsigned int idx) {
+rung_t rung_get(rung_t *rungs, uint8_t *rungno, const unsigned int idx) {
     if (rungs == NULL || idx >= *rungno) {
         return NULL;
     }
     return rungs[idx];
+}
+
+void rung_dump(rung_t r, char *dump) {
+    if (r == NULL || dump == NULL)
+        return;
+    instruction_t ins;
+    unsigned int pc = 0;
+    char buf[4] = "";
+    for (; pc < r->insno; pc++) {
+        if (rung_get_instruction(r, pc, &ins) < STATUS_OK)
+            return;
+        sprintf(buf, "%d.", pc);
+        strcat(dump, buf);
+        instruction_dump(ins, dump);
+    }
 }

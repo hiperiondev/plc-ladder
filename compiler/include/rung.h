@@ -30,7 +30,7 @@ typedef struct rung {
  * @param idx the index
  * @return OK or error
  */
-int get(const rung_t r, unsigned int idx, instruction_t *i);
+int rung_get_instruction(const rung_t r, unsigned int idx, instruction_t *i);
 
 /**
  * @brief append instruction to rung
@@ -38,7 +38,7 @@ int get(const rung_t r, unsigned int idx, instruction_t *i);
  * @param r a rung AKA instructions list
  * @return OK or error
  */
-int append(const instruction_t i, rung_t r);
+int rung_append(const instruction_t i, rung_t r);
 
 /**
  * @brief append codeline string to rung code
@@ -46,13 +46,13 @@ int append(const instruction_t i, rung_t r);
  * @param code the existing code lines
  * @return rung code including new line
  */
-codeline_t append_line(const char *l, codeline_t code);
+codeline_t rung_append_line(const char *l, codeline_t code);
 
 /**
  * @brief clear rung from instructions and free memory
  * @param r a rung AKA instructions list
  */
-void clear_rung(rung_t r);
+void rung_clear(rung_t r);
 
 /**
  * @brief lookup instruction by label
@@ -60,7 +60,7 @@ void clear_rung(rung_t r);
  * @param r a rung AKA instructions list
  * @return the index (pc) of the instruction, or error if not found
  */
-int lookup(const char *label, rung_t r);
+int rung_lookup(const char *label, rung_t r);
 
 /**
  * @brief intern  labels
@@ -69,7 +69,7 @@ int lookup(const char *label, rung_t r);
  * @param r a rung AKA instructions list
  * @return OK, or error if : a label is not found or found duplicate
  */
-int intern(rung_t r);
+int rung_intern(rung_t r);
 
 /**
  * @brief add a new rung to a plc
@@ -77,7 +77,7 @@ int intern(rung_t r);
  * @param the plc
  * @return reference to the new rung
  */
-rung_t mk_rung(const char *name, rung_t *rungs, uint8_t *rungno);
+rung_t rung_make(const char *name, rung_t *rungs, uint8_t *rungno);
 
 /**
  * @brief get rung reference from plc
@@ -86,8 +86,8 @@ rung_t mk_rung(const char *name, rung_t *rungs, uint8_t *rungno);
  * @param idx the index
  * @return reference to rung or NULL
  */
-rung_t get_rung(rung_t *rungs, uint8_t *rungno, const unsigned int idx);
+rung_t rung_get(rung_t *rungs, uint8_t *rungno, const unsigned int idx);
 
-void dump_rung(rung_t ins, char *dump);
+void rung_dump(rung_t ins, char *dump);
 
 #endif //_RUNG_H_

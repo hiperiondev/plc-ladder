@@ -9,8 +9,8 @@
 #include "rung.h"
 #include "parser-tree.h"
 
-/*TODO: memory optimization: create a factory to allocate different
- size per node type*/
+// TODO: memory optimization: create a factory to allocate different
+// size per node type
 
 item_t mk_identifier(const uint8_t operand, const uint8_t byte, const uint8_t bit) {
     item_t r = (item_t)calloc(1, sizeof(struct item));
@@ -57,7 +57,7 @@ item_t clear_tree(item_t root) {
             default:
                 break;
         }
-        //tree leaves
+        // tree leaves
         if (r != NULL) {
             free(r);
             memset(r, 0, sizeof(struct item));

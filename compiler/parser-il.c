@@ -18,28 +18,28 @@
  parsing:
  2. switch operator:
  valid ones:
- )	pop
+ )    pop
  only boolean:(bitwise if operand is byte)
 
- S 	set
- R 	reset
+ S     set
+ R     reset
 
  AND
  OR
  XOR
  any:
- LD 	load
- ST 	store
+ LD    load
+ ST    store
  ADD
  SUB
  MUL
  DIV
- GT	>
- GE	>=
- NE	<>
- EQ	==
- LE	<=
- LT	<
+ GT    >
+ GE    >=
+ NE    <>
+ EQ    ==
+ LE    <=
+ LT    <
  JMP
  unimplemented:
  CAL
@@ -55,18 +55,18 @@
  if '(' push stack
  4. switch operand
  valid ones:
- BOOL_DI	digital input
- R	rising edge
- F	falling edge
- DQ	digital output
- MH	memory high byte
- ML	memory low byte
- MP	pulse byte: 0000-SET-RESET-EDGE-VALUE
- B	blinker
- TQ	timer output
- TI	timer start
- W	serial output
- C	serial input
+ BOOL_DI    digital input
+ R          rising edge
+ F          falling edge
+ DQ         digital output
+ MH         memory high byte
+ ML         memory low byte
+ MP         pulse byte: 0000-SET-RESET-EDGE-VALUE
+ B          blinker
+ TQ         timer output
+ TI         timer start
+ W          serial output
+ C          serial input
  5. resolve operand byte: 0 to MAX
  6. resolve operand bit: 0 to BYTESIZE
  7. execute command if no errors
@@ -86,15 +86,15 @@ const char *IlErrors[N_IE] = {
         "Unreadable character"   //
         };
 
-//TODO: IL multi byte type operations
-//literals
-//MOD
+// TODO: IL multi byte type operations
+// literals
+// MOD
 
-/***************************INSTRUCTION LIST***************************/
+///////////////////// INSTRUCTION LIST /////////////////////
 
-/***LEX**/
+/// LEX ///
 
-int extract_number(const char *line) { //read characters from string line
+int parse_il_extract_number(const char *line) { //read characters from string line
     int i, n = 0;
     if (line == NULL) {
 
@@ -104,22 +104,22 @@ int extract_number(const char *line) { //read characters from string line
         n = 10 * n + (line[i] - '0');
     }
     if (i == 0) {
-        //no digits read
+        // no digits read
         return STATUS_ERR;
     }
     return n;
-//return number read or error 
+// return number read or error
 }
 
-int extract_arguments(const char *buf, uint8_t *byte, uint8_t *bit) {
-    //read first numeric chars after operand
-    //store byte
-    *byte = extract_number(buf);
+int parse_il_extract_arguments(const char *buf, uint8_t *byte, uint8_t *bit) {
+    // read first numeric chars after operand
+    // store byte
+    *byte = parse_il_extract_number(buf);
     if (*byte == (uint8_t) STATUS_ERR) {
 
         return ERR_BADINDEX;
     }
-    //find '/'. if not found truncate, return.
+    // find '/'. if not found truncate, return.
     char *cursor = strchr(buf, '/');
     *bit = BYTESIZE;
     if (cursor) {
@@ -133,8 +133,8 @@ int extract_arguments(const char *buf, uint8_t *byte, uint8_t *bit) {
     return STATUS_OK;
 }
 
-uint8_t read_operand(const char *line, unsigned int index) { //read ONE character from line[idx]
-//parse grammatically:
+uint8_t parse_il_read_operand(const char *line, unsigned int index) { // read ONE character from line[idx]
+// parse grammatically:
     int r = STATUS_OK;
     if (line == NULL || index > strlen(line))
         return STATUS_ERR;
@@ -142,39 +142,39 @@ uint8_t read_operand(const char *line, unsigned int index) { //read ONE characte
     char c = tolower(line[index]);
 
     switch (c) {
-        case 'i': //input
+        case 'i': // input
             r = OP_INPUT;
             break;
-        case 'f': //falling edge
+        case 'f': // falling edge
             r = OP_FALLING;
             break;
-        case 'r': //rising Edge
+        case 'r': // rising Edge
             r = OP_RISING;
             break;
-        case 'm': //pulse of counter
+        case 'm': // pulse of counter
             r = OP_MEMORY;
             break;
-        case 't': //timer.q
+        case 't': // timer.q
             r = OP_TIMEOUT;
             break;
-        case 'c': //read command
+        case 'c': // read command
             r = OP_COMMAND;
             break;
-        case 'b': //blinker
+        case 'b': // blinker
             r = OP_BLINKOUT;
             break;
-        case 'q': //output value
+        case 'q': // output value
             r = OP_OUTPUT;
             break;
         default:
-            r = (uint8_t) ERR_BADCHAR; //error
+            r = (uint8_t) ERR_BADCHAR; // error
     }
-//return value or error
+// return value or error
     return r;
 }
 
-uint8_t read_type(const char *line, uint8_t *operand, unsigned int index) { //read characters from line[idx]
-//parse grammatically:
+uint8_t parse_il_read_type(const char *line, uint8_t *operand, unsigned int index) { // read characters from line[idx]
+// parse grammatically:
     int r = STATUS_OK;
     if (line == NULL || index > strlen(line))
         return STATUS_ERR;
@@ -195,21 +195,21 @@ uint8_t read_type(const char *line, uint8_t *operand, unsigned int index) { //re
                 break;
         }
     }
-//return ok or error
+// return ok or error
     return r;
 }
 
-void read_line_trunk_comments(char *line) {
+void parse_il_read_line_trunk_comments(char *line) {
     unsigned int i = 0;
     unsigned int idx = 0;
     while (line != NULL && line[idx] != 0 && line[idx] != '\n' && line[idx] != ';')
         idx++;
 
     for (i = idx; line != NULL && i < MAXSTR; i++)
-        line[i] = 0; //trunc comments
+        line[i] = 0; // trunc comments
 }
 
-void trunk_label(const char *line, char *buf, char *label_buf) {
+void parse_il_trunk_label(const char *line, char *buf, char *label_buf) {
     int i = 0;
     if (line == NULL || buf == NULL || label_buf == NULL)
         return;
@@ -226,7 +226,7 @@ void trunk_label(const char *line, char *buf, char *label_buf) {
 }
 
 #define IS_WHITESPACE(x) (x == ' ' || x == '\t' || x == '\n' || x == '\r')
-char* trunk_whitespace(char *line) {
+char* parse_il_trunk_whitespace(char *line) {
     if (line == NULL) {
 
         return NULL;
@@ -235,7 +235,7 @@ char* trunk_whitespace(char *line) {
     char *buf = (char*) malloc(n + 1);
     memset(buf, 0, n + 1);
 
-    //trim left
+    // trim left
     int i = 0;
     while (i < n && IS_WHITESPACE(line[i]))
         i++;
@@ -243,7 +243,7 @@ char* trunk_whitespace(char *line) {
     while (i < n)
         buf[j++] = line[i++];
 
-    //trim right
+    // trim right
     for (j = strlen(buf) - 1; j >= 0; j--)
         if (IS_WHITESPACE(buf[j]))
             buf[j] = 0;
@@ -256,23 +256,23 @@ char* trunk_whitespace(char *line) {
     return line;
 }
 
-uint8_t read_modifier(const char *buf, char **pos) {
+uint8_t parse_il_read_modifier(const char *buf, char **pos) {
     uint8_t modifier = 0;
     if (buf == NULL || pos == NULL)
         return STATUS_ERR;
 
     char *str = strchr(buf, '(');
-    if (str) //push stack
+    if (str) // push stack
         modifier = IL_PUSH;
-    else { //negate
+    else { // negate
         str = strchr(buf, '!');
         if (str)
             modifier = IL_NEG;
-        else { //conditional branch
+        else { // conditional branch
             str = strchr(buf, '?');
             if (str)
                 modifier = IL_COND;
-            else { //normal
+            else { // normal
                 str = strchr(buf, ' ');
                 if (str)
                     modifier = IL_NORM;
@@ -285,7 +285,7 @@ uint8_t read_modifier(const char *buf, char **pos) {
     return modifier;
 }
 
-uint8_t read_operator(const char *buf, const char *stop) {
+uint8_t parse_il_read_operator(const char *buf, const char *stop) {
     uint8_t op = 0;
     int i = 0;
     char *cursor = 0;
@@ -315,7 +315,7 @@ uint8_t read_operator(const char *buf, const char *stop) {
     return op;
 }
 
-int find_arguments(const char *buf, uint8_t *operand, uint8_t *byte, uint8_t *bit) {
+int parse_il_find_arguments(const char *buf, uint8_t *operand, uint8_t *byte, uint8_t *bit) {
     int ret = STATUS_OK;
 
     if (buf == NULL)
@@ -325,10 +325,10 @@ int find_arguments(const char *buf, uint8_t *operand, uint8_t *byte, uint8_t *bi
     if (!str)
         return ERR_BADCHAR;
 
-    //read first non-numeric char after '%'. if not found return error. store operand. chack if invalid (return error).
+    // read first non-numeric char after '%'. if not found return error. store operand. check if invalid (return error).
     int index = 1;
     if (isalpha(str[index])) {
-        *operand = read_operand(str, index);
+        *operand = parse_il_read_operand(str, index);
         index++;
     } else {
 
@@ -339,7 +339,7 @@ int find_arguments(const char *buf, uint8_t *operand, uint8_t *byte, uint8_t *bi
         return ERR_BADCHAR;
     }
     if (isalpha(str[index])) {
-        ret = read_type(str, operand, index);
+        ret = parse_il_read_type(str, operand, index);
         index++;
         if (ret != STATUS_OK) {
 
@@ -350,12 +350,12 @@ int find_arguments(const char *buf, uint8_t *operand, uint8_t *byte, uint8_t *bi
 
         return ERR_BADINDEX;
     }
-    ret = extract_arguments(str + index, byte, bit);
+    ret = parse_il_extract_arguments(str + index, byte, bit);
 
     return ret;
 }
 
-/***PARSE & GENERATE CODE**/
+/// PARSE & GENERATE CODE ///
 int parse_il_line(const char *line, rung_t r) { // line format:[label:]<operator>[<modifier>[%<operand><byte>[/<bit>]]|<label>][;comment]
     char tmp[MAXSTR];
     char buf[MAXSTR];
@@ -378,23 +378,23 @@ int parse_il_line(const char *line, rung_t r) { // line format:[label:]<operator
 
     sprintf(tmp, "%s", line);
 
-    r->code = append_line(trunk_whitespace(tmp), r->code);
+    r->code = rung_append_line(parse_il_trunk_whitespace(tmp), r->code);
 
-    read_line_trunk_comments(tmp);
-    trunk_label(tmp, buf, label_buf);
-    trunk_whitespace(label_buf);
-    trunk_whitespace(buf);
+    parse_il_read_line_trunk_comments(tmp);
+    parse_il_trunk_label(tmp, buf, label_buf);
+    parse_il_trunk_whitespace(label_buf);
+    parse_il_trunk_whitespace(buf);
 
     sprintf(op.label, "%s", label_buf);
 
-    modifier = read_modifier(buf, &pos);
-    oper = read_operator(buf, pos);
+    modifier = parse_il_read_modifier(buf, &pos);
+    oper = parse_il_read_operator(buf, pos);
 
     if (oper == N_IL_INSN)
         return ERR_BADOPERATOR;
 
     if (oper > IL_CAL)
-        find_arguments(buf, &operand, &byte, &bit);
+        parse_il_find_arguments(buf, &operand, &byte, &bit);
     else if (oper == IL_JMP)
         strcpy(op.lookup, pos + 1);
 
@@ -404,26 +404,26 @@ int parse_il_line(const char *line, rung_t r) { // line format:[label:]<operator
     op.byte = byte;
     op.bit = bit;
 
-    if (check_modifier(&op) < 0) {
+    if (parse_il_check_modifier(&op) < 0) {
         return ERR_BADOPERATOR;
     }
-    if (check_operand(&op) < 0) {
+    if (parse_il_check_operand(&op) < 0) {
         return ERR_BADOPERAND;
     }
     if (op.operation != IL_NOP) {
-        append(&op, r);
+        rung_append(&op, r);
     }
     return STATUS_OK;
 }
 
-/****************entry point**************************/
+///////////////////// entry point /////////////////////
 rung_t* parse_il_program(const char *name, const char lines[][MAXSTR]) {
     int rv = STATUS_OK;
     unsigned int i = 0;
     rung_t *rungs = NULL;;
     uint8_t rungno = 0;
 
-    il_r = mk_rung(name, rungs, &rungno);
+    il_r = rung_make(name, rungs, &rungno);
     while (rv == STATUS_OK && i < MAXBUF && lines[i][0] != 0) {
         const char *line = lines[i++];
         rv = parse_il_line(line, il_r);
@@ -453,29 +453,29 @@ rung_t* parse_il_program(const char *name, const char lines[][MAXSTR]) {
                 break;
         }
     }
-    rv = intern(il_r);
+    rv = rung_intern(il_r);
     if (rv < STATUS_OK) {
         plc_log("Labels are messed up");
     }
     return &il_r;
 }
 
-/***CHECK**/
-int check_modifier(const instruction_t op) {
+/// CHECK ///
+int parse_il_check_modifier(const instruction_t op) {
     int r = 0;
     if (op->operation > IL_XOR && op->operation < IL_ADD && op->modifier != IL_NEG && op->modifier != IL_NORM) //only negation
         r = ERR_BADOPERATOR;
 
-    if (op->operation > IL_ST    // only push
+    if (op->operation > IL_ST // only push
     && op->modifier != IL_PUSH && op->modifier != IL_NORM)
         r = ERR_BADOPERATOR;
 
-    if (op->operation > IL_CAL && op->operation < IL_AND && op->modifier != IL_NORM)    //no modifier
+    if (op->operation > IL_CAL && op->operation < IL_AND && op->modifier != IL_NORM) //no modifier
         r = ERR_BADOPERATOR;
     return r;
 }
 
-int check_operand(instruction_t op) {
+int parse_il_check_operand(instruction_t op) {
     int r = 0;
     if (op->operation == IL_SET || op->operation == IL_RESET || op->operation == IL_ST) {
         if (op->operand < OP_CONTACT) {
@@ -490,7 +490,7 @@ int check_operand(instruction_t op) {
             else if (op->operand == OP_REAL_MEMORY)
                 op->operand = OP_REAL_MEMIN;
             else
-                r = ERR_BADOPERAND;    //outputs
+                r = ERR_BADOPERAND; // outputs
         }
     } else if (op->operation > IL_CAL && (op->operand < OP_INPUT || op->operand > OP_CONTACT))
         r = ERR_BADOPERAND;

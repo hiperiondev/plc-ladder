@@ -33,7 +33,7 @@ int parse_ld_line(ld_line_t line);
  * @param max
  * @return the smallest of indices i
  */
-int minmin(const int *arr, int min, int max);
+int parse_ld_minmin(const int *arr, int min, int max);
 
 /**
  * @brief construct array of ld lines and initialize with text lines
@@ -41,14 +41,14 @@ int minmin(const int *arr, int min, int max);
  * @param the number of lines
  * @return newly allocated array
  */
-ld_line_t* construct_program(const char lines[][MAXSTR], unsigned int length);
+ld_line_t* parse_ld_construct_program(const char lines[][MAXSTR], unsigned int length);
 
 /**
  * @brief deallocate memory of ld program
  * @param the program
  * @param the length
  */
-void destroy_program(unsigned int length, ld_line_t *program);
+void parse_ld_destroy_program(unsigned int length, ld_line_t *program);
 
 /**
  * @brief read ONE character from line at index
@@ -57,7 +57,7 @@ void destroy_program(unsigned int length, ld_line_t *program);
  * @param c index
  * @return LD symbol
  */
-uint8_t read_char(const char *line, unsigned int c);
+uint8_t parse_ld_read_char(const char *line, unsigned int c);
 
 /**
  * @brief parse each program line horizontally up to coil or '+'
@@ -68,7 +68,7 @@ uint8_t read_char(const char *line, unsigned int c);
  * @param the program (allocated array of lines)
  * @return OK or error
  */
-int horizontal_parse(unsigned int length, ld_line_t *program);
+int parse_ld_horizontal_parse(unsigned int length, ld_line_t *program);
 
 /**
  * @brief parse all lines vertically at cursor position
@@ -80,7 +80,7 @@ int horizontal_parse(unsigned int length, ld_line_t *program);
  * @param program
  * @return OK or error
  */
-int vertical_parse(unsigned int start, unsigned int length, ld_line_t *program);
+int parse_ld_vertical_parse(unsigned int start, unsigned int length, ld_line_t *program);
 
 /** @brief find next valid node for vertical parse.
  * status unresolved,
@@ -90,7 +90,7 @@ int vertical_parse(unsigned int start, unsigned int length, ld_line_t *program);
  * @param total number of lines
  * @return index of next node or error
  */
-int find_next_node(const ld_line_t *program, unsigned int start, unsigned int lines);
+int parse_ld_find_next_node(const ld_line_t *program, unsigned int start, unsigned int lines);
 
 /**
  * @brief parse LD program

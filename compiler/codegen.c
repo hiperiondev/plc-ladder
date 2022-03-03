@@ -24,12 +24,12 @@ int gen_expr(const item_t expression, rung_t rung, uint8_t recursive) {
     uint8_t modifier = expression->v.exp.mod;
     if (!IS_MODIFIER(modifier))
         return ERR_BADOPERATOR;
-    //left operand
+    // left operand
     rv = gen_expr_left(expression->v.exp.a, rung, recursive);
     if (rv < 0)
         return rv;
 
-    //right operand
+    // right operand
     rv = gen_expr_right(expression->v.exp.b, rung, operator, modifier);
 
     struct instruction ins;
@@ -37,7 +37,7 @@ int gen_expr(const item_t expression, rung_t rung, uint8_t recursive) {
 
     if (rv == STATUS_OK && modifier == IL_PUSH && IS_OPERATION(operator) && expression->v.exp.b != NULL) {
         ins.operation = IL_POP;
-        rv = append(&ins, rung);
+        rv = rung_append(&ins, rung);
     }
     return rv;
 }
@@ -55,16 +55,16 @@ int gen_expr_left(const item_t left, rung_t rung, uint8_t recursive) {
     struct instruction ins;
     memset(&ins, 0, sizeof(struct instruction));
     switch (left->tag) {
-        case TAG_IDENTIFIER: //LD
+        case TAG_IDENTIFIER: // LD
             ins.operation = inner;
             ins.operand = left->v.id.operand;
             ins.modifier = mod;
             ins.byte = left->v.id.byte;
             ins.bit = left->v.id.bit;
-            rv = append(&ins, rung);
+            rv = rung_append(&ins, rung);
             break;
         case TAG_EXPRESSION:
-            //recursion
+            // recursion
             rv = gen_expr(left, rung, inner);
             break;
         default:
@@ -86,10 +86,10 @@ int gen_expr_right(const item_t right, rung_t rung, uint8_t op, uint8_t mod) {
                 ins.operand = right->v.id.operand;
                 ins.byte = right->v.id.byte;
                 ins.bit = right->v.id.bit;
-                rv = append(&ins, rung);
+                rv = rung_append(&ins, rung);
                 break;
             case TAG_EXPRESSION:
-                //recursion
+                // recursion
                 rv = gen_expr(right, rung, op);
                 break;
             default:
@@ -128,7 +128,7 @@ int gen_ass(const item_t assignment, rung_t rung) {
             ins.operand = right->v.id.operand;
             ins.byte = right->v.id.byte;
             ins.bit = right->v.id.bit;
-            rv = append(&ins, rung);
+            rv = rung_append(&ins, rung);
             break;
         case TAG_EXPRESSION:
             rv = gen_expr(right, rung, 0);
@@ -153,14 +153,14 @@ int gen_ass(const item_t assignment, rung_t rung) {
                 ins.operation = IL_SET;
                 ins.modifier = IL_COND;
                 break;
-            default: //coil
+            default: // coil
                 ins.operation = IL_ST;
                 ins.modifier = IL_NORM;
         }
         ins.operand = left->v.id.operand;
         ins.byte = left->v.id.byte;
         ins.bit = left->v.id.bit;
-        rv = append(&ins, rung);
+        rv = rung_append(&ins, rung);
     }
     return rv;
 }

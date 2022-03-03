@@ -16,7 +16,7 @@
 #include "rung.h"
 #include "util.h"
 
-/****************** parse ladder files **********************/
+///////////////////// parse ladder files /////////////////////
 /*
 
  1. read a text file and store it in array Lines.
@@ -60,11 +60,11 @@
 
 rung_t r, *rungs;
 
-int minmin(const int *arr, int min, int max) {
-//for an array arr of integers ,return the smallest of indices i so that 
-//arr[i] =  min(arr) >= min 
+int parse_ld_minmin(const int *arr, int min, int max) {
+// for an array arr of integers ,return the smallest of indices i so that
+// arr[i] =  min(arr) >= min
     int i;
-    int v = MAXSTR;		//cant be more than length  of line
+    int v = MAXSTR; // can't be more than length  of line
     int r = STATUS_ERR;
     for (i = max - 1; i >= 0; i--) {
         if (arr[i] <= v && arr[i] >= min) {
@@ -75,7 +75,7 @@ int minmin(const int *arr, int min, int max) {
     return r;
 }
 
-uint8_t digits(unsigned int i) {
+static uint8_t parse_ld_digits(unsigned int i) {
     if (i > 100)
         return 3;
     else if (i > 10)
@@ -84,17 +84,17 @@ uint8_t digits(unsigned int i) {
         return 1;
 }
 
-/***********************************************************************/
-int handle_coil(const int type, ld_line_t line) {
-//(expect Q,T,M,W followed by byte / bit)
+/////////////////////
+static int parse_ld_handle_coil(const int type, ld_line_t line) {
+// (expect Q,T,M,W followed by byte / bit)
     int rv = STATUS_OK;
     uint8_t byte = 0;
     uint8_t bit = 0;
-    int c = read_char(line->buf, ++line->cursor);
+    int c = parse_ld_read_char(line->buf, ++line->cursor);
     if (c >= OP_CONTACT && c < OP_END) {
         int operand = c;
-        c = read_char(line->buf, line->cursor);
-        rv = extract_arguments(line->buf + (++line->cursor), &byte, &bit);
+        c = parse_ld_read_char(line->buf, line->cursor);
+        rv = parse_il_extract_arguments(line->buf + (++line->cursor), &byte, &bit);
         if (rv == STATUS_OK) {
             item_t identifier = mk_identifier(operand, byte, bit);
             line->stmt = mk_assignment(identifier, line->stmt, type);
@@ -110,15 +110,15 @@ int handle_coil(const int type, ld_line_t line) {
     return rv;
 }
 
-int handle_operand(int operand, uint8_t negate, ld_line_t line) {
+static int parse_ld_handle_operand(int operand, uint8_t negate, ld_line_t line) {
     int rv = STATUS_OK;
     uint8_t byte = 0;
     uint8_t bit = 0;
-    if (operand >= OP_INPUT && operand < OP_CONTACT) {	//valid input symbol
-        rv = extract_arguments(line->buf + (++line->cursor), &byte, &bit);
+    if (operand >= OP_INPUT && operand < OP_CONTACT) { // valid input symbol
+        rv = parse_il_extract_arguments(line->buf + (++line->cursor), &byte, &bit);
         if (rv == STATUS_OK) {
-            /*byte + slash + bit*/
-            line->cursor += digits((unsigned int) byte) + 2;
+            // byte + slash + bit
+            line->cursor += parse_ld_digits((unsigned int) byte) + 2;
 
             item_t identifier = mk_identifier(operand, byte, bit);
             line->stmt = mk_expression(identifier, line->stmt, IL_AND, negate ? IL_NEG : IL_NORM);
@@ -134,9 +134,9 @@ int handle_operand(int operand, uint8_t negate, ld_line_t line) {
     return rv;
 }
 
-uint8_t read_char(const char *line, unsigned int c) {
-//read ONE character from line[idx]
-//parse grammatically:
+uint8_t parse_ld_read_char(const char *line, unsigned int c) {
+// read ONE character from line[idx]
+// parse grammatically:
     int r = 0;
     if (line == NULL || c > strlen(line))
         return STATUS_ERR;
@@ -219,42 +219,42 @@ int parse_ld_line(ld_line_t line) {
     if (line == (ld_line_t) NULL)
         return STATUS_ERR;
 
-    int c = LD_AND; //default character = '-'
+    int c = LD_AND; // default character = '-'
     uint8_t n_mode = false;
 
-    while (line->status == STATUS_UNRESOLVED && c != LD_NODE) {	// loop
-        c = read_char(line->buf, line->cursor);
+    while (line->status == STATUS_UNRESOLVED && c != LD_NODE) { // loop
+        c = parse_ld_read_char(line->buf, line->cursor);
         switch (c) {
-            case LD_NODE:	// PAUSE
+            case LD_NODE: // PAUSE
                 break;
             case ERR_BADCHAR:
             case (uint8_t) STATUS_ERR:
                 rv = STATUS_ERR;
                 line->status = STATUS_ERROR;
                 break;
-            case OP_END: //this should happen only if line ends without a valid coil
+            case OP_END: // this should happen only if line ends without a valid coil
                 line->status = STATUS_RESOLVED;
-                line->stmt = NULL;	// clear_tree(line->stmt);
+                line->stmt = NULL; // clear_tree(line->stmt);
                 break;
             case LD_OR:
-            case LD_BLANK:  // if blank or '|', empty value for the line.
+            case LD_BLANK: // if blank or '|', empty value for the line.
                 line->cursor++;
-                line->stmt = NULL;	//clear_tree(line->stmt);
+                line->stmt = NULL; // clear_tree(line->stmt);
                 break;
             case LD_NOT:
-                n_mode = true;	// normally closed mode
+                n_mode = true; // normally closed mode
                 // no break
             case LD_AND:
                 line->cursor++;
                 break;
-            case LD_COIL:	// see if it is a coil: ()[]
+            case LD_COIL: // see if it is a coil: ()[]
             case LD_SET:
             case LD_RESET:
             case LD_DOWN:
-                rv = handle_coil(c, line);
+                rv = parse_ld_handle_coil(c, line);
                 break;
             default:  // otherwise operand is expected(i,q,f,r,m,t,c,b)
-                rv = handle_operand(c, n_mode, line);
+                rv = parse_ld_handle_operand(c, n_mode, line);
                 n_mode = false;
                 break;
         }
@@ -264,7 +264,7 @@ int parse_ld_line(ld_line_t line) {
     return rv;
 }
 
-int horizontal_parse(unsigned int length, ld_line_t *program) {
+int parse_ld_horizontal_parse(unsigned int length, ld_line_t *program) {
     int rv = 0;
     int i = 0;
     for (; i < length; i++) {
@@ -275,7 +275,7 @@ int horizontal_parse(unsigned int length, ld_line_t *program) {
     return rv;
 }
 
-int find_next_node(const ld_line_t *program, unsigned int start, unsigned int lines) {
+int parse_ld_find_next_node(const ld_line_t *program, unsigned int start, unsigned int lines) {
     int cursors[lines];
     int i = 0;
     int found = STATUS_ERR;
@@ -287,11 +287,11 @@ int find_next_node(const ld_line_t *program, unsigned int start, unsigned int li
             cursors[i] = -1;
     }
     if (found == STATUS_OK)
-        return minmin(cursors, start, lines);
+        return parse_ld_minmin(cursors, start, lines);
     return found;
 }
 
-int vertical_parse(unsigned int start, unsigned int length, ld_line_t *program) {
+int parse_ld_vertical_parse(unsigned int start, unsigned int length, ld_line_t *program) {
     int rv = STATUS_OK;
     if (program == NULL)
         return STATUS_ERR;
@@ -305,30 +305,31 @@ int vertical_parse(unsigned int start, unsigned int length, ld_line_t *program) 
     int backtrack = start;
     int last = start;
     // first pass: generate OR expression
-    for (; current < length + 1; current++) {	// for each line
+    for (; current < length + 1; current++) { // for each line
         if (current == length //overflow
-        || program[current]->cursor < cursor || !IS_VERTICAL(read_char(program[current]->buf, cursor))) {
+        || program[current]->cursor < cursor || !IS_VERTICAL(parse_ld_read_char(program[current]->buf, cursor))) {
             // vertical line interrupted, reset OR expression
             for (backtrack = current - 1; backtrack >= last; backtrack--) {
                 // backtrack, replace all expressions on nodes with OR
-                if (read_char(program[backtrack]->buf, cursor) == LD_NODE)
+                if (parse_ld_read_char(program[backtrack]->buf, cursor) == LD_NODE)
                     program[backtrack]->stmt = or;
             }
             last = current;
             or = NULL;
             continue;
         }
-        if (read_char(program[current]->buf, cursor) == LD_NODE) {
+        if (parse_ld_read_char(program[current]->buf, cursor) == LD_NODE) {
             // do an OR of all nodes expressions
-            if (program[current]->stmt != NULL)
+            if (program[current]->stmt != NULL) {
                 or = mk_expression(program[current]->stmt, or, IL_OR, IL_PUSH);
+            }
         } // otherwise it's LD_OR, just continue
         program[current]->cursor++;
     }
     return rv;
 }
 
-static unsigned int program_length(const char lines[][MAXSTR], unsigned int max) {
+static unsigned int parse_ld_program_length(const char lines[][MAXSTR], unsigned int max) {
     int i = 0;
     for (; i < max; i++) {
         if (lines == NULL || lines[i] == NULL || lines[i][0] == 0)
@@ -337,7 +338,7 @@ static unsigned int program_length(const char lines[][MAXSTR], unsigned int max)
     return i;
 }
 
-ld_line_t* construct_program(const char lines[][MAXSTR], unsigned int length) {
+ld_line_t* parse_ld_construct_program(const char lines[][MAXSTR], unsigned int length) {
     ld_line_t * program = (ld_line_t *)calloc(length, sizeof(ld_line_t));
 
     int i = 0;
@@ -355,7 +356,7 @@ ld_line_t* construct_program(const char lines[][MAXSTR], unsigned int length) {
     return program;
 }
 
-void destroy_program(unsigned int length, ld_line_t *program) {
+void parse_ld_destroy_program(unsigned int length, ld_line_t *program) {
     int i = 0;
     for (; i < length; i++) { // for each line destroy ld_line
         free(program[i]);
@@ -364,45 +365,45 @@ void destroy_program(unsigned int length, ld_line_t *program) {
     free(program);
 }
 
-rung_t* generate_code(unsigned int length, const char *name, const ld_line_t *program, rung_t *rungs, uint8_t *rungno) {
+static rung_t* parse_ld_generate_code(unsigned int length, const char *name, const ld_line_t *program, rung_t *rungs, uint8_t *rungno) {
     int rv = STATUS_OK;
-    r = mk_rung(name, rungs, rungno);
+    r = rung_make(name, rungs, rungno);
 
     int i = 0;
     for (; i < length && rv == STATUS_OK; i++) {
-        r->code = append_line(trunk_whitespace(program[i]->buf), r->code);
+        r->code = rung_append_line(parse_il_trunk_whitespace(program[i]->buf), r->code);
         if (program[i]->stmt != NULL && program[i]->stmt->tag == TAG_ASSIGNMENT)
             rv = gen_ass(program[i]->stmt, r);
     }
     return &r;
 }
 
-/***************************entry point*******************************/
+///////////////////// entry point /////////////////////
 rung_t* parse_ld_program(const char *name, const char lines[][MAXSTR]) {
     rungs = NULL;
     uint8_t rungno = 0;
 
     int rv = STATUS_OK;
 
-    unsigned int len = program_length(lines, MAXBUF);
-    ld_line_t *program = construct_program(lines, len);
+    unsigned int len = parse_ld_program_length(lines, MAXBUF);
+    ld_line_t *program = parse_ld_construct_program(lines, len);
 
     int node = 0;
     while (rv >= STATUS_OK && node >= 0) {
-        rv = horizontal_parse(len, program);
+        rv = parse_ld_horizontal_parse(len, program);
         if (rv >= STATUS_OK) {
 
-            node = find_next_node(program, node, len);
+            node = parse_ld_find_next_node(program, node, len);
         }
         if (node >= 0) {
 
-            rv = vertical_parse(node, len, program);
+            rv = parse_ld_vertical_parse(node, len, program);
         }
     }
     if (rv == STATUS_OK) {
-        rungs = generate_code(len, name, program, rungs, &rungno);
+        rungs = parse_ld_generate_code(len, name, program, rungs, &rungno);
     }
 
-    destroy_program(len, program);
+    parse_ld_destroy_program(len, program);
     return rungs;
 }

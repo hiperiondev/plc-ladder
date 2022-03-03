@@ -31,6 +31,12 @@ int main() {
     sprintf(lines[5], "%s\n", "          +------i1/2------------+  |         ");
     sprintf(lines[6], "%s\n", " i0/4-------------------------------+         ");
 
+    printf("\n");
+    for (int n = 0; n <= 6; n++) {
+        printf("%s", lines[n]);
+    }
+    printf("\n");
+
     printf("-- parse_ld_program START\n");
     rungs = parse_ld_program("test", lines);
     if (rungs == NULL)
@@ -38,7 +44,7 @@ int main() {
 
     char dump[MAXBUF];
     memset(dump, 0, MAXBUF);
-    dump_rung(rungs[0], dump);
+    rung_dump(rungs[0], dump);
     printf("\n%s", dump);
 
     printf("\n-- parse_ld_program END\n\n");

@@ -10,7 +10,7 @@
 
 #ifdef LOG_TO_FILE
 FILE *ErrLog = NULL;
-#define LOG "plcemu.log"
+#define LOG "plc_compiler.log"
 #endif
 
 void plc_log(const char *msg, ...) {
@@ -36,7 +36,9 @@ void plc_log(const char *msg, ...) {
     printf("%s\n", msgstr);
 }
 
-void close_log() {
-    //if (ErrLog)
-    //    fclose(ErrLog);
+void plc_close_log() {
+#ifdef LOG_TO_FILE
+    if (ErrLog)
+        fclose(ErrLog);
+#endif
 }

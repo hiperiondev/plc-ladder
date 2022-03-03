@@ -59,8 +59,8 @@ const char IlModifiers[N_IL_MODIFIERS][2] = {
         "?", //
         };
 
-int get_type(const instruction_t ins) {
-    int rv = -1; //ERR
+int instruction_get_type(const instruction_t ins) {
+    int rv = -1; // ERR
 
     if (ins != NULL && OP_VALID(ins->operand)) {
         unsigned char x = ins->bit;
@@ -93,7 +93,7 @@ int get_type(const instruction_t ins) {
     return rv;
 }
 
-void deepcopy(const instruction_t from, instruction_t to) {
+void instruction_deepcopy(const instruction_t from, instruction_t to) {
     to->operation = from->operation;
     to->operand = from->operand;
     to->modifier = from->modifier;
@@ -105,18 +105,18 @@ void deepcopy(const instruction_t from, instruction_t to) {
         strcpy(to->lookup, from->lookup);
 }
 
-void dump_label(char *label, char *dump) {
+void instruction_dump_label(char *label, char *dump) {
     if (label[0] != 0) {
         strcat(dump, label);
         strcat(dump, ":");
     }
 }
 
-void dump_instruction(instruction_t ins, char *dump) {
+void instruction_dump(instruction_t ins, char *dump) {
     if (ins == NULL)
         return;
     char buf[8] = "";
-    dump_label(ins->label, dump);
+    instruction_dump_label(ins->label, dump);
     strcat(dump, IlCommands[ins->operation]);
     if (ins->operation >= IL_RET) {
         strcat(dump, IlModifiers[ins->modifier - 1]);

@@ -45,16 +45,16 @@ extern const char IlModifiers[N_IL_MODIFIERS][2];
  * @param instruction
  * @return the type, or error
  */
-int get_type(const instruction_t ins);
+int instruction_get_type(const instruction_t ins);
 
 /**
  *@brief deepcopy instructions
  *@param from
  *@param to
  */
-void deepcopy(const instruction_t from, instruction_t to);
+void instruction_deepcopy(const instruction_t from, instruction_t to);
 
-void dump_instruction(instruction_t ins, char *dump);
-void dump_label(char *label, char *dump);
+void instruction_dump(instruction_t ins, char *dump);
+void instruction_dump_label(char *label, char *dump);
 
 #endif // _INSTRUCTION_H_

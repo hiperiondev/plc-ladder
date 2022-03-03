@@ -11,7 +11,7 @@
  * @param line
  * @return number read (positive value) or error (negative value)
  */
-int extract_number(const char *line);
+int parse_il_extract_number(const char *line);
 
 /**
  * @brief extract bit and byte from X/Y expression starting @ start
@@ -20,7 +20,7 @@ int extract_number(const char *line);
  * @param the bit
  * @return OK or error
  */
-int extract_arguments(const char *buf, uint8_t *byte, uint8_t *bit);
+int parse_il_extract_arguments(const char *buf, uint8_t *byte, uint8_t *bit);
 
 /**
  * @brief read optional descriptor (currently only f) 
@@ -31,7 +31,7 @@ int extract_arguments(const char *buf, uint8_t *byte, uint8_t *bit);
  * @param c index
  * @return IL operand symbol
  */
-uint8_t read_type(const char *line, uint8_t *operand, unsigned int index);
+uint8_t parse_il_read_type(const char *line, uint8_t *operand, unsigned int index);
 
 /**
  * @brief read operand  
@@ -41,27 +41,27 @@ uint8_t read_type(const char *line, uint8_t *operand, unsigned int index);
  * @param c index
  * @return IL operand symbol
  */
-uint8_t read_operand(const char *line, unsigned int index);
+uint8_t parse_il_read_operand(const char *line, unsigned int index);
 
 /**
  * @brief read up to ';' or /n
  * @param the line to trunkate comments from
  */
-void read_line_trunk_comments(char *line);
+void parse_il_read_line_trunk_comments(char *line);
 
 /**
  * @brief find last ':', truncate up to there, store label.
  * @param buf a place to store labelless lines
  * @param label_buf the extracted label
  */
-void trunk_label(const char *line, char *buf, char *label_buf);
+void parse_il_trunk_label(const char *line, char *buf, char *label_buf);
 
 /**
  * @brief trunkate all whitespaces left and right
  * @param the line to trunkate whitespaces from
  * @return trunkated line
  */
-char* trunk_whitespace(char *line);
+char* parse_il_trunk_whitespace(char *line);
 
 /**
  * @brief find first ' ','!','('. store modifier (0 if not found)
@@ -69,7 +69,7 @@ char* trunk_whitespace(char *line);
  * @param pos points to where was the modifier found
  * @return the modifier
  */
-uint8_t read_modifier(const char *buf, char **pos);
+uint8_t parse_il_read_modifier(const char *buf, char **pos);
 
 /**
  * @brief read operator from beginning to modifier, check if invalid. 
@@ -77,21 +77,21 @@ uint8_t read_modifier(const char *buf, char **pos);
  * @param stop points to end of operator
  * @return error code if invalid, otherwise the operator
  */
-uint8_t read_operator(const char *buf, const char *stop);
+uint8_t parse_il_read_operator(const char *buf, const char *stop);
 
 /**
  * @brief check modifier for correctness
  * @param an instruction
  * @return error code if not correct, 0 otherwise
  */
-int check_modifier(const instruction_t op);
+int parse_il_check_modifier(const instruction_t op);
 
 /**
  * @brief check operand for correctness
  * @param an instruction
  * @return error code if not correct, 0 otherwise
  */
-int check_operand(instruction_t op);
+int parse_il_check_operand(instruction_t op);
 
 /**
  *@brief find arguments
@@ -101,7 +101,7 @@ int check_operand(instruction_t op);
  * @param bit
  * @return error code on failure
  */
-int find_arguments(const char *buf, uint8_t *operand, uint8_t *byte, uint8_t *bit);
+int parse_il_find_arguments(const char *buf, uint8_t *operand, uint8_t *byte, uint8_t *bit);
 
 /**
  * @brief parse IL line and generate microcode
