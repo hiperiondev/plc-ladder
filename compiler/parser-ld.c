@@ -96,8 +96,8 @@ static int parse_ld_handle_coil(const int type, ld_line_t line) {
         c = parse_ld_read_char(line->buf, line->cursor);
         rv = parse_il_extract_arguments(line->buf + (++line->cursor), &byte, &bit);
         if (rv == STATUS_OK) {
-            item_t identifier = mk_identifier(operand, byte, bit);
-            line->stmt = mk_assignment(identifier, line->stmt, type);
+            item_t identifier = tree_mk_identifier(operand, byte, bit);
+            line->stmt = tree_mk_assignment(identifier, line->stmt, type);
             line->status = STATUS_RESOLVED;
         } else {
             rv = ERR_BADINDEX;
@@ -120,8 +120,8 @@ static int parse_ld_handle_operand(int operand, uint8_t negate, ld_line_t line) 
             // byte + slash + bit
             line->cursor += parse_ld_digits((unsigned int) byte) + 2;
 
-            item_t identifier = mk_identifier(operand, byte, bit);
-            line->stmt = mk_expression(identifier, line->stmt, IL_AND, negate ? IL_NEG : IL_NORM);
+            item_t identifier = tree_mk_identifier(operand, byte, bit);
+            line->stmt = tree_mk_expression(identifier, line->stmt, IL_AND, negate ? IL_NEG : IL_NORM);
         } else {
             rv = ERR_BADINDEX;
             line->status = STATUS_ERROR;
@@ -260,7 +260,7 @@ int parse_ld_line(ld_line_t line) {
         }
     }
     if (rv < STATUS_OK)
-        line->stmt = clear_tree(line->stmt);
+        line->stmt = tree_clear(line->stmt);
     return rv;
 }
 
@@ -321,7 +321,7 @@ int parse_ld_vertical_parse(unsigned int start, unsigned int length, ld_line_t *
         if (parse_ld_read_char(program[current]->buf, cursor) == LD_NODE) {
             // do an OR of all nodes expressions
             if (program[current]->stmt != NULL) {
-                or = mk_expression(program[current]->stmt, or, IL_OR, IL_PUSH);
+                or = tree_mk_expression(program[current]->stmt, or, IL_OR, IL_PUSH);
             }
         } // otherwise it's LD_OR, just continue
         program[current]->cursor++;

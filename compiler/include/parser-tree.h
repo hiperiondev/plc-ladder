@@ -47,7 +47,7 @@ typedef struct item {
  * @param bit
  * @return a newly allocated tree node 
  */
-item_t mk_identifier(const uint8_t operand, const uint8_t byte, const uint8_t bit);
+item_t tree_mk_identifier(const uint8_t operand, const uint8_t byte, const uint8_t bit);
 
 /**
  * @brief make an expression node
@@ -57,7 +57,7 @@ item_t mk_identifier(const uint8_t operand, const uint8_t byte, const uint8_t bi
  * @param modifier
  * @return a newly allocated tree node 
  */
-item_t mk_expression(const item_t a, const item_t b, const uint8_t op, const uint8_t mod);
+item_t tree_mk_expression(const item_t a, const item_t b, const uint8_t op, const uint8_t mod);
 
 /**
  * @brief make an assignment node
@@ -66,12 +66,12 @@ item_t mk_expression(const item_t a, const item_t b, const uint8_t op, const uin
  * @param type of assignment (normal, negative, set, reset)
  * @return a newly allocated tree node 
  */
-item_t mk_assignment(const item_t identifier, const item_t expression, const uint8_t type);
+item_t tree_mk_assignment(const item_t identifier, const item_t expression, const uint8_t type);
 
 /**
  * @brief recursively clear (deallocate) 
  * tree nodes starting from a root node
  */
-item_t clear_tree(item_t root);
+item_t tree_clear(item_t root);
 
 #endif //_PARSER_TREE_H_
