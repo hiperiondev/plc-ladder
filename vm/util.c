@@ -5,7 +5,7 @@
  *      Author: egonzalez
  */
 
-/*******************debugging tools***************/
+// debugging tools
 
 double Mean = 0;
 double M2 = 0;

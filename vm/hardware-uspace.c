@@ -62,7 +62,7 @@ int usp_disable() {
         r = setuid(uid);
         return STATUS_ERR;
     }
-    r = setuid(uid); /* reset User Id */
+    r = setuid(uid); // reset User Id
     return STATUS_OK;
 }
 
@@ -106,7 +106,7 @@ void usp_data_read(unsigned int index, uint64_t *value) {
 }
 
 void usp_data_write(unsigned int index, uint64_t value) {
-    return; //unimplemented for user space
+    return; // unimplemented for user space
 }
 
 struct hardware Uspace = {

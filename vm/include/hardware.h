@@ -15,7 +15,7 @@ typedef enum {
     N_HW
 } HARDWARES;
 
-typedef int (*helper_f)(); //generic helper functions only return an error code
+typedef int (*helper_f)(); // generic helper functions only return an error code
 
 typedef void (*dio_rd_f) (unsigned int, unsigned char*);
 typedef void (*dio_wr_f) (const unsigned char*, unsigned int, unsigned char);

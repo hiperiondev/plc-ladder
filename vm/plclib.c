@@ -178,7 +178,7 @@ int resolve(plc_t p, int type, int idx) {
     }
 }
 
-// RESET timer
+// reset timer
 int down_timer(plc_t p, int idx) {
     p->t[idx].START = false;
     p->t[idx].V = 0;
@@ -776,30 +776,28 @@ int instruct(plc_t p, rung_t r, unsigned int *pc) {
     type = get_type(op);
     if (type == STATUS_ERR)
         return ERR_BADOPERAND;
-    /*
-     char dump[MAXSTR] = "";
-     dump_instruction(op, dump);
-     plc_log("%d.%s", *pc, dump);
-     */
+      //char dump[MAXSTR] = "";
+      //dump_instruction(op, dump);
+      //plc_log("%d.%s", *pc, dump);
     switch (op->operation) {
-// IL OPCODES: no operand
+        // IL OPCODES: no operand
         case IL_POP: // POP
             r->acc = pop(r->acc, &(r->stack));
             break;
         case IL_NOP:
-// null operation
+        // null operation
         case IL_CAL:
-// subroutine call (unimplemented) retrieve subroutine line, set pc
+        // subroutine call (unimplemented) retrieve subroutine line, set pc
         case IL_RET:
-// unimplemented yet: retrieve  previous program , counter, set pc
+        // unimplemented yet: retrieve  previous program , counter, set pc
             break;
-// arithmetic LABEL
+        // arithmetic LABEL
         case IL_JMP: // JMP
             error = handle_jmp(r, pc);
             increment = false;
-// retrieve line number from label, set pc
+            // retrieve line number from label, set pc
             break;
-// boolean, no modifier, outputs.
+        // boolean, no modifier, outputs.
         case IL_SET: // S
             error = handle_set(op, r->acc, //.u % 0x100,
                     type == T_BOOL, p);
@@ -815,7 +813,7 @@ int instruct(plc_t p, rung_t r, unsigned int *pc) {
         case IL_ST: // ST: output
             // if negate, negate acc
             error = handle_st(op, r->acc, p);
-// any operand, only push
+            // any operand, only push
             break;
         default:
             error = handle_stackable(op, r, p);
@@ -845,7 +843,7 @@ rung_t get_rung(const plc_t p, const unsigned int idx) {
     return p->rungs[idx];
 }
 
-/*****************realtime loop************************************/
+// realtime loop
 int timeval_subtract(struct timeval *result, struct timeval *x, struct timeval *y) {
     // subtract the `struct timeval' values X and Y,
     //     storing the result in RESULT.
@@ -917,7 +915,8 @@ void write_outputs(plc_t p) {
     }
     p->hw->flush(); // for simulation
 }
-//TODO: how is force implemented for variables and timers?
+
+// TODO: how is force implemented for variables and timers?
 plc_t force(plc_t p, int op, uint8_t i, char *val) {
     if (p == NULL || val == NULL) {
         return NULL;
@@ -1047,7 +1046,7 @@ uint8_t dec_inp(plc_t p) { // decode input bytes
         }
         for (; j < BYTESIZE; j++) {
             unsigned int n = BYTESIZE * i + j;
-// negative mask has precedence
+            // negative mask has precedence
             p->di[n].I = (((p->inputs[i] >> j) % 2) || p->di[n].MASK) && !p->di[n].N_MASK;
             uint8_t edge = p->di[n].I ^ p->old->di[n].I;
             p->di[n].RE = p->di[n].I && edge;
@@ -1085,7 +1084,7 @@ uint8_t enc_out(plc_t p) { // encode digital outputs to output bytes
             unsigned int n = BYTESIZE * i + j;
 
             out[i] |= ((p->dq[n].Q || (p->dq[n].SET && !p->dq[n].RESET) || p->dq[n].MASK) && !p->dq[n].N_MASK) << j;
-//negative mask has precedence
+            //negative mask has precedence
         }
         p->outputs[i] = out[i];
         if (p->outputs[i] != p->old->outputs[i]) {
@@ -1316,30 +1315,30 @@ plc_t plc_func(plc_t p) {
     dt.tv_sec = 0;
     dt.tv_usec = 0;
     if ((p->status) == ST_RUNNING) { // run
-// remaining time = step
+        // remaining time = step
         read_inputs(p);
         t_changed = manage_timers(p);
         s_changed = manage_blinkers(p);
         read_mvars(p);
 
         gettimeofday(&tn, NULL);
-// dt = time for input + output
-// how much time passed since previous cycle?
+        // dt = time for input + output
+        // how much time passed since previous cycle?
         timeval_subtract(&dt, &tn, &Curtime);
         dt.tv_usec = dt.tv_usec % (THOUSAND * p->step);
         io_time = dt.tv_usec; // THOUSAND;
         timeout -= io_time;
         timeout -= run_time;
-//plc_log("I/O time approx:%d microseconds",dt.tv_usec);
-// poll on plcpipe for command, for max STEP msecs
+        //plc_log("I/O time approx:%d microseconds",dt.tv_usec);
+        // poll on plcpipe for command, for max STEP msecs
         written = poll(p->com, 0, timeout / THOUSAND);
-// TODO: when a truly asunchronous UI is available,
-// replace poll() with sleep() for better accuracy
+        // TODO: when a truly asynchronous UI is available,
+        // replace poll() with sleep() for better accuracy
         gettimeofday(&tp, NULL); // how much time did poll wait?
         timeval_subtract(&dt, &tp, &tn);
         poll_time = dt.tv_usec;
-//plc_log("Poll time approx:%d microseconds",dt.tv_usec);
-//dt = time(input) + time(poll)
+        //plc_log("Poll time approx:%d microseconds",dt.tv_usec);
+        //dt = time(input) + time(poll)
 
         if (written < 0) {
             r = STATUS_ERR;
@@ -1347,7 +1346,7 @@ plc_t plc_func(plc_t p) {
             p->command = 0;
         }
         i_changed = dec_inp(p); //decode inputs
-// TODO: a better user plugin system when function blocks are implemented
+        // TODO: a better user plugin system when function blocks are implemented
         project_task(p); // plugin code
 
         if (r >= STATUS_OK)
@@ -1384,9 +1383,8 @@ plc_t plc_func(plc_t p) {
     return p;
 }
 
+// initialize
 static plc_t allocate(plc_t plc) {
-    /*******************initialize***************/
-
     plc->inputs = (uint8_t*) calloc(1, plc->ni);
     plc->outputs = (uint8_t*) calloc(1, plc->nq);
     plc->real_in = (uint64_t*) calloc(plc->nai, sizeof(uint64_t));
@@ -1405,7 +1403,7 @@ static plc_t allocate(plc_t plc) {
     return plc;
 }
 
-/***************construct*******************/
+// construct
 plc_t new_plc(int di, int dq, int ai, int aq, int nt, int ns, int nm, int nr, int step, hardware_t hw) {
 
     plc_t plc = (plc_t) malloc(sizeof(struct PLC_regs));

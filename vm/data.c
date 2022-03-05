@@ -4,7 +4,7 @@
 /*************************data_t**************************************/
 data_t negate(unsigned char *op, data_t b) {
     data_t r = b;
-    if (*op & NEGATE) {	    //negate b
+    if (*op & NEGATE) { //negate b
         *op -= NEGATE;
         r.u = -1 - (b.u);
         //magic?
@@ -16,8 +16,8 @@ uint64_t operate_u(unsigned char op, uint64_t a, uint64_t b) {
     uint64_t r = 0;
 
     switch (op) {
-        //boolean or bitwise, all modifiers,
-        case IL_AND:	//AND
+        // boolean or bitwise, all modifiers,
+        case IL_AND: //AND
             r = a & b;
             break;
 
@@ -25,10 +25,10 @@ uint64_t operate_u(unsigned char op, uint64_t a, uint64_t b) {
             r = a | b;
             break;
 
-        case IL_XOR:	//XOR
+        case IL_XOR: //XOR
             r = a ^ b;
             break;
-            //arithmetic
+            //a rithmetic
         case IL_ADD:
             r = a + b;
             break;

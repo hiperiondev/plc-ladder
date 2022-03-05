@@ -162,7 +162,8 @@ int sim_flush() {
     return bytes_written;
 }
 
-void sim_dio_read(unsigned int n, uint8_t *bit) { // write input n to bit
+// write input n to bit
+void sim_dio_read(unsigned int n, uint8_t *bit) {
     unsigned int b, position;
     position = n / BYTESIZE;
     uint8_t i = 0;
@@ -174,9 +175,8 @@ void sim_dio_read(unsigned int n, uint8_t *bit) { // write input n to bit
     *bit = (uint8_t) b;
 }
 
-void sim_dio_write(const unsigned char *buf, unsigned int n, uint8_t bit)
-
-{ // write bit to n output
+// write bit to n output
+void sim_dio_write(const unsigned char *buf, unsigned int n, uint8_t bit) {
     uint8_t q;
     unsigned int position = n / BYTESIZE;
     q = buf[position];

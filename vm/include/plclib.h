@@ -9,7 +9,7 @@
 
 #include "hardware.h"
 
-#define MILLION 1000000
+#define MILLION  1000000
 #define THOUSAND 1000
 
 #define FLOAT_PRECISION 0.000001
@@ -68,9 +68,9 @@ typedef struct digital_output {
     char *nick;   // [NICKLEN]; // nickname
 } *do_t;
 
-// the analog_io  struct
+// the analog_io struct
 typedef struct analog_io {
-    double V;    //  data value
+    double V;    // data value
     double min;  // range for conversion to/from raw data
     double max;
     double mask; // forced value mask
@@ -125,7 +125,7 @@ typedef struct mreal {
 
 // the PLC_regs struct
 // the struct which contains all the software PLC registers
-//TODO: should masks and edges be packed inside di_t, dq_t?
+// TODO: should masks and edges be packed inside di_t, dq_t?
 typedef struct PLC_regs {
     hardware_t hw;
     // hardware interface
