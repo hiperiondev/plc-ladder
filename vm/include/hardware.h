@@ -6,6 +6,8 @@
  */
 #include <inttypes.h>
 
+#include "config.h"
+
 typedef enum {
     HW_DRY,    //TODO
     HW_SIM,
