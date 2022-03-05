@@ -17,7 +17,7 @@ int Rd_offs = 0;
 struct hardware Uspace;
 
 int usp_config(const config_t conf) {
-    config_t u = get_recursive_entry(CONFIG_HW, conf); //TODO: this will be rewritten
+    config_t u = get_recursive_entry(CONFIG_HW, conf); // TODO: this will be rewritten
     Io_base = get_numeric_entry(USPACE_BASE, u);
     Wr_offs = get_numeric_entry(USPACE_WR, u);
     Rd_offs = get_numeric_entry(USPACE_RD, u);
@@ -74,7 +74,7 @@ int usp_flush() {
     return 0;
 }
 
-void usp_dio_read(unsigned int n, uint8_t *bit) {	//write input n to bit
+void usp_dio_read(unsigned int n, uint8_t *bit) { //write input n to bit
     unsigned int b;
     uint8_t i;
     i = inb(Io_base + Rd_offs + n / BYTESIZE);
@@ -82,14 +82,14 @@ void usp_dio_read(unsigned int n, uint8_t *bit) {	//write input n to bit
     *bit = (uint8_t) b;
 }
 
-void usp_dio_write(const uint8_t *buf, unsigned int n, unsigned char bit) {	//write bit to n output
+void usp_dio_write(const uint8_t *buf, unsigned int n, unsigned char bit) { //write bit to n output
     uint8_t q;
     q = buf[n / BYTESIZE];
     q |= bit << n % BYTESIZE;
     outb(q, Io_base + Wr_offs + n / BYTESIZE);
 }
 
-void usp_dio_bitfield(const uint8_t *write_mask, uint8_t *bits) {	//simultaneusly write output bits defined my mask and read all inputs
+void usp_dio_bitfield(const uint8_t *write_mask, uint8_t *bits) { //simultaneusly write output bits defined my mask and read all inputs
     /*FIXME
      int i;
      for (i = 0; i < Dq; i++)

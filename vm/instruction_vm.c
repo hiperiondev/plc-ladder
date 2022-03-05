@@ -45,7 +45,7 @@ int get_type(const instruction_t ins) {
 }
 
 void deepcopy(const instruction_t from, instruction_t to) {
-    //deepcopy
+    // deepcopy
     to->operation = from->operation;
     to->operand = from->operand;
     to->modifier = from->modifier;

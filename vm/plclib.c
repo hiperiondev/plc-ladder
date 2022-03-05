@@ -292,19 +292,19 @@ int handle_set(const instruction_t op, const data_t acc, uint8_t is_bit, plc_t p
     }
     switch (op->operand) {
 
-        case OP_CONTACT:	//set output %QX.Y
-            if (!is_bit) {	//only gets called when bit is defined
+        case OP_CONTACT: //set output %QX.Y
+            if (!is_bit) { //only gets called when bit is defined
                 r = ERR_BADOPERAND;
             } else {
                 r = set(p, BOOL_DQ, (op->byte) * BYTESIZE + op->bit);
             }
             break;
 
-        case OP_START:	//bits are irrelevant
+        case OP_START:    //bits are irrelevant
             r = set(p, BOOL_TIMER, op->byte);
             break;
 
-        case OP_PULSEIN:	//same here
+        case OP_PULSEIN:    //same here
             r = set(p, BOOL_COUNTER, op->byte);
             break;
 
@@ -327,18 +327,18 @@ int handle_reset(const instruction_t op, const data_t acc, uint8_t is_bit, plc_t
         return r;
 
     switch (op->operand) {
-        case OP_CONTACT:	//set output %QX.Y
-            if (!is_bit)	//only gets called when bit is defined
+        case OP_CONTACT:    //set output %QX.Y
+            if (!is_bit)    //only gets called when bit is defined
                 r = ERR_BADOPERAND;
             else
                 r = reset(p, BOOL_DQ, (op->byte) * BYTESIZE + op->bit);
             break;
 
-        case OP_START:	//bits are irrelevant
+        case OP_START:    //bits are irrelevant
             r = reset(p, BOOL_TIMER, op->byte);
             break;
 
-        case OP_PULSEIN:	//same here
+        case OP_PULSEIN:    //same here
             r = reset(p, BOOL_COUNTER, op->byte);
             break;
 
@@ -437,15 +437,15 @@ int handle_st(const instruction_t op, const data_t acc, plc_t p) {
         return ERR_BADOPERATOR; //sanity
 
     switch (op->operand) {
-        case OP_REAL_CONTACT:	    //set output %QX.Y
+        case OP_REAL_CONTACT:        //set output %QX.Y
             r = st_out_r(op, val.r, p);
             break;
 
-        case OP_CONTACT:	    //set output %QX.Y
+        case OP_CONTACT:        //set output %QX.Y
             r = st_out(op, val.u, p);
             break;
 
-        case OP_START:	    //bits are irrelevant
+        case OP_START:        //bits are irrelevant
             r = contact(p, BOOL_TIMER, op->byte, val.u % 2);
             break;
 
@@ -668,22 +668,22 @@ int handle_ld(const instruction_t op, data_t *acc, plc_t p) {
         return STATUS_ERR;
 
     if ((op->operation != IL_LD && op->operation < FIRST_BITWISE) || op->operation >= N_IL_INSN)
-        return ERR_BADOPERATOR; //sanity
+        return ERR_BADOPERATOR; // sanity
 
     switch (op->operand) {
-        case OP_OUTPUT:	//set output %QX.Y
+        case OP_OUTPUT: // set output %QX.Y
             r = ld_out(op, &(acc->u), p);
             break;
 
-        case OP_INPUT:	//load input %IX.Y
+        case OP_INPUT: // load input %IX.Y
             r = ld_in(op, &(acc->u), p);
             break;
 
-        case OP_REAL_OUTPUT:	//set output %QX.Y
+        case OP_REAL_OUTPUT: // set output %QX.Y
             r = ld_out_r(op, &(acc->r), p);
             break;
 
-        case OP_REAL_INPUT:	//load input %IX.Y
+        case OP_REAL_INPUT: // load input %IX.Y
             r = ld_in_r(op, &(acc->r), p);
             break;
 
@@ -699,7 +699,7 @@ int handle_ld(const instruction_t op, data_t *acc, plc_t p) {
             r = ld_timer(op, &(acc->u), p);
             break;
 
-        case OP_BLINKOUT:	//bit is irrelevant
+        case OP_BLINKOUT: // bit is irrelevant
             if (op->byte >= p->ns)
                 return ERR_BADOPERAND;
             acc->u = resolve(p, BOOL_BLINKER, op->byte);
@@ -709,12 +709,12 @@ int handle_ld(const instruction_t op, data_t *acc, plc_t p) {
             acc->u = p->command;
             break;
 
-        case OP_RISING:	//only boolean
+        case OP_RISING: // only boolean
             r = ld_re(op, &edge, p);
             acc->u = edge;
             break;
 
-        case OP_FALLING:	//only boolean
+        case OP_FALLING: // only boolean
             r = ld_fe(op, &edge, p);
             acc->u = edge;
             break;
@@ -726,7 +726,7 @@ int handle_ld(const instruction_t op, data_t *acc, plc_t p) {
     return r;
 }
 
-int handle_stackable(const instruction_t op, rung_t r, plc_t p) {	//all others (stackable operations)
+int handle_stackable(const instruction_t op, rung_t r, plc_t p) { // all others (stackable operations)
     int rv = 0;
     data_t val;
     val.u = 0;
@@ -785,36 +785,36 @@ int instruct(plc_t p, rung_t r, unsigned int *pc) {
      */
     switch (op->operation) {
 //IL OPCODES: no operand
-        case IL_POP: //POP
+        case IL_POP: // POP
             r->acc = pop(r->acc, &(r->stack));
             break;
         case IL_NOP:
-//null operation	
+//null operation
         case IL_CAL:
 //subroutine call (unimplemented) retrieve subroutine line, set pc
         case IL_RET:
 //unimplemented yet: retrieve  previous program , counter, set pc
             break;
 //arithmetic LABEL
-        case IL_JMP:			//JMP
+        case IL_JMP: // JMP
             error = handle_jmp(r, pc);
             increment = false;
 //retrieve line number from label, set pc
             break;
 //boolean, no modifier, outputs.
-        case IL_SET:	//S
-            error = handle_set(op, r->acc,	//.u % 0x100,
+        case IL_SET: // S
+            error = handle_set(op, r->acc,    //.u % 0x100,
                     type == T_BOOL, p);
             break;
-        case IL_RESET:	//R
-            error = handle_reset(op, r->acc,	//.u % 0x100,
+        case IL_RESET: // R
+            error = handle_reset(op, r->acc,    //.u % 0x100,
                     type == T_BOOL, p);
             break;
-        case IL_LD:	//LD
+        case IL_LD: // LD
             error = handle_ld(op, &(r->acc), p);
 
             break;
-        case IL_ST:	//ST: output
+        case IL_ST: // ST: output
             //if negate, negate acc
             error = handle_st(op, r->acc, p);
 //any operand, only push
@@ -831,7 +831,7 @@ rung_t mk_rung(const char *name, plc_t p) {
     rung_t r = (rung_t) calloc(1, sizeof(struct rung));
 
     r->id = strdup(name);
-    if (p->rungs == NULL) {		//lazy allocation
+    if (p->rungs == NULL) { //lazy allocation
         p->rungs = (rung_t*) calloc(MAXRUNG, sizeof(rung_t));
 
     }
@@ -881,19 +881,19 @@ void read_inputs(plc_t p) {
     if (p == NULL || p->hw == NULL)
         return;
 
-    p->hw->fetch();		//for simulation
+    p->hw->fetch(); // for simulation
 
-    for (i = 0; i < p->ni; i++) {	//for each input byte
+    for (i = 0; i < p->ni; i++) { // for each input byte
         p->inputs[i] = 0;
-        for (j = 0; j < BYTESIZE; j++) {	//read n bit into in
+        for (j = 0; j < BYTESIZE; j++) { // read n bit into in
             n = i * BYTESIZE + j;
             i_bit = 0;
             p->hw->dio_read(n, &i_bit);
             p->inputs[i] |= i_bit << j;
-        }	//mask them
+        }    //mask them
     }
 
-    for (i = 0; i < p->nai; i++) {	//for each input sample
+    for (i = 0; i < p->nai; i++) { // for each input sample
         p->hw->data_read(i, &p->real_in[i]);
     }
 }
@@ -908,16 +908,16 @@ void write_outputs(plc_t p) {
         return;
 
     for (i = 0; i < p->nq; i++) {
-        for (j = 0; j < BYTESIZE; j++) {	//write n bit out
+        for (j = 0; j < BYTESIZE; j++) { // write n bit out
             n = BYTESIZE * i + j;
             q_bit = (p->outputs[i] >> j) % 2;
             p->hw->dio_write(p->outputs, n, q_bit);
         }
     }
-    for (i = 0; i < p->naq; i++) {	//for each output sample
+    for (i = 0; i < p->naq; i++) { // for each output sample
         p->hw->data_write(i, p->real_out[i]);
     }
-    p->hw->flush();	//for simulation
+    p->hw->flush(); // for simulation
 }
 /*TODO: how is force implemented for variables and timers?*/
 plc_t force(plc_t p, int op, uint8_t i, char *val) {
@@ -1038,7 +1038,7 @@ int is_forced(const plc_t p, int op, uint8_t i) {
     return r;
 }
 
-uint8_t dec_inp(plc_t p) { //decode input bytes
+uint8_t dec_inp(plc_t p) { // decode input bytes
     uint8_t i = 0;
     uint8_t j = 0;
     uint8_t i_changed = false;
@@ -1049,7 +1049,7 @@ uint8_t dec_inp(plc_t p) { //decode input bytes
         }
         for (; j < BYTESIZE; j++) {
             unsigned int n = BYTESIZE * i + j;
-//negative mask has precedence		        
+// negative mask has precedence
             p->di[n].I = (((p->inputs[i] >> j) % 2) || p->di[n].MASK) && !p->di[n].N_MASK;
             uint8_t edge = p->di[n].I ^ p->old->di[n].I;
             p->di[n].RE = p->di[n].I && edge;
@@ -1074,7 +1074,7 @@ uint8_t dec_inp(plc_t p) { //decode input bytes
     return i_changed;
 }
 
-uint8_t enc_out(plc_t p) { //encode digital outputs to output bytes
+uint8_t enc_out(plc_t p) { // encode digital outputs to output bytes
     uint8_t i = 0;
     uint8_t j = 0;
     uint8_t o_changed = false;
@@ -1082,12 +1082,12 @@ uint8_t enc_out(plc_t p) { //encode digital outputs to output bytes
 
     memcpy(out, p->outputs, p->nq);
 
-    for (; i < p->nq; i++) { //write masked outputs
+    for (; i < p->nq; i++) { // write masked outputs
         for (; j < BYTESIZE; j++) {
             unsigned int n = BYTESIZE * i + j;
 
             out[i] |= ((p->dq[n].Q || (p->dq[n].SET && !p->dq[n].RESET) || p->dq[n].MASK) && !p->dq[n].N_MASK) << j;
-//negative mask has precedence		    
+//negative mask has precedence
         }
         p->outputs[i] = out[i];
         if (p->outputs[i] != p->old->outputs[i]) {
@@ -1122,7 +1122,7 @@ void write_mvars(plc_t p) {
     int i;
     for (i = 0; i < p->nm; i++) {
         if (!p->m[i].RO) {
-            if (p->m[i].PULSE && p->m[i].EDGE) { //up/down counting
+            if (p->m[i].PULSE && p->m[i].EDGE) { // up/down counting
                 p->m[i].V += (p->m[i].DOWN) ? -1 : 1;
                 p->m[i].EDGE = false;
             }
@@ -1133,7 +1133,7 @@ void write_mvars(plc_t p) {
 uint8_t check_pulses(plc_t p) {
     uint8_t changed = 0;
     int i = 0;
-    for (i = 0; i < p->nm; i++) { //check counter pulses
+    for (i = 0; i < p->nm; i++) { // check counter pulses
         if (p->m[i].PULSE != p->old->m[i].PULSE) {
             p->m[i].EDGE = true;
             changed = true;
@@ -1168,9 +1168,9 @@ plc_t save_state(uint8_t mask, plc_t p) {
 }
 
 void write_response(plc_t p) {
-    int rfd = 0; //response file descriptor
+    int rfd = 0; // response file descriptor
     rfd = open(p->response_file, O_NONBLOCK | O_WRONLY);
-    //dummy code until this feature goes away
+    // dummy code until this feature goes away
     if (write(rfd, &(p->response), 1) < 0)
         p->response = STATUS_ERR;
     else
@@ -1190,9 +1190,9 @@ uint8_t manage_timers(plc_t p) {
                 p->t[i].V++;
                 p->t[i].sn = 0;
             }
-            p->t[i].Q = (p->t[i].ONDELAY) ? 0 : 1;	//on delay
+            p->t[i].Q = (p->t[i].ONDELAY) ? 0 : 1; // on delay
         } else if (p->t[i].START) {
-            p->t[i].Q = (p->t[i].ONDELAY) ? 1 : 0;	//on delay
+            p->t[i].Q = (p->t[i].ONDELAY) ? 1 : 0; // on delay
         }
     }
     return t_changed;
@@ -1202,10 +1202,10 @@ uint8_t manage_blinkers(plc_t p) {
     uint8_t s_changed = 0;
     int i = 0;
     for (i = 0; i < p->ns; i++) {
-        if (p->s[i].S > 0) {	//if set up
+        if (p->s[i].S > 0) {    //if set up
             if (p->s[i].sn > p->s[i].S) {
                 s_changed = true;
-                p->s[i].Q = (p->s[i].Q) ? 0 : 1;	//toggle
+                p->s[i].Q = (p->s[i].Q) ? 0 : 1; // toggle
                 p->s[i].sn = 0;
             } else
                 p->s[i].sn++;
@@ -1217,7 +1217,7 @@ uint8_t manage_blinkers(plc_t p) {
 plc_t plc_load_program_file(const char *path, plc_t plc) {
     FILE *f;
     int r = ERR_BADFILE;
-    char program_lines[MAXBUF][MAXSTR];	///program lines
+    char program_lines[MAXBUF][MAXSTR]; // program lines
     char line[MAXSTR];
     int i = 0;
 
@@ -1299,10 +1299,10 @@ plc_t plc_stop(plc_t p) {
 }
 
 plc_t plc_func(plc_t p) {
-    struct timeval tp; //time for poll
-    struct timeval tn; //time since beginning of last output
+    struct timeval tp; // time for poll
+    struct timeval tn; // time since beginning of last output
     struct timeval dt;
-    long timeout = p->step * THOUSAND; //timeout in usec
+    long timeout = p->step * THOUSAND; // timeout in usec
     long poll_time = 0;
     long io_time = 0;
     static long run_time = 0;
@@ -1317,7 +1317,7 @@ plc_t plc_func(plc_t p) {
     //char test[NICKLEN];
     dt.tv_sec = 0;
     dt.tv_usec = 0;
-    if ((p->status) == ST_RUNNING) { //run
+    if ((p->status) == ST_RUNNING) { // run
 //remaining time = step 
         read_inputs(p);
         t_changed = manage_timers(p);
@@ -1325,11 +1325,11 @@ plc_t plc_func(plc_t p) {
         read_mvars(p);
 
         gettimeofday(&tn, NULL);
-//dt = time for input + output	
+//dt = time for input + output
 //how much time passed since previous cycle?
         timeval_subtract(&dt, &tn, &Curtime);
         dt.tv_usec = dt.tv_usec % (THOUSAND * p->step);
-        io_time = dt.tv_usec; // / THOUSAND;
+        io_time = dt.tv_usec; // THOUSAND;
         timeout -= io_time;
         timeout -= run_time;
 //plc_log("I/O time approx:%d microseconds",dt.tv_usec);
@@ -1337,7 +1337,7 @@ plc_t plc_func(plc_t p) {
         written = poll(p->com, 0, timeout / THOUSAND);
 //TODO: when a truly asunchronous UI is available, 
 //replace poll() with sleep() for better accuracy
-        gettimeofday(&tp, NULL);	//how much time did poll wait?
+        gettimeofday(&tp, NULL); // how much time did poll wait?
         timeval_subtract(&dt, &tp, &tn);
         poll_time = dt.tv_usec;
 //plc_log("Poll time approx:%d microseconds",dt.tv_usec);
@@ -1355,7 +1355,7 @@ plc_t plc_func(plc_t p) {
         if (r >= STATUS_OK)
             r = all_tasks(p->step * THOUSAND, p);
 
-        gettimeofday(&Curtime, NULL);	//start timing next cycle
+        gettimeofday(&Curtime, NULL); // start timing next cycle
         timeval_subtract(&dt, &Curtime, &tp);
         run_time = dt.tv_usec;
         compute_variance((double) (run_time + poll_time + io_time));
@@ -1720,4 +1720,3 @@ plc_t configure_pulse_scale(const plc_t p, uint8_t idx, const char *val) {
     }
     return r;
 }
-

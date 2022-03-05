@@ -55,36 +55,36 @@ typedef enum {
  * @brief The digital_input struct
  */
 typedef struct digital_input {
-    BIT (I);   ///contact value
-    BIT (RE);   ///rising edge
-    BIT (FE);   ///falling edge
-    BIT (EDGE); ///true if value changed
-    BIT (MASK); /// true if forced 1
-    BIT (N_MASK); /// true if forced 0
-    char *nick; //[NICKLEN];///nickname
+    BIT (I);      // contact value
+    BIT (RE);     // rising edge
+    BIT (FE);     // falling edge
+    BIT (EDGE);   // true if value changed
+    BIT (MASK);   // true if forced 1
+    BIT (N_MASK); // true if forced 0
+    char *nick;   // [NICKLEN]; // nickname
 } *di_t;
 
 /**
  * @brief The digital_output struct
  */
 typedef struct digital_output {
-    BIT (Q); //contact
-    BIT (SET); //set
-    BIT (RESET); //reset
-    BIT (MASK); /// true if forced true
-    BIT (N_MASK); /// true if forced false
-    char *nick; //[NICKLEN];//nickname
+    BIT (Q);      // contact
+    BIT (SET);    // set
+    BIT (RESET);  // reset
+    BIT (MASK);   // true if forced true
+    BIT (N_MASK); // true if forced false
+    char *nick;   // [NICKLEN]; // nickname
 } *do_t;
 
 /**
  * @brief The analog_io  struct
  */
 typedef struct analog_io {
-    double V; /// data value
-    double min; ///range for conversion to/from raw data
+    double V;    //  data value
+    double min;  // range for conversion to/from raw data
     double max;
-    double mask; ///forced value mask
-    char *nick; //[NICKLEN];///nickname
+    double mask; // forced value mask
+    char *nick;  // [NICKLEN]; // nickname
 } *aio_t;
 
 /**
@@ -92,16 +92,16 @@ typedef struct analog_io {
  * struct which represents  a timer state at a given cycle
  */
 typedef struct timer {
-    long S;	///scale; S=1000=>increase every 1000 cycles. STEP= 10 msec=> increase every 10 sec
-    long sn;	///internal counter used for scaling
-    long V;	///value
-    BIT (Q);	///output
-    long P;	///Preset value
-    BIT (ONDELAY);	///1=on delay, 0 = off delay
-    BIT (START);	///start command: must be on to count
-    BIT (RESET);	///down command: sets V = 0
-    //BIT(MASK);///true if timer is forced to up or down
-    char *nick;    //[NICKLEN];
+    long S;        // scale; S=1000=>increase every 1000 cycles. STEP= 10 msec=> increase every 10 sec
+    long sn;       // internal counter used for scaling
+    long V;        // value
+    BIT (Q);       // output
+    long P;        // Preset value
+    BIT (ONDELAY); // 1=on delay, 0 = off delay
+    BIT (START);   // start command: must be on to count
+    BIT (RESET);   // down command: sets V = 0
+    //BIT(MASK);   // true if timer is forced to up or down
+    char *nick;    // [NICKLEN];
 } *dt_t;
 
 /**
@@ -109,10 +109,10 @@ typedef struct timer {
  * struct which represents a blinker
  */
 typedef struct blink {
-    BIT (Q); ///output
-    long S;	///scale; S=1000=>toggle every 1000 cycles. STEP= 10 msec=> toggle every 10 sec
-    long sn;	///internal counter for scaling
-    char *nick;	//[NICKLEN];
+    BIT (Q);    // output
+    long S;     // scale; S=1000=>toggle every 1000 cycles. STEP= 10 msec=> toggle every 10 sec
+    long sn;    // internal counter for scaling
+    char *nick; // [NICKLEN];
 } *blink_t;
 
 /**
@@ -120,15 +120,15 @@ typedef struct blink {
  * struct which represents a memory register / counter
  */
 typedef struct mvar {
-    uint64_t V;     ///TODO: add type
-    BIT (RO);	///1 if read only;
-    BIT (DOWN);	///1: can be used as a down counter
-    BIT (PULSE);		///pulse for up/downcounting
-    BIT (EDGE);		///edge of pulse
-    BIT (SET);		///set pulse
-    BIT (RESET);		///reset pulse
-    //BIT(MASK); ///true if pulse is set
-    char *nick;    //[NICKLEN];   ///nickname
+    uint64_t V;  // TODO: add type
+    BIT (RO);    // 1 if read only;
+    BIT (DOWN);  // 1: can be used as a down counter
+    BIT (PULSE); // pulse for up/downcounting
+    BIT (EDGE);  // edge of pulse
+    BIT (SET);   // set pulse
+    BIT (RESET); // reset pulse
+    //BIT(MASK); // true if pulse is set
+    char *nick;  //[NICKLEN]; // nickname
 } *mvar_t;
 
 /**
@@ -136,9 +136,9 @@ typedef struct mvar {
  * struct which represents a real number memory register
  */
 typedef struct mreal {
-    double V;     ///TODO: add type
-    BIT (RO);	///1 if read only;
-    char *nick;	//[NICKLEN];   ///nickname
+    double V;   // TODO: add type
+    BIT (RO);   // 1 if read only;
+    char *nick; // [NICKLEN]; // nickname
 } *mreal_t;
 
 /**
@@ -148,52 +148,52 @@ typedef struct mreal {
 //TODO: should masks and edges be packed inside di_t, dq_t?
 typedef struct PLC_regs {
     hardware_t hw;
-    ///hardware interface
-    uint8_t *inputs;   ///digital input values buffer
-    uint64_t *real_in; ///analog raw input values buffer
-    uint8_t *outputs;  ///digital output values buffer
-    uint64_t *real_out; ///analog raw output values buffer
+    // hardware interface
+    uint8_t *inputs;       // digital input values buffer
+    uint64_t *real_in;     // analog raw input values buffer
+    uint8_t *outputs;      // digital output values buffer
+    uint64_t *real_out;    // analog raw output values buffer
 
-    uint8_t command;   ///serial command from plcpipe
-    uint8_t response;  ///response to named pipe
+    uint8_t command;       // serial command from plcpipe
+    uint8_t response;      // response to named pipe
 
-    uint8_t update; ///binary mask of state update
-    int status;    ///0 = stopped, 1 = running, negative = error
+    uint8_t update;        // binary mask of state update
+    int status;            // 0 = stopped, 1 = running, negative = error
 
-    uint8_t ni; ///number of bytes for digital inputs
-    di_t di; ///digital inputs
+    uint8_t ni;            // number of bytes for digital inputs
+    di_t di;               // digital inputs
 
-    uint8_t nq; ///number of bytes for digital outputs
-    do_t dq; ///the digital outputs
+    uint8_t nq;            // number of bytes for digital outputs
+    do_t dq;               // the digital outputs
 
-    uint8_t nai; ///number of analog input channels
-    aio_t ai; ///the analog inputs
+    uint8_t nai;           // number of analog input channels
+    aio_t ai;              // the analog inputs
 
-    uint8_t naq; ///number of analog output channels
-    aio_t aq; ///the analog outputs
+    uint8_t naq;           // number of analog output channels
+    aio_t aq;              // the analog outputs
 
-    uint8_t nt; ///number of timers
-    dt_t t; ///the timers
+    uint8_t nt;            // number of timers
+    dt_t t;                // the timers
 
-    uint8_t ns; ///number of blinkers
-    blink_t s; ///the blinkers
+    uint8_t ns;            // number of blinkers
+    blink_t s;             // the blinkers
 
-    uint8_t nm; ///number of memory counters
-    mvar_t m; ///the memory
+    uint8_t nm;            // number of memory counters
+    mvar_t m;              // the memory
 
-    uint8_t nmr; ///number of memory registers
-    mreal_t mr; ///the memory
+    uint8_t nmr;           // number of memory registers
+    mreal_t mr;            // the memory
 
     rung_t *rungs;
-    uint8_t rungno; //256 rungs should suffice
+    uint8_t rungno;        // 256 rungs should suffice
 
-    long step; //cycle time in milliseconds
-    char *response_file; //pipe to send response.
-    struct pollfd com[1];  //polling on a file descriptor for external
-                           //"commands", this will be thrown away and
-                           //replaced by usleep
-                           //FIXME: throw this feature away
-    struct PLC_regs *old; //pointer to previous state
+    long step;             // cycle time in milliseconds
+    char *response_file;   // pipe to send response.
+    struct pollfd com[1];  // polling on a file descriptor for external
+                           // "commands", this will be thrown away and
+                           // replaced by usleep
+                           // FIXME: throw this feature away
+    struct PLC_regs *old;  // pointer to previous state
 } *plc_t;
 
 /**

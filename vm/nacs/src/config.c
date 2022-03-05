@@ -226,7 +226,7 @@ config_t set_recursive_entry(int key, const config_t val, config_t conf) {
     return c;
 }
 
-//TODO: in a c++ impl. this would be a hashmap
+// TODO: in a c++ impl. this would be a hashmap
 param_t new_param(const char *key, const char *val) {
 
     param_t n = (param_t) malloc(sizeof(struct param));
@@ -304,7 +304,7 @@ param_t update_param(const param_t params, const char *key, const char *val) {
         if (par) {
             par->value = strdup_r(par->value, val);
         } else {
-            //FIXME: ..and this is why we need a hashmap.
+            // FIXME: ..and this is why we need a hashmap.
             ret = append_param(ret, key, val);
         }
         return ret;
@@ -495,4 +495,3 @@ config_t init_config(const struct entry schema[], unsigned int size) {
     }
     return conf;
 }
-

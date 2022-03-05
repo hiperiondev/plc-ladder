@@ -316,7 +316,7 @@ static void emit_variable(const variable_t var, yaml_emitter_t *emitter) {
             NULL, (yaml_char_t*) it->value, strlen(it->value),
             CONF_T,
             CONF_T, YAML_PLAIN_SCALAR_STYLE);
-            //log_yml_event(evt);        			
+            //log_yml_event(evt);
             yaml_emitter_emit(emitter, &evt);
             it = it->next;
         }
@@ -482,10 +482,10 @@ int emit(yaml_emitter_t *emitter, const config_t conf) {
     yaml_emitter_emit(emitter, &evt);
     //log_yml_event(evt);
 
-    //doc end
+    // doc end
     yaml_document_end_event_initialize(&evt, CONF_F);
     yaml_emitter_emit(emitter, &evt);
-    //log_yml_event(evt); 		
+    //log_yml_event(evt);
     yaml_event_delete(&evt);
     return r;
 }
@@ -624,4 +624,3 @@ config_t deserialize_config(const char *buf, const config_t conf) {
 
     return r;
 }
-

@@ -26,4 +26,3 @@ uint64_t operate_u(unsigned char op, uint64_t a, uint64_t b);
 data_t operate(unsigned char op, unsigned char t, const data_t a, const data_t b);
 
 #endif //_DATA_H_
-

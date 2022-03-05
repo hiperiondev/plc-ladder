@@ -76,18 +76,17 @@ typedef param_t *param_table_t;
  */
 typedef struct variable {
     unsigned char index;
-    char *name;
-    /*    unsigned char updated;
-     char * value;
-     */
-    param_t params;
+             char *name;
+//  unsigned char updated;
+//           char *value;
+          param_t params;
 } *variable_t;
 
 /**
  * @brief sequence of variable blocks
  */
 typedef struct sequence {
-    int size;
+           int size;
     variable_t vars;
 } *sequence_t;
 
@@ -95,13 +94,13 @@ typedef struct sequence {
  * @brief the configuration entry
  */
 typedef struct entry {
-    int type_tag;
+     int type_tag;
     char *name;
 
     union {
-        int scalar_int;
-        char *scalar_str;
-        sequence_t seq;
+                  int scalar_int;
+                 char *scalar_str;
+           sequence_t seq;
         struct config *conf;
     } e;
 } *entry_t;
@@ -410,4 +409,3 @@ config_t deserialize_config(const char *buf, const config_t conf);
 config_t init_config(const struct entry schema[], unsigned int size);
 
 #endif //_CONFIG_H_
-

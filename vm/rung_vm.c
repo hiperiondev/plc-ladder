@@ -33,7 +33,7 @@ int get(const rung_t r, const unsigned int idx, instruction_t *i) {
 }
 
 int push(uint8_t op, uint8_t t, const data_t val, rung_t r) {
-//push an opcode and a value into stack.
+// push an opcode and a value into stack.
     struct opcode *p = take(r);
     if (!p)
         return STATUS_ERR;
@@ -49,15 +49,15 @@ int push(uint8_t op, uint8_t t, const data_t val, rung_t r) {
 }
 
 data_t pop(const data_t val, opcode_t *stack) {
-//retrieve stack heads operation and operand, apply it to val and return result
-    data_t r = val; //return value
+// retrieve stack heads operation and operand, apply it to val and return result
+    data_t r = val; // return value
     opcode_t p;
     if (*stack != NULL) {
         //safety
-        r = operate((*stack)->operation, (*stack)->type, (*stack)->value, val); //execute instruction
+        r = operate((*stack)->operation, (*stack)->type, (*stack)->value, val); // execute instruction
         p = *stack;
         *stack = (*stack)->next;
-        //set stack head to point to next opcode in stack
+        // set stack head to point to next opcode in stack
         give(p);
     }
     return r;
