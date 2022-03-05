@@ -3,6 +3,7 @@
 
 #include "common.h"
 #include "instruction.h"
+#include "data.h"
 
 #define MAXSTACK 256
 #define MAXRUNG  256
@@ -12,6 +13,14 @@ typedef struct codeline {
     struct codeline *next;
 } *codeline_t;
 
+typedef struct opcode {
+          uint8_t operation;
+          uint8_t type;
+          uint8_t depth;
+    union accdata value;
+    struct opcode *next;
+} *opcode_t;
+
 // the instruction list executable rung
 typedef struct rung {
     instruction_t *instructions;
@@ -19,6 +28,9 @@ typedef struct rung {
        codeline_t code;    // original code for visual representation
      unsigned int insno; // actual no of active lines
       struct rung *next;  // linked list of rungs
+         opcode_t stack; ///head of stack
+    struct opcode prealloc[MAXSTACK]; ///preallocated stack
+    union accdata acc;    ///accumulator
 } *rung_t;
 
 /**

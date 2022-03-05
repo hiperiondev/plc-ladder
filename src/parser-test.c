@@ -16,6 +16,7 @@
 #include "parser-il.h"
 #include "parser-ld.h"
 #include "parser-tree.h"
+#include "plclib.h"
 
 int main() {
 

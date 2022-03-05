@@ -210,6 +210,7 @@ uint8_t parse_ld_read_char(const char *line, unsigned int c) {
         default:
             r = (uint8_t) ERR_BADCHAR; // error
     }
+
 // return value or error
     return r;
 }

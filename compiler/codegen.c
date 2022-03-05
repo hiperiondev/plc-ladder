@@ -1,5 +1,6 @@
 
 #include <string.h>
+#include <stdio.h>
 
 #include "common.h"
 #include "config.h"
@@ -87,6 +88,7 @@ int gen_expr_right(const item_t right, rung_t rung, uint8_t op, uint8_t mod) {
                 ins.byte = right->v.id.byte;
                 ins.bit = right->v.id.bit;
                 rv = rung_append(&ins, rung);
+                printf("right-> %d, %d, %d, %d, %d\n", ins.operation, ins.modifier, ins.operand, ins.byte, ins.bit);
                 break;
             case TAG_EXPRESSION:
                 // recursion

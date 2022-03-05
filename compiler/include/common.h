@@ -10,6 +10,7 @@
 
 #include <poll.h>
 #include <inttypes.h>
+#include <stdbool.h>
 
 //#define LOG_TO_FILE
 
@@ -151,6 +152,7 @@ typedef enum {
     IL_LT,    // LESS THAN
     IL_LE,    // LESS OR EQUAL
 
+    //
     N_IL_INSN //
 } IL_INSN;
 
@@ -160,6 +162,8 @@ enum LD_STATUS {
     STATUS_RESOLVED,   //
     STATUS_FINAL,      //
     STATUS_ERROR,      //
+
+    //
     N_STATUS           //
 };
 
@@ -176,6 +180,7 @@ enum LD_SYMBOLS {
     LD_RESET,       // ] reset,
     LD_DOWN,        // ) negate coil
 
+    //
     N_LD_SYMBOLS    //
 };
 
