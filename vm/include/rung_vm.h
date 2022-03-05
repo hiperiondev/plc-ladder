@@ -5,8 +5,8 @@
  *      Author: egonzalez
  */
 
-#ifndef INCLUDE_RUNG_VM_H_
-#define INCLUDE_RUNG_VM_H_
+#ifndef _RUNG_VM_H_
+#define _RUNG_VM_H_
 
 #define MAXSTACK 256
 
@@ -16,4 +16,4 @@
 opcode_t take(rung_t r);
     void give(opcode_t head);
 
-#endif /* INCLUDE_RUNG_VM_H_ */
+#endif /* _RUNG_VM_H_ */

@@ -1,9 +1,5 @@
 #include "config.h"
 #include "schema.h"
-/**
- *@file schema.c
- *@brief configuration schema 
- */
 
 struct entry HwSchema[N_HW_VARS] = {
         {
@@ -100,4 +96,3 @@ struct entry ConfigSchema[N_CONFIG_VARIABLES] = {
         }
         },
 };
-

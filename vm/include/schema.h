@@ -1,9 +1,5 @@
 #ifndef _SCHEMA_H_
 #define _SCHEMA_H_
-/**
- *@file schema.h
- *@brief configuration schema definitions header
-*/
 
 typedef enum{
     MAP_ROOT,
@@ -53,7 +49,7 @@ typedef enum{
     CONFIG_STATUS,
     CONFIG_STEP,
     CONFIG_HW,
-     //(runtime updatable) sequences,
+     // (runtime updatable) sequences,
     CONFIG_PROGRAM,
     CONFIG_AI,
     CONFIG_AQ,

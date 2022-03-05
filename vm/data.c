@@ -79,7 +79,7 @@ uint64_t operate_u(unsigned char op, uint64_t a, uint64_t b) {
 double operate_d(unsigned char op, double a, double b) {
     double r = 0;
     switch (op) {
-        //arithmetic
+        // arithmetic
         case IL_ADD:
             r = a + b;
             break;
@@ -96,7 +96,7 @@ double operate_d(unsigned char op, double a, double b) {
             r = b != 0 ? a / b : -1;
             break;
 
-            //comparison
+            // comparison
         case IL_GT:
             r = (a > b);
             break;
@@ -128,7 +128,7 @@ double operate_d(unsigned char op, double a, double b) {
 }
 
 data_t operate(unsigned char op, unsigned char type, const data_t a, const data_t b) {
-    data_t r;	    //return value
+    data_t r; // return value
     data_t n = negate(&op, b);
     uint64_t modulo = 1;
     switch (type) {
@@ -142,7 +142,7 @@ data_t operate(unsigned char op, unsigned char type, const data_t a, const data_
 
         case T_BYTE:
             modulo = 1 << BYTESIZE;
-            //r.u = operate_u(op, a.u % 0x100, bu % 0x100) % 0x100;
+            // r.u = operate_u(op, a.u % 0x100, bu % 0x100) % 0x100;
             r.u = operate_u(op, a.u % modulo, n.u % modulo) % modulo;
             break;
 
@@ -156,10 +156,9 @@ data_t operate(unsigned char op, unsigned char type, const data_t a, const data_
             r.u = operate_u(op, a.u % modulo, n.u % modulo) % modulo;
             break;
 
-        default:	    //64bit uint
+        default: //64bit uint
             r.u = operate_u(op, a.u, n.u);
             break;
     }
     return r;
 }
-

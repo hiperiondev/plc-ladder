@@ -19,7 +19,7 @@
 #include "config.h"
 
 char* strdup_r(char *dest, const char *src) {
-//strdup with realloc
+// strdup with realloc
 
     char *r = (!dest) ? (char*) malloc(strlen(src)) : realloc((void*) dest, strlen(src));
 

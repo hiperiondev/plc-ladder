@@ -41,7 +41,8 @@ int com_config(const config_t conf) {
     return 0;
 }
 
-int com_enable() /* Enable bus communication */
+// enable bus communication
+int com_enable()
 {
     int r = 0;
 
@@ -55,13 +56,15 @@ int com_enable() /* Enable bus communication */
     return r;
 }
 
-int com_disable() /* Disable bus communication */
+// disable bus communication
+int com_disable()
 {
     comedi_close(it);
     return STATUS_OK;
 }
 
-int com_fetch() { //COMEDI has already fetched them for you
+// COMEDI has already fetched them for you
+int com_fetch() {
     return 0;
 }
 
@@ -69,17 +72,19 @@ int com_flush() {
     return 0;
 }
 
-void com_dio_read(unsigned int index, uint8_t *value) {	//write input n to bit
+// write input n to bit
+void com_dio_read(unsigned int index, uint8_t *value) {
     unsigned int b;
     comedi_dio_read(it, Comedi_subdev_i, index, &b);
     *value = (uint8_t) b;
 }
 
-void com_dio_write(const uint8_t *value, unsigned int n, unsigned char bit) {	//write bit to n output
+void com_dio_write(const uint8_t *value, unsigned int n, unsigned char bit) { // write bit to n output
     comedi_dio_write(it, Comedi_subdev_q, n, bit);
 }
 
-void com_dio_bitfield(const unsigned char *mask, unsigned char *bits) {	//simultaneusly write output bits defined my mask and read all inputs
+// simultaneusly write output bits defined my mask and read all inputs
+void com_dio_bitfield(const unsigned char *mask, unsigned char *bits) {
     /*    FIXME int i;
      unsigned int w, b;
      w = (unsigned int) (*mask);
@@ -89,21 +94,21 @@ void com_dio_bitfield(const unsigned char *mask, unsigned char *bits) {	//simult
 
 void com_data_read(unsigned int index, uint64_t *value) {
     lsampl_t data;
-    comedi_data_read(it, Comedi_subdev_ai, index, 0,	//unsigned int range,
-            AREF_GROUND,	//unsigned int aref,
+    comedi_data_read(it, Comedi_subdev_ai, index, 0, // unsigned int range,
+            AREF_GROUND, // unsigned int aref,
             &data);
     *value = (uint64_t) data;
 }
 
 void com_data_write(unsigned int index, uint64_t value) {
     lsampl_t data = (lsampl_t)(value % 0x100000000);
-    comedi_data_write(it, Comedi_subdev_aq, index, 0,	//unsigned int range,
-            AREF_GROUND,	//unsigned int aref,
+    comedi_data_write(it, Comedi_subdev_aq, index, 0, // unsigned int range,
+            AREF_GROUND, // unsigned int aref,
             data);
 }
 
 struct hardware Comedi = {
-        HW_COMEDI, 0,     // errorcode
+        HW_COMEDI, 0,     // error code
         "Comedi driver",
         com_enable,       // enable
         com_disable,      // disable

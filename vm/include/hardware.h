@@ -1,9 +1,6 @@
 #ifndef _HARDWARE_H_
 #define _HARDWARE_H_
-/**
- *@file hardware.h
- *@brief hardware interface
- */
+
 #include <inttypes.h>
 
 #include "config.h"

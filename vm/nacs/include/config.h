@@ -37,18 +37,14 @@
 #define CONF_F        0
 #define CONF_T        1
 
-/**
- * @brief type of storage (key / value)
- */
+// type of storage (key / value)
 typedef enum {
     STORE_KEY,
     STORE_VAL,
     N_STORAGE_MODES
 } STORAGE_MODE;
 
-/**
- * @brief type of entry
- */
+// type of entry
 typedef enum {
     ENTRY_NONE,
     ENTRY_INT,
@@ -58,22 +54,18 @@ typedef enum {
     N_ENTRY_TYPES
 } ENTRY_TYPE;
 
-/**
- * @brief sequence block parameters
- */
+// sequence block parameters
 typedef struct param {
     char *key; // min, max, default, preset, readonly, countdown, etc.
     char *value;
     struct param *next;
 } *param_t;
 
-/*FIXME: make a hashmap out of this */
+// FIXME: make a hashmap out of this
 #define MAX_PARAM 256
 typedef param_t *param_table_t;
 
-/**
- * @brief sequence block variables
- */
+// sequence block variables
 typedef struct variable {
     unsigned char index;
              char *name;
@@ -82,17 +74,13 @@ typedef struct variable {
           param_t params;
 } *variable_t;
 
-/**
- * @brief sequence of variable blocks
- */
+// sequence of variable blocks
 typedef struct sequence {
            int size;
     variable_t vars;
 } *sequence_t;
 
-/**
- * @brief the configuration entry
- */
+// the configuration entry
 typedef struct entry {
      int type_tag;
     char *name;
@@ -107,9 +95,7 @@ typedef struct entry {
 
 typedef entry_t *entry_map_t;
 
-/**
- * @brief the configuration 
- */
+// the configuration
 typedef struct config {
     unsigned int size;
              int err;

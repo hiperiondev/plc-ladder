@@ -55,7 +55,7 @@ static void yaml_parser_error(yaml_parser_t parser) {
             break;
 
         default:
-            /* Couldn't happen. */
+            // couldn't happen.
             LOGGER("Internal error\n");
             break;
     }
@@ -68,14 +68,14 @@ static int log_yml_event(yaml_event_t event) {
         case YAML_NO_EVENT:
             LOGGER("No event!");
             break;
-            /* Stream start/end */
+            // stream start/end
         case YAML_STREAM_START_EVENT:
             LOGGER("STREAM START");
             break;
         case YAML_STREAM_END_EVENT:
             LOGGER("STREAM END");
             break;
-            /* Block delimeters */
+            // block delimeters
         case YAML_DOCUMENT_START_EVENT:
             LOGGER("Start Document");
             break;
@@ -112,7 +112,7 @@ static config_t process_seq_element(yaml_event_t event, int sequence, const char
     config_t conf = config;
     char *val = (char*) event.data.scalar.value;
     long size = 0;
-    if (key[0] == 0) { //we are not in a map yet
+    if (key[0] == 0) { // we are not in a map yet
         size = strtol(val, NULL, 10);
     }
     if (size > 0 && size < CONF_MAX_SEQ) {
@@ -198,7 +198,7 @@ config_t process(int sequence, yaml_parser_t *parser, config_t configuration) {
 
             switch (event.type) {
                 case YAML_SCALAR_EVENT:
-//swap storage to process val after key and vice versa 
+                // swap storage to process val after key and vice versa
                     if (storage == STORE_KEY) {
 
                         memset(key, 0, CONF_STR);
@@ -310,7 +310,7 @@ static void emit_variable(const variable_t var, yaml_emitter_t *emitter) {
             CONF_T,
             CONF_T, YAML_PLAIN_SCALAR_STYLE);
             yaml_emitter_emit(emitter, &evt);
-            //fixme: mulitiline
+            // fixme: mulitiline
             yaml_scalar_event_initialize(&evt,
             NULL,
             NULL, (yaml_char_t*) it->value, strlen(it->value),
@@ -422,7 +422,7 @@ static void emit_entry(const entry_t entry, yaml_emitter_t *emitter) {
             CONF_T, YAML_PLAIN_SCALAR_STYLE);
 
             yaml_emitter_emit(emitter, &evt);
-            //emit values as map
+            // emit values as map
             viter = entry->e.seq->vars;
 
             i = 0;
@@ -449,10 +449,9 @@ static void emit_entry(const entry_t entry, yaml_emitter_t *emitter) {
 
 int emit(yaml_emitter_t *emitter, const config_t conf) {
     int r = CONF_OK;
-
     yaml_event_t evt;
 
-    //doc start
+    // doc start
     yaml_document_start_event_initialize(&evt,
     NULL,
     NULL,
@@ -477,7 +476,7 @@ int emit(yaml_emitter_t *emitter, const config_t conf) {
         iter = conf->map[++i];
     }
 
-    //mapping end
+    // mapping end
     yaml_mapping_end_event_initialize(&evt);
     yaml_emitter_emit(emitter, &evt);
     //log_yml_event(evt);
@@ -507,7 +506,6 @@ int print_config_to_emitter(yaml_emitter_t emitter, const config_t conf) {
 }
 
 int print_config(FILE *fcfg, const config_t conf) {
-
     yaml_emitter_t emitter;
     //yaml_event_t event;
 

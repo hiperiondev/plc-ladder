@@ -23,4 +23,3 @@ hardware_t get_hardware(int type) {
             return &Dry;
     }
 }
-

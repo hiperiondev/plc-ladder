@@ -11,7 +11,7 @@
 #include "instruction.h"
 
 int get_type(const instruction_t ins) {
-    int rv = -1; //ERR
+    int rv = -1; // err
 
     if (ins != NULL && OP_VALID(ins->operand)) {
         unsigned char x = ins->bit;
@@ -45,7 +45,6 @@ int get_type(const instruction_t ins) {
 }
 
 void deepcopy(const instruction_t from, instruction_t to) {
-    // deepcopy
     to->operation = from->operation;
     to->operand = from->operand;
     to->modifier = from->modifier;
@@ -56,4 +55,3 @@ void deepcopy(const instruction_t from, instruction_t to) {
     if (from->lookup != NULL)
         strcpy(to->lookup, from->lookup);
 }
-

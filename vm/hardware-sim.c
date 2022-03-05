@@ -70,10 +70,10 @@ int sim_config(const config_t conf) {
     return r;
 }
 
-int sim_enable() /* Enable bus communication */
-{
+// enable bus communication
+int sim_enable() {
     int r = STATUS_OK;
-    /*open input and output streams*/
+    // open input and output streams
 
     if (!(BufIn = (char*) malloc(Ni))) {
         r = STATUS_ERR;
@@ -98,10 +98,10 @@ int sim_enable() /* Enable bus communication */
     return r;
 }
 
-int sim_disable() /* Disable bus communication */
-{
+// disable bus communication
+int sim_disable() {
     int r = STATUS_OK;
-    /*close streams*/
+    // close streams
     if (Ifd && !fclose(Ifd)) {
         r = STATUS_ERR;
     }
@@ -167,7 +167,7 @@ void sim_dio_read(unsigned int n, uint8_t *bit) { // write input n to bit
     position = n / BYTESIZE;
     uint8_t i = 0;
     if (strlen(BufIn) > position) {
-        /*read a byte from input stream*/
+        // read a byte from input stream
         i = BufIn[position];
     }
     b = (i >> n % BYTESIZE) % 2;
@@ -176,20 +176,21 @@ void sim_dio_read(unsigned int n, uint8_t *bit) { // write input n to bit
 
 void sim_dio_write(const unsigned char *buf, unsigned int n, uint8_t bit)
 
-{    //write bit to n output
+{ // write bit to n output
     uint8_t q;
     unsigned int position = n / BYTESIZE;
     q = buf[position];
     q |= bit << n % BYTESIZE;
-    /*write a byte to output stream*/
-    q += ASCIISTART; //ASCII
+    // write a byte to output stream
+    q += ASCIISTART; // ASCII
     // plc_log("Send %d to byte %d", q, position);
     if (strlen(BufOut) >= position) {
         BufOut[position] = q;
     }
 }
 
-void sim_dio_bitfield(const uint8_t *mask, uint8_t *bits) { //simultaneusly write output bits defined by mask and read all inputs
+// simultaneusly write output bits defined by mask and read all inputs
+void sim_dio_bitfield(const uint8_t *mask, uint8_t *bits) {
     /* FIXME
      int i=0;
      unsigned int w = (unsigned int) (*mask);
@@ -217,7 +218,7 @@ void sim_data_write(unsigned int index, uint64_t value) {
 }
 
 struct hardware Sim = {
-        HW_SIM, 0,        // errorcode
+        HW_SIM, 0,        // error code
         "simulated hardware",
         sim_enable,       // enable
         sim_disable,      // disable
@@ -230,4 +231,3 @@ struct hardware Sim = {
         sim_data_write,   // data_write
         sim_config,       // hw_config
         };
-

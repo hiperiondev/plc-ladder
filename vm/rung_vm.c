@@ -62,4 +62,3 @@ data_t pop(const data_t val, opcode_t *stack) {
     }
     return r;
 }
-
