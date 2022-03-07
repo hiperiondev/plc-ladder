@@ -14,22 +14,15 @@ void ut_minmin() {
 }
 
 void ut_parse_ld_line() {
-    int cnt = 0;
-
-    printf("\ntest: %d\n", cnt++);
     int result = parse_ld_line(NULL);
     CU_ASSERT(result == STATUS_ERR);
 
-
-    printf("\ntest: %d\n", cnt++);
     struct ld_line line;
     memset(&line, 0, sizeof(line));
     result = parse_ld_line(&line);
     CU_ASSERT(result == STATUS_ERR);
     CU_ASSERT(line.status == STATUS_ERROR);
 
-
-    printf("\ntest: %d\n", cnt++);
     memset(&line, 0, sizeof(line));
     line.buf = " -----";
     result = parse_ld_line(&line);
@@ -37,8 +30,6 @@ void ut_parse_ld_line() {
     CU_ASSERT(line.cursor == strlen(line.buf));
     CU_ASSERT(line.status == STATUS_RESOLVED);
 
-
-    printf("\ntest: %d\n", cnt++);
     memset(&line, 0, sizeof(line));
     line.buf = " ---+  ";
     result = parse_ld_line(&line);
@@ -46,8 +37,6 @@ void ut_parse_ld_line() {
     CU_ASSERT(line.cursor == strlen(line.buf) - 3);
     CU_ASSERT(line.status == STATUS_UNRESOLVED);
 
-
-    printf("\ntest: %d\n", cnt++);
     memset(&line, 0, sizeof(line));
     line.buf = " ---Y--";
     result = parse_ld_line(&line);
@@ -55,8 +44,6 @@ void ut_parse_ld_line() {
     CU_ASSERT(line.cursor == strlen(line.buf) - 2);
     CU_ASSERT(line.status == STATUS_ERROR);
 
-
-    printf("\ntest: %d\n", cnt++);
     memset(&line, 0, sizeof(line));
     line.buf = " ---i--";
     result = parse_ld_line(&line);
@@ -64,8 +51,6 @@ void ut_parse_ld_line() {
     CU_ASSERT(line.cursor == strlen(line.buf) - 1);
     CU_ASSERT(line.status == STATUS_ERROR);
 
-
-    printf("\ntest: %d\n", cnt++);
     memset(&line, 0, sizeof(line));
     line.buf = " ---i0/5--";
     result = parse_ld_line(&line);
@@ -74,8 +59,6 @@ void ut_parse_ld_line() {
     CU_ASSERT(line.status == STATUS_RESOLVED);
     CU_ASSERT(line.stmt == NULL);
 
-
-    printf("\ntest: %d\n", cnt++);
     memset(&line, 0, sizeof(line));
     line.buf = " ---i0/5--( ";
     result = parse_ld_line(&line);
@@ -84,8 +67,6 @@ void ut_parse_ld_line() {
     CU_ASSERT(line.status == STATUS_ERROR);
     CU_ASSERT(line.stmt == NULL);
 
-
-    printf("\ntest: %d\n", cnt++);
     memset(&line, 0, sizeof(line));
     line.buf = " ---i0/5--(QQ ";
     result = parse_ld_line(&line);
@@ -94,12 +75,9 @@ void ut_parse_ld_line() {
     CU_ASSERT(line.status == STATUS_ERROR);
     CU_ASSERT(line.stmt == NULL);
 
-    printf("\n--test: %d\n", cnt++);
     memset(&line, 0, sizeof(line));
     line.buf = " ---!i0/5--(Q0/3 ";
-    printf("result\n");
     result = parse_ld_line(&line);
-    printf("result END\n");
 
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(line.cursor == strlen(line.buf) - 4);
@@ -114,8 +92,6 @@ void ut_parse_ld_line() {
     CU_ASSERT(line.stmt->v.ass.right->v.exp.a->v.id.bit == 5);
     CU_ASSERT(line.stmt->v.ass.right->v.exp.b == NULL);
 
-
-    printf("\ntest: %d\n", cnt++);
     tree_clear(line.stmt);
     memset(&line, 0, sizeof(line));
 
@@ -133,8 +109,6 @@ void ut_parse_ld_line() {
     CU_ASSERT(line.stmt->v.exp.a->v.id.bit == 1);
     CU_ASSERT(line.stmt->v.exp.b == NULL);
 
-
-    printf("\ntest: %d\n", cnt++);
     tree_clear(line.stmt);
     memset(&line, 0, sizeof(line));
     line.buf = " ---f1/1--|--+";
@@ -144,8 +118,6 @@ void ut_parse_ld_line() {
     CU_ASSERT(line.status == STATUS_UNRESOLVED);
     CU_ASSERT(line.stmt == NULL);
 
-
-    printf("\ntest: %d\n", cnt++);
     memset(&line, 0, sizeof(line));
     line.buf = " ---q1/1-!i0/3--+";
     result = parse_ld_line(&line);
@@ -234,9 +206,9 @@ void ut_parse_ld_program() {
     int result = parse_ld_vertical_parse(0, 0, NULL);
     CU_ASSERT(result == STATUS_ERR);
 
-    sprintf(lines[0], "%s\n", " i0/1--+---[Q0/0       ");
-    sprintf(lines[1], "%s\n", "       |     ");
-    sprintf(lines[2], "%s\n", " i0/3--+       ");
+    sprintf(lines[0], "%s\n", " i0/1--+---[Q0/0 ");
+    sprintf(lines[1], "%s\n", "       |         ");
+    sprintf(lines[2], "%s\n", " i0/3--+         ");
 
     ld_line_t *program = parse_ld_construct_program(lines, 3);
 
@@ -262,21 +234,23 @@ void ut_parse_ld_program() {
     parse_ld_destroy_program(3, program);
 
     r = parse_ld_program("1or3.ld", lines);
-    CU_ASSERT(p.status == STATUS_OK);
-    CU_ASSERT_STRING_EQUAL(p.rungs[0]->id, "1or3.ld");
+
+    CU_ASSERT((*r)->status == STATUS_OK);
+    CU_ASSERT_STRING_EQUAL((*r)->id, "1or3.ld");
     char code[3 * MAXSTR];
     memset(code, 0, 3 * MAXSTR);
     sprintf(code, "%s%s%s", lines[0], lines[1], lines[2]);
     //printf("--------->%s\n<-----", p.rungs[0]->code->line);
     //should truncate whitespaces
-    CU_ASSERT_STRING_EQUAL(p.rungs[0]->code->line, "i0/1--+---[Q0/0");
+    CU_ASSERT_STRING_EQUAL((*r)->code->line, "i0/1--+---[Q0/0");
     char dump[MAXSTR * MAXBUF];
     memset(dump, 0, MAXBUF * MAXSTR);
-    rung_dump(p.rungs[0], dump);
+
+    rung_dump((*r), dump);
 
     //printf("%s\n", dump);
 
-    rung_clear(p.rungs[0]);
+    rung_clear(*r);
     init_mock_plc(&p);
 
     memset(dump, 0, MAXBUF * MAXSTR);
@@ -293,7 +267,7 @@ void ut_parse_ld_program() {
 
     CU_ASSERT(result == STATUS_OK);
 
-    rung_dump(p.rungs[0], dump);
+    rung_dump((*r), dump);
 
     //printf("%s\n", dump);
     const char *expected = ""

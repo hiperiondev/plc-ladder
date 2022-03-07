@@ -341,15 +341,15 @@ static unsigned int parse_ld_program_length(const char lines[][MAXSTR], unsigned
 }
 
 ld_line_t* parse_ld_construct_program(const char lines[][MAXSTR], unsigned int length) {
-    ld_line_t * program = (ld_line_t *)MEM_CALLOC(length, sizeof(ld_line_t), "parse_ld_construct_program");
+    ld_line_t * program = (ld_line_t *)MEM_CALLOC(length, sizeof(ld_line_t), "parse_ld_construct_program A");
 
     int i = 0;
     for (; i < length; i++) { // for each line construct ld_line
         if (lines != NULL) {
-            ld_line_t line  = (ld_line_t)MEM_CALLOC(1, sizeof(struct ld_line), "parse_ld_construct_program");
+            ld_line_t line  = (ld_line_t)MEM_CALLOC(1, sizeof(struct ld_line), "parse_ld_construct_program B");
             line->cursor = 0;
             line->status = STATUS_UNRESOLVED;
-            line->buf = (char *)MEM_CALLOC(1, MAXSTR, "parse_ld_construct_program");
+            line->buf = (char *)MEM_CALLOC(1, MAXSTR, "parse_ld_construct_program C");
             memcpy(line->buf, lines[i],MAXSTR);
             line->stmt = NULL;
             program[i] = line;
@@ -361,10 +361,10 @@ ld_line_t* parse_ld_construct_program(const char lines[][MAXSTR], unsigned int l
 void parse_ld_destroy_program(unsigned int length, ld_line_t *program) {
     int i = 0;
     for (; i < length; i++) { // for each line destroy ld_line
-        MEM_FREE(program[i]);
+        MEM_FREE(program[i], "parse_ld_destroy_program A");
         program[i] = NULL;
     }
-    MEM_FREE(program);
+    MEM_FREE(program, "parse_ld_destroy_program B");
 }
 
 static rung_t* parse_ld_generate_code(unsigned int length, const char *name, const ld_line_t *program, rung_t *rungs, uint8_t *rungno) {
@@ -388,8 +388,12 @@ rung_t* parse_ld_program(const char *name, const char lines[][MAXSTR]) {
     int rv = STATUS_OK;
 
     unsigned int len = parse_ld_program_length(lines, MAXBUF);
-    ld_line_t *program = parse_ld_construct_program(lines, len);
+    if (len == 0) {
+        plc_log("parse_ld_program-> len == 0");
+        return NULL;
+    }
 
+    ld_line_t *program = parse_ld_construct_program(lines, len);
     int node = 0;
     while (rv >= STATUS_OK && node >= 0) {
         rv = parse_ld_horizontal_parse(len, program);

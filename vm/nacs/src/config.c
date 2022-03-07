@@ -22,7 +22,7 @@
 char* strdup_r(char *dest, const char *src) {
 // strdup with realloc
 
-    char *r = (!dest) ? (char*) MEM_MALLOC(strlen(src), "strdup_r") : realloc((void*) dest, strlen(src));
+    char *r = (!dest) ? (char*) MEM_MALLOC(strlen(src), "strdup_r A") : realloc((void*) dest, strlen(src));
 
     memset(r, 0, strlen(src));
     sprintf(r, "%s", src);
@@ -31,7 +31,7 @@ char* strdup_r(char *dest, const char *src) {
 }
 
 entry_t new_entry_int(int i, char *name) {
-    entry_t r = (entry_t) MEM_MALLOC(sizeof(struct entry), "new_entry_int");
+    entry_t r = (entry_t) MEM_MALLOC(sizeof(struct entry), "new_entry_int A");
     r->type_tag = ENTRY_INT;
     r->name = name;
     r->e.scalar_int = i;
@@ -41,17 +41,17 @@ entry_t new_entry_int(int i, char *name) {
 
 entry_t new_entry_str(char *str, char *name) {
 
-    entry_t r = (entry_t) MEM_MALLOC(sizeof(struct entry), "new_entry_str");
+    entry_t r = (entry_t) MEM_MALLOC(sizeof(struct entry), "new_entry_str A");
     r->type_tag = ENTRY_STR;
     r->name = name;
-    r->e.scalar_str = (char*) MEM_MALLOC(sizeof(str), "new_entry_str");
+    r->e.scalar_str = (char*) MEM_MALLOC(sizeof(str), "new_entry_str B");
     sprintf(r->e.scalar_str, "%s", str);
     return r;
 }
 
 entry_t new_entry_map(config_t map, char *name) {
 
-    entry_t r = (entry_t) MEM_MALLOC(sizeof(struct entry), "new_entry_map");
+    entry_t r = (entry_t) MEM_MALLOC(sizeof(struct entry), "new_entry_map A");
     r->type_tag = ENTRY_MAP;
     r->name = name;
     r->e.conf = map;
@@ -61,7 +61,7 @@ entry_t new_entry_map(config_t map, char *name) {
 
 entry_t new_entry_seq(sequence_t seq, char *name) {
 
-    entry_t r = (entry_t) MEM_MALLOC(sizeof(struct entry), "new_entry_seq");
+    entry_t r = (entry_t) MEM_MALLOC(sizeof(struct entry), "new_entry_seq A");
     r->type_tag = ENTRY_SEQ;
     r->name = name;
     r->e.seq = seq;
@@ -70,7 +70,7 @@ entry_t new_entry_seq(sequence_t seq, char *name) {
 }
 
 entry_t new_entry_null() {
-    entry_t r = (entry_t) MEM_MALLOC(sizeof(struct entry), "new_entry_null");
+    entry_t r = (entry_t) MEM_MALLOC(sizeof(struct entry), "new_entry_null A");
     r->type_tag = ENTRY_NONE;
     r->name = "";
     r->e.scalar_int = 0;
@@ -230,7 +230,7 @@ config_t set_recursive_entry(int key, const config_t val, config_t conf) {
 // TODO: in a c++ impl. this would be a hashmap
 param_t new_param(const char *key, const char *val) {
 
-    param_t n = (param_t) MEM_MALLOC(sizeof(struct param), "new_param");
+    param_t n = (param_t) MEM_MALLOC(sizeof(struct param), "new_param A");
     n->key = strdup(key);
     n->value = strdup(val);
     n->next = NULL;
@@ -327,10 +327,10 @@ int get_key(const char *name, const config_t where) {
 }
 
 config_t new_config(int size) {
-    config_t r = (config_t) MEM_MALLOC(sizeof(struct config), "new_config");
+    config_t r = (config_t) MEM_MALLOC(sizeof(struct config), "new_config A");
     memset(r, 0, sizeof(struct config));
     r->size = size;
-    r->map = (entry_map_t) MEM_MALLOC(size * sizeof(struct entry), "new_config");
+    r->map = (entry_map_t) MEM_MALLOC(size * sizeof(struct entry), "new_config B");
     memset(r->map, 0, size * sizeof(struct entry));
 
     return r;
@@ -351,10 +351,10 @@ config_t copy_config(config_t other) {
 
 sequence_t new_sequence(int size) {
 
-    sequence_t r = (sequence_t) MEM_MALLOC(size * sizeof(struct sequence), "new_sequence");
+    sequence_t r = (sequence_t) MEM_MALLOC(size * sizeof(struct sequence), "new_sequence A");
     memset(r, 0, sizeof(struct sequence));
     r->size = size;
-    r->vars = (variable_t) MEM_MALLOC(size * sizeof(struct variable), "new_sequence");
+    r->vars = (variable_t) MEM_MALLOC(size * sizeof(struct variable), "new_sequence B");
     memset(r->vars, 0, size * sizeof(struct variable));
 
     return r;

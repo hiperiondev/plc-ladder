@@ -236,7 +236,7 @@ char* parse_il_trunk_whitespace(char *line) {
         return NULL;
     }
     int n = strlen(line);
-    char *buf = (char*) MEM_MALLOC(n + 1, "parse_il_trunk_whitespace");
+    char *buf = (char*) MEM_MALLOC(n + 1, "parse_il_trunk_whitespace A");
     memset(buf, 0, n + 1);
 
     // trim left
@@ -255,7 +255,7 @@ char* parse_il_trunk_whitespace(char *line) {
             break;
     memset(line, 0, n);
     sprintf(line, "%s", buf);
-    MEM_FREE(buf);
+    MEM_FREE(buf, "parse_il_trunk_whitespace B");
 
     return line;
 }

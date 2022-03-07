@@ -20,13 +20,13 @@ int rung_append(const instruction_t i, rung_t r) {
         return STATUS_ERR;
     if (i != NULL) {
         if (r->instructions == NULL) { // lazy allocation
-            r->instructions = (instruction_t*) MEM_MALLOC(MAXSTACK * sizeof(instruction_t), "rung_append");
+            r->instructions = (instruction_t*) MEM_MALLOC(MAXSTACK * sizeof(instruction_t), "rung_append A");
             memset(r->instructions, 0, MAXSTACK * sizeof(instruction_t));
         }
         if (rung_lookup(i->label, r) >= 0)
             return STATUS_ERR; // don't allow duplicate labels
 
-        instruction_t ins = (instruction_t) MEM_MALLOC(sizeof(struct instruction), "rung_append");
+        instruction_t ins = (instruction_t) MEM_MALLOC(sizeof(struct instruction), "rung_append B");
         memset(ins, 0, sizeof(struct instruction));
         instruction_deepcopy(i, ins);
 
@@ -40,7 +40,7 @@ codeline_t rung_append_line(const char *l, codeline_t code) {
 
         return code;
     }
-    codeline_t r = (codeline_t) MEM_MALLOC(sizeof(struct codeline), "rung_append_line");
+    codeline_t r = (codeline_t) MEM_MALLOC(sizeof(struct codeline), "rung_append_line A");
     memset(r, 0, sizeof(struct codeline));
     r->line = strdup(l);
 
@@ -62,11 +62,12 @@ void rung_clear(rung_t r) {
     int i = 0;
     if (r != NULL && r->instructions != NULL) {
         for (; i < MAXSTACK; i++) {
-            if (r->instructions[i] != NULL)
-                MEM_FREE(r->instructions[i]);
+            if (r->instructions[i] != NULL) {
+                MEM_FREE(r->instructions[i], "rung_clear A");
+            }
         }
-        MEM_FREE(r->instructions);
-        MEM_FREE(r->code);
+        MEM_FREE(r->instructions, "rung_clear B");
+        MEM_FREE(r->code, "rung_clear C");
         r->instructions = NULL;
         r->insno = 0;
         // TODO: also free rung, return null
@@ -110,11 +111,11 @@ int rung_intern(rung_t r) {
 }
 
 rung_t rung_make(const char *name, rung_t *rungs, uint8_t *rungno) {
-    rung_t r = (rung_t) MEM_MALLOC(sizeof(struct rung), "rung_make");
+    rung_t r = (rung_t) MEM_MALLOC(sizeof(struct rung), "rung_make A");
     memset(r, 0, sizeof(struct rung));
     r->id = strdup(name);
     if (rungs == NULL) { // lazy allocation
-        rungs = (rung_t*) MEM_MALLOC(MAXRUNG * sizeof(rung_t), "rung_make");
+        rungs = (rung_t*) MEM_MALLOC(MAXRUNG * sizeof(rung_t), "rung_make B");
         memset(rungs, 0, MAXRUNG * sizeof(rung_t));
     }
     rungs[(*rungno)++] = r;

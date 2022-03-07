@@ -24,6 +24,7 @@
 
 int main() {
 
+    /*
     rung_t *rungs;
 
     char lines[MAXBUF][MAXSTR];
@@ -76,6 +77,7 @@ int main() {
     printf("test 12: %s\n",               line.stmt->v.ass.right->v.exp.b == NULL                 ? "ok" : "error");
 
     printf("\n-- parse_ld_line END\n\n");
+    */
 
     vm_tests();
 }

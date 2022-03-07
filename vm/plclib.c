@@ -826,11 +826,11 @@ int instruct(plc_t p, rung_t r, unsigned int *pc) {
 }
 
 rung_t mk_rung(const char *name, plc_t p) {
-    rung_t r = (rung_t) MEM_CALLOC(1, sizeof(struct rung), "mk_rung");
+    rung_t r = (rung_t) MEM_CALLOC(1, sizeof(struct rung), "mk_rung A");
 
     r->id = strdup(name);
     if (p->rungs == NULL) { //lazy allocation
-        p->rungs = (rung_t*) MEM_CALLOC(MAXRUNG, sizeof(rung_t), "mk_rung");
+        p->rungs = (rung_t*) MEM_CALLOC(MAXRUNG, sizeof(rung_t), "mk_rung B");
 
     }
     p->rungs[p->rungno++] = r;
@@ -1396,20 +1396,20 @@ plc_t plc_func(plc_t p) {
 
 // initialize
 static plc_t allocate(plc_t plc) {
-    plc->inputs = (uint8_t*) MEM_CALLOC(1, plc->ni, "allocate");
-    plc->outputs = (uint8_t*) MEM_CALLOC(1, plc->nq, "allocate");
-    plc->real_in = (uint64_t*) MEM_CALLOC(plc->nai, sizeof(uint64_t), "allocate");
-    plc->real_out = (uint64_t*) MEM_CALLOC(plc->naq, sizeof(uint64_t), "allocate");
-    plc->di = (di_t) MEM_CALLOC(BYTESIZE * plc->ni, sizeof(struct digital_input), "allocate");
-    plc->dq = (do_t) MEM_CALLOC(BYTESIZE * plc->nq, sizeof(struct digital_output), "allocate");
+    plc->inputs = (uint8_t*) MEM_CALLOC(1, plc->ni, "allocate A");
+    plc->outputs = (uint8_t*) MEM_CALLOC(1, plc->nq, "allocate B");
+    plc->real_in = (uint64_t*) MEM_CALLOC(plc->nai, sizeof(uint64_t), "allocate C");
+    plc->real_out = (uint64_t*) MEM_CALLOC(plc->naq, sizeof(uint64_t), "allocate D");
+    plc->di = (di_t) MEM_CALLOC(BYTESIZE * plc->ni, sizeof(struct digital_input), "allocate E");
+    plc->dq = (do_t) MEM_CALLOC(BYTESIZE * plc->nq, sizeof(struct digital_output), "allocate F");
 
-    plc->t = (dt_t) MEM_CALLOC(plc->nt, sizeof(struct timer), "allocate");
-    plc->s = (blink_t) MEM_CALLOC(plc->ns, sizeof(struct blink), "allocate");
-    plc->m = (mvar_t) MEM_CALLOC(plc->nm, sizeof(struct mvar), "allocate");
-    plc->mr = (mreal_t) MEM_CALLOC(plc->nmr, sizeof(struct mreal), "allocate");
+    plc->t = (dt_t) MEM_CALLOC(plc->nt, sizeof(struct timer), "allocate G");
+    plc->s = (blink_t) MEM_CALLOC(plc->ns, sizeof(struct blink), "allocate H");
+    plc->m = (mvar_t) MEM_CALLOC(plc->nm, sizeof(struct mvar), "allocate I");
+    plc->mr = (mreal_t) MEM_CALLOC(plc->nmr, sizeof(struct mreal), "allocate J");
 
-    plc->ai = (aio_t) MEM_CALLOC(plc->nai, sizeof(struct analog_io), "allocate");
-    plc->aq = (aio_t) MEM_CALLOC(plc->naq, sizeof(struct analog_io), "allocate");
+    plc->ai = (aio_t) MEM_CALLOC(plc->nai, sizeof(struct analog_io), "allocate K");
+    plc->aq = (aio_t) MEM_CALLOC(plc->naq, sizeof(struct analog_io), "allocate L");
 
     return plc;
 }
@@ -1417,7 +1417,7 @@ static plc_t allocate(plc_t plc) {
 // construct
 plc_t new_plc(int di, int dq, int ai, int aq, int nt, int ns, int nm, int nr, int step, hardware_t hw) {
 
-    plc_t plc = (plc_t) MEM_MALLOC(sizeof(struct PLC_regs), "new_plc");
+    plc_t plc = (plc_t) MEM_MALLOC(sizeof(struct PLC_regs), "new_plc A");
     memset(plc, 0, sizeof(struct PLC_regs));
 
     plc->ni = di;
@@ -1444,7 +1444,7 @@ plc_t new_plc(int di, int dq, int ai, int aq, int nt, int ns, int nm, int nr, in
 
 plc_t copy_plc(const plc_t plc) {
 
-    plc_t p = (plc_t) MEM_MALLOC(sizeof(struct PLC_regs), "copy_plc");
+    plc_t p = (plc_t) MEM_MALLOC(sizeof(struct PLC_regs), "copy_plc A");
     memset(p, 0, sizeof(struct PLC_regs));
     p->ni = plc->ni;
     p->nq = plc->nq;
@@ -1474,42 +1474,42 @@ plc_t copy_plc(const plc_t plc) {
 void clear_plc(plc_t plc) {
     if (plc != NULL) {
         if (plc->ai != NULL) {
-            MEM_FREE(plc->ai);
+            MEM_FREE(plc->ai, "clear_plc A");
         }
         if (plc->aq != NULL) {
-            MEM_FREE(plc->aq);
+            MEM_FREE(plc->aq, "clear_plc B");
         }
         if (plc->mr != NULL) {
-            MEM_FREE(plc->mr);
+            MEM_FREE(plc->mr, "clear_plc C");
         }
         if (plc->m != NULL) {
-            MEM_FREE(plc->m);
+            MEM_FREE(plc->m, "clear_plc D");
         }
         if (plc->s != NULL) {
-            MEM_FREE(plc->s);
+            MEM_FREE(plc->s, "clear_plc E");
         }
         if (plc->t != NULL) {
-            MEM_FREE(plc->t);
+            MEM_FREE(plc->t, "clear_plc F");
         }
         if (plc->dq != NULL) {
-            MEM_FREE(plc->dq);
+            MEM_FREE(plc->dq, "clear_plc G");
         }
         if (plc->di != NULL) {
-            MEM_FREE(plc->di);
+            MEM_FREE(plc->di, "clear_plc H");
         }
         if (plc->real_out != NULL) {
-            MEM_FREE(plc->real_out);
+            MEM_FREE(plc->real_out, "clear_plc I");
         }
         if (plc->real_in != NULL) {
-            MEM_FREE(plc->real_in);
+            MEM_FREE(plc->real_in, "clear_plc J");
         }
         if (plc->outputs != NULL) {
-            MEM_FREE(plc->outputs);
+            MEM_FREE(plc->outputs, "clear_plc K");
         }
         if (plc->inputs != NULL) {
-            MEM_FREE(plc->inputs);
+            MEM_FREE(plc->inputs, "clear_plc L");
         }
-        MEM_FREE(plc);
+        MEM_FREE(plc, "clear_plc M");
     }
 }
 
