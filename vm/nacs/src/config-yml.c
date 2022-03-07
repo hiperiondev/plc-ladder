@@ -18,6 +18,7 @@
 
 #include <yaml.h>
 #include "config.h"
+#include "debug_mem.h"
 
 static void yaml_parser_error(yaml_parser_t parser) {
 
@@ -589,7 +590,7 @@ char* serialize_config(const config_t conf) {
 
         return NULL;
     }
-    char *buf = (char*) malloc(CONF_STR);
+    char *buf = (char*) MEM_MALLOC(CONF_STR, "serialize_config");
     memset(buf, 0, CONF_STR);
     yaml_emitter_set_output_string(&emitter, (yaml_char_t*) buf,
     CONF_STR, &written);

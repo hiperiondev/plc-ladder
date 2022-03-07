@@ -9,6 +9,8 @@
 #include "config.h"
 #include "hardware.h"
 #include "schema.h"
+#include "debug_mem.h"
+#include "common.h"
 
 int Io_base = 0;
 int Wr_offs = 0;

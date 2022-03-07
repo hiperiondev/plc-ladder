@@ -9,6 +9,8 @@
 #include "config.h"
 #include "schema.h"
 #include "hardware.h"
+#include "debug_mem.h"
+#include "common.h"
 
 #define ASCIISTART 0x30
 
@@ -75,22 +77,22 @@ int sim_enable() {
     int r = STATUS_OK;
     // open input and output streams
 
-    if (!(BufIn = (char*) malloc(Ni))) {
+    if (!(BufIn = (char*) MEM_MALLOC(Ni, "sim_enable"))) {
         r = STATUS_ERR;
     } else {
         memset(BufIn, 0, Ni);
     }
-    if (!(BufOut = (char*) malloc(Nq))) {
+    if (!(BufOut = (char*) MEM_MALLOC(Nq, "sim_enable"))) {
         r = STATUS_ERR;
     } else {
         memset(BufOut, 0, Nq);
     }
-    if (!(AdcIn = (char*) malloc( LONG_BYTES * Nai))) {
+    if (!(AdcIn = (char*) MEM_MALLOC( LONG_BYTES * Nai, "sim_enable"))) {
         r = STATUS_ERR;
     } else {
         memset(AdcIn, 0, LONG_BYTES * Nai);
     }
-    if (!(AdcOut = (char*) malloc( LONG_BYTES * Naq))) {
+    if (!(AdcOut = (char*) MEM_MALLOC( LONG_BYTES * Naq, "sim_enable"))) {
         r = STATUS_ERR;
     } else {
         memset(AdcOut, 0, LONG_BYTES * Naq);
@@ -111,11 +113,11 @@ int sim_disable() {
     }
     plc_log("Closed simulation output");
     if (BufIn) {
-        free(BufIn);
+        MEM_FREE(BufIn);
         BufIn = NULL;
     }
     if (BufOut) {
-        free(BufOut);
+        MEM_FREE(BufOut);
         BufOut = NULL;
     }
     return r;

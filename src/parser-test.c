@@ -17,6 +17,8 @@
 #include "parser-ld.h"
 #include "parser-tree.h"
 #include "plclib.h"
+#include "debug_mem.h"
+#include "common.h"
 
 #include "vm_tests.h"
 
@@ -74,4 +76,6 @@ int main() {
     printf("test 12: %s\n",               line.stmt->v.ass.right->v.exp.b == NULL                 ? "ok" : "error");
 
     printf("\n-- parse_ld_line END\n\n");
+
+    vm_tests();
 }

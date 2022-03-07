@@ -9,6 +9,7 @@
 #include "parser-ld.h"
 #include "parser-tree.h"
 #include "rung.h"
+#include "debug_mem.h"
 
 int gen_expr(const item_t expression, rung_t rung, uint8_t recursive) {
     int rv = STATUS_OK;

@@ -7,6 +7,8 @@
 
 // debugging tools
 
+#include "debug_mem.h"
+
 double Mean = 0;
 double M2 = 0;
 unsigned long Loop = 0;

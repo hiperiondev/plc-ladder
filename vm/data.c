@@ -1,5 +1,6 @@
 #include "data.h"
 #include "common.h"
+#include "debug_mem.h"
 
 /*************************data_t**************************************/
 data_t negate(unsigned char *op, data_t b) {

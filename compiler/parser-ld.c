@@ -15,6 +15,7 @@
 #include "parser-ld.h"
 #include "rung.h"
 #include "log.h"
+#include "debug_mem.h"
 
 ///////////////////// parse ladder files /////////////////////
 /*
@@ -217,7 +218,7 @@ uint8_t parse_ld_read_char(const char *line, unsigned int c) {
 
 int parse_ld_line(ld_line_t line) {
     int rv = STATUS_OK;
-    if (line == (ld_line_t) NULL)
+    if (line == NULL)
         return STATUS_ERR;
 
     int c = LD_AND; // default character = '-'
@@ -340,15 +341,15 @@ static unsigned int parse_ld_program_length(const char lines[][MAXSTR], unsigned
 }
 
 ld_line_t* parse_ld_construct_program(const char lines[][MAXSTR], unsigned int length) {
-    ld_line_t * program = (ld_line_t *)calloc(length, sizeof(ld_line_t));
+    ld_line_t * program = (ld_line_t *)MEM_CALLOC(length, sizeof(ld_line_t), "parse_ld_construct_program");
 
     int i = 0;
     for (; i < length; i++) { // for each line construct ld_line
         if (lines != NULL) {
-            ld_line_t line  = (ld_line_t)calloc(1, sizeof(struct ld_line));
+            ld_line_t line  = (ld_line_t)MEM_CALLOC(1, sizeof(struct ld_line), "parse_ld_construct_program");
             line->cursor = 0;
             line->status = STATUS_UNRESOLVED;
-            line->buf = (char *)calloc(1, MAXSTR);
+            line->buf = (char *)MEM_CALLOC(1, MAXSTR, "parse_ld_construct_program");
             memcpy(line->buf, lines[i],MAXSTR);
             line->stmt = NULL;
             program[i] = line;
@@ -360,10 +361,10 @@ ld_line_t* parse_ld_construct_program(const char lines[][MAXSTR], unsigned int l
 void parse_ld_destroy_program(unsigned int length, ld_line_t *program) {
     int i = 0;
     for (; i < length; i++) { // for each line destroy ld_line
-        free(program[i]);
+        MEM_FREE(program[i]);
         program[i] = NULL;
     }
-    free(program);
+    MEM_FREE(program);
 }
 
 static rung_t* parse_ld_generate_code(unsigned int length, const char *name, const ld_line_t *program, rung_t *rungs, uint8_t *rungno) {

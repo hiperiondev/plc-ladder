@@ -13,6 +13,7 @@
 #include "rung.h"
 #include "log.h"
 #include "parser-il.h"
+#include "debug_mem.h"
 
 /* IL_task
  parsing:
@@ -235,7 +236,7 @@ char* parse_il_trunk_whitespace(char *line) {
         return NULL;
     }
     int n = strlen(line);
-    char *buf = (char*) malloc(n + 1);
+    char *buf = (char*) MEM_MALLOC(n + 1, "parse_il_trunk_whitespace");
     memset(buf, 0, n + 1);
 
     // trim left
@@ -254,7 +255,7 @@ char* parse_il_trunk_whitespace(char *line) {
             break;
     memset(line, 0, n);
     sprintf(line, "%s", buf);
-    free(buf);
+    MEM_FREE(buf);
 
     return line;
 }

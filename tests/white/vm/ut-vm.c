@@ -14,11 +14,11 @@
 #include "instruction.h"
 #include "rung.h"
 #include "plclib.h"
-//#include "plcemu.h"
 #include "parser-tree.h"
 #include "parser-il.h"
 #include "parser-ld.h"
 #include "codegen.h"
+#include "debug_mem.h"
 
 #include "ut-data.h"
 #include "ut-lib.h"
@@ -48,7 +48,7 @@ int clean_suite_failure(void) {
 #define ADD_TEST(suite,name)\
   (NULL == CU_add_test((suite),#name,name))
 
-int vm_tests_main(void) {
+int vm_tests(void) {
     CU_pSuite suite_lib = NULL;
     CU_pSuite suite_io = NULL;
     CU_pSuite suite_il = NULL;
@@ -121,7 +121,8 @@ int vm_tests_main(void) {
     }
 
 //I/O
-    if (ADD_TEST(suite_io, ut_read) || ADD_TEST(suite_io, ut_write)) {
+    if (ADD_TEST(suite_io, ut_read)
+            || ADD_TEST(suite_io, ut_write)) {
         CU_cleanup_registry();
         return CU_get_error();
     }

@@ -9,6 +9,7 @@
 
 #include "common.h"
 #include "instruction.h"
+#include "debug_mem.h"
 
 int get_type(const instruction_t ins) {
     int rv = -1; // err

@@ -5,6 +5,7 @@
 
 #include "common.h"
 #include "instruction.h"
+#include "debug_mem.h"
 
 const char IlCommands[N_IL_INSN][LABELLEN] = {
         "",    //

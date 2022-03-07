@@ -572,7 +572,7 @@ void ut_parse_real() {
 
     char dump[MAXSTR * MAXBUF];
     memset(dump, 0, MAXBUF * MAXSTR);
-    rung_dump(p.rungs[0], dump);
+    rung_dump((*rung_prg), dump);
     //printf("%s", dump);
     const char *expected =
             "0.LD mf0/8\n"
@@ -851,9 +851,8 @@ void ut_parse() {
 
     char dump[MAXSTR * MAXBUF];
     memset(dump, 0, MAXBUF * MAXSTR);
-    rung_dump(p.rungs[0], dump);
-    CU_ASSERT_STRING_EQUAL(p.rungs[0]->id, "gcd.il");
-    //printf("%s", dump);
+    rung_dump((*rung_prg), dump);
+    CU_ASSERT_STRING_EQUAL((*rung_prg)->id, "gcd.il");
 
     const char *expected =
             "0.while:LD m0/8\n"

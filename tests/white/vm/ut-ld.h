@@ -14,16 +14,22 @@ void ut_minmin() {
 }
 
 void ut_parse_ld_line() {
+    int cnt = 0;
+
+    printf("\ntest: %d\n", cnt++);
     int result = parse_ld_line(NULL);
     CU_ASSERT(result == STATUS_ERR);
 
+
+    printf("\ntest: %d\n", cnt++);
     struct ld_line line;
     memset(&line, 0, sizeof(line));
-
     result = parse_ld_line(&line);
     CU_ASSERT(result == STATUS_ERR);
     CU_ASSERT(line.status == STATUS_ERROR);
 
+
+    printf("\ntest: %d\n", cnt++);
     memset(&line, 0, sizeof(line));
     line.buf = " -----";
     result = parse_ld_line(&line);
@@ -31,6 +37,8 @@ void ut_parse_ld_line() {
     CU_ASSERT(line.cursor == strlen(line.buf));
     CU_ASSERT(line.status == STATUS_RESOLVED);
 
+
+    printf("\ntest: %d\n", cnt++);
     memset(&line, 0, sizeof(line));
     line.buf = " ---+  ";
     result = parse_ld_line(&line);
@@ -38,6 +46,8 @@ void ut_parse_ld_line() {
     CU_ASSERT(line.cursor == strlen(line.buf) - 3);
     CU_ASSERT(line.status == STATUS_UNRESOLVED);
 
+
+    printf("\ntest: %d\n", cnt++);
     memset(&line, 0, sizeof(line));
     line.buf = " ---Y--";
     result = parse_ld_line(&line);
@@ -45,6 +55,8 @@ void ut_parse_ld_line() {
     CU_ASSERT(line.cursor == strlen(line.buf) - 2);
     CU_ASSERT(line.status == STATUS_ERROR);
 
+
+    printf("\ntest: %d\n", cnt++);
     memset(&line, 0, sizeof(line));
     line.buf = " ---i--";
     result = parse_ld_line(&line);
@@ -52,6 +64,8 @@ void ut_parse_ld_line() {
     CU_ASSERT(line.cursor == strlen(line.buf) - 1);
     CU_ASSERT(line.status == STATUS_ERROR);
 
+
+    printf("\ntest: %d\n", cnt++);
     memset(&line, 0, sizeof(line));
     line.buf = " ---i0/5--";
     result = parse_ld_line(&line);
@@ -60,6 +74,8 @@ void ut_parse_ld_line() {
     CU_ASSERT(line.status == STATUS_RESOLVED);
     CU_ASSERT(line.stmt == NULL);
 
+
+    printf("\ntest: %d\n", cnt++);
     memset(&line, 0, sizeof(line));
     line.buf = " ---i0/5--( ";
     result = parse_ld_line(&line);
@@ -68,6 +84,8 @@ void ut_parse_ld_line() {
     CU_ASSERT(line.status == STATUS_ERROR);
     CU_ASSERT(line.stmt == NULL);
 
+
+    printf("\ntest: %d\n", cnt++);
     memset(&line, 0, sizeof(line));
     line.buf = " ---i0/5--(QQ ";
     result = parse_ld_line(&line);
@@ -76,15 +94,18 @@ void ut_parse_ld_line() {
     CU_ASSERT(line.status == STATUS_ERROR);
     CU_ASSERT(line.stmt == NULL);
 
+    printf("\n--test: %d\n", cnt++);
     memset(&line, 0, sizeof(line));
     line.buf = " ---!i0/5--(Q0/3 ";
+    printf("result\n");
     result = parse_ld_line(&line);
+    printf("result END\n");
+
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(line.cursor == strlen(line.buf) - 4);
     CU_ASSERT(line.status == STATUS_RESOLVED);
     CU_ASSERT(line.stmt->tag == TAG_ASSIGNMENT);
     CU_ASSERT(line.stmt->v.ass.type == LD_COIL);
-
     CU_ASSERT(line.stmt->v.ass.right->v.exp.op == IL_AND);
     CU_ASSERT(line.stmt->v.ass.right->v.exp.mod == IL_NEG);
     CU_ASSERT(line.stmt->v.ass.right->v.exp.a->tag == TAG_IDENTIFIER);
@@ -93,6 +114,8 @@ void ut_parse_ld_line() {
     CU_ASSERT(line.stmt->v.ass.right->v.exp.a->v.id.bit == 5);
     CU_ASSERT(line.stmt->v.ass.right->v.exp.b == NULL);
 
+
+    printf("\ntest: %d\n", cnt++);
     tree_clear(line.stmt);
     memset(&line, 0, sizeof(line));
 
@@ -110,6 +133,8 @@ void ut_parse_ld_line() {
     CU_ASSERT(line.stmt->v.exp.a->v.id.bit == 1);
     CU_ASSERT(line.stmt->v.exp.b == NULL);
 
+
+    printf("\ntest: %d\n", cnt++);
     tree_clear(line.stmt);
     memset(&line, 0, sizeof(line));
     line.buf = " ---f1/1--|--+";
@@ -119,6 +144,8 @@ void ut_parse_ld_line() {
     CU_ASSERT(line.status == STATUS_UNRESOLVED);
     CU_ASSERT(line.stmt == NULL);
 
+
+    printf("\ntest: %d\n", cnt++);
     memset(&line, 0, sizeof(line));
     line.buf = " ---q1/1-!i0/3--+";
     result = parse_ld_line(&line);

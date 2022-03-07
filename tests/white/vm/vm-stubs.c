@@ -10,6 +10,8 @@
 #include "instruction.h"
 #include "rung.h"
 #include "plclib.h"
+#include "debug_mem.h"
+#include "common.h"
 
 //char* strdup_r(char *dest, const char *src) {
 //    char *r = strdup(src);
