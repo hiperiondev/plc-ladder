@@ -53,7 +53,7 @@ data_t pop(const data_t val, opcode_t *stack) {
     data_t r = val; // return value
     opcode_t p;
     if (*stack != NULL) {
-        //safety
+        // safety
         r = operate((*stack)->operation, (*stack)->type, (*stack)->value, val); // execute instruction
         p = *stack;
         *stack = (*stack)->next;

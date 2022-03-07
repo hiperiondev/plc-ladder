@@ -76,6 +76,7 @@ typedef enum {
     IE_BADOPERAND,  //
     IE_BADFILE,     //
     IE_BADCHAR,     //
+
     N_IE            //
 } IL_ERRORCODES;
 
@@ -86,6 +87,7 @@ typedef enum {
     T_DWORD, // 32 bit (4 byte)
     T_LWORD, // 64 bit (8 byte)
     T_REAL,  // (8 byte) double floating point number
+
     N_TYPES  //
 } DATATYPES;
 
@@ -152,7 +154,6 @@ typedef enum {
     IL_LT,    // LESS THAN
     IL_LE,    // LESS OR EQUAL
 
-    //
     N_IL_INSN //
 } IL_INSN;
 
@@ -163,7 +164,6 @@ enum LD_STATUS {
     STATUS_FINAL,      //
     STATUS_ERROR,      //
 
-    //
     N_STATUS           //
 };
 
@@ -180,7 +180,6 @@ enum LD_SYMBOLS {
     LD_RESET,       // ] reset,
     LD_DOWN,        // ) negate coil
 
-    //
     N_LD_SYMBOLS    //
 };
 

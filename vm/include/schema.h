@@ -5,8 +5,8 @@ typedef enum{
     MAP_ROOT,          //
     MAP_HW,            //
     MAP_USPACE,        //
-    MAP_COMEDI,        //
-    MAP_COMEDI_SUBDEV, //
+    //MAP_COMEDI,        //
+    //MAP_COMEDI_SUBDEV, //
     MAP_SIM,           //
     MAP_VARIABLE,      //
     N_MAPPINGS         //

@@ -1211,6 +1211,10 @@ uint8_t manage_blinkers(plc_t p) {
     return s_changed;
 }
 
+void plc_load_precompiled(const char *path, plc_t *plc_prog) {
+
+}
+
 plc_t plc_load_program_file(const char *path, plc_t plc) {
     FILE *f;
     int r = ERR_BADFILE;
@@ -1219,9 +1223,9 @@ plc_t plc_load_program_file(const char *path, plc_t plc) {
     int i = 0;
 
     if (path == NULL) {
-
         return plc;
     }
+
     char *ext = strrchr(path, '.');
     int lang = STATUS_ERR;
 
@@ -1230,29 +1234,34 @@ plc_t plc_load_program_file(const char *path, plc_t plc) {
             lang = LANG_IL;
         } else if (strcmp(ext, ".ld") == 0) {
             lang = LANG_LD;
+        } else if (strcmp(ext, ".plc") == 0) {
+            lang = LANG_PLC;
         }
-    }
-    if (lang > STATUS_ERR && (f = fopen(path, "r"))) {
-        memset(line, 0, MAXSTR);
+        if (lang > STATUS_ERR && (f = fopen(path, "r"))) {
+            memset(line, 0, MAXSTR);
 
-        while (fgets(line, MAXSTR, f)) {
-            memset(program_lines[i], 0, MAXSTR);
-            sprintf(program_lines[i++], "%s\n", line);
+            while (fgets(line, MAXSTR, f)) {
+                memset(program_lines[i], 0, MAXSTR);
+                sprintf(program_lines[i++], "%s\n", line);
+            }
+            r = STATUS_OK;
         }
-        r = STATUS_OK;
-    }
-    if (r > STATUS_ERR) {
-        if (lang == LANG_IL) {
-            plc_log("Loading IL code from %s...", path);
-            //plc = parse_il_program(path, program_lines, plc); TODO;//
+        if (r > STATUS_ERR) {
+            if (lang == LANG_IL) {
+                plc_log("Loading IL code from %s...", path);
+                //plc = parse_il_program(path, program_lines, plc); TODO;//
+            } else if (lang == LANG_LD) {
+                plc_log("Loading LD code from %s...", path);
+                //plc = parse_ld_program(path, program_lines, plc); TODO://
+            } else if (lang == LANG_PLC) {
+                plc_load_precompiled(path, &plc);
+            }
         } else {
-            plc_log("Loading LD code from %s...", path);
-            //plc = parse_ld_program(path, program_lines, plc); TODO://
+            plc_log("Could not open program file %s...", path);
+            plc->status = r;
         }
-    } else {
-        plc_log("Could not open program file %s...", path);
-        plc->status = r;
     }
+
     return plc;
 }
 

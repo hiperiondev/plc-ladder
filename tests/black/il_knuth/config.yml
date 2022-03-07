@@ -1,0 +1,59 @@
+STEP:         100      #time cycle in milliseconds
+PIPE:         plcpipe  #UNIX path of named pipe polled for commands
+
+#hardware
+HW:         STDI/O          #just a text tag that appears in a footer
+
+#user space interface:
+USPACE: 
+    BASE:         50176             #hardware address base
+    WR:        4                #write offset
+    RD:        0                #read offset
+
+#COMEDI interface:
+COMEDI: 
+    FILE:     0  #device and subdevice nodes of comedi driver.
+    SUBDEV: 
+        IN:  0    #Digital inputs
+        OUT: 1    #Digital Outputs
+        ADC: 2    #Analog inputs
+        DAC: 3    #Analog outputs
+
+#SIMULATION IO
+SIM: 
+    INPUT:   sim.in
+    OUTPUT:  sim.out
+
+MVAR:
+ - 6
+ - INDEX :     0    
+   ID    :     N
+   VALUE :     1.0
+ - INDEX :     1    
+   ID    : MEAN
+ - INDEX :     2    
+   ID    : M2
+ - INDEX :     3    
+   ID    : DELTA
+ - INDEX :     4    
+   ID    : ONE
+   VALUE :      1.0
+
+AI: 
+ - 1
+ - INDEX :     0    
+   ID    :    INPUT
+   MIN   :    0.0
+   MAX   :   24.0
+
+AQ:
+ - 1
+ - INDEX :     0    
+   ID:         OUTPUT
+   MIN:        0.0
+   MAX:        10.0
+
+PROGRAM:
+  - 2
+  - INDEX: 0       
+    ID: "knuth.il"

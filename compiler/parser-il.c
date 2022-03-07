@@ -90,11 +90,12 @@ const char *IlErrors[N_IE] = {
 // literals
 // MOD
 
-///////////////////// instruction list /////////////////////
+// instruction list
 
-/// LEX ///
+// LEX
 
-int parse_il_extract_number(const char *line) { //read characters from string line
+//read characters from string line
+int parse_il_extract_number(const char *line) {
     int i, n = 0;
     if (line == NULL) {
 
@@ -108,7 +109,7 @@ int parse_il_extract_number(const char *line) { //read characters from string li
         return STATUS_ERR;
     }
     return n;
-// return number read or error
+    // return number read or error
 }
 
 int parse_il_extract_arguments(const char *buf, uint8_t *byte, uint8_t *bit) {
@@ -133,8 +134,9 @@ int parse_il_extract_arguments(const char *buf, uint8_t *byte, uint8_t *bit) {
     return STATUS_OK;
 }
 
-uint8_t parse_il_read_operand(const char *line, unsigned int index) { // read ONE character from line[idx]
-// parse grammatically:
+// read ONE character from line[idx]
+uint8_t parse_il_read_operand(const char *line, unsigned int index) {
+    // parse grammatically:
     int r = STATUS_OK;
     if (line == NULL || index > strlen(line))
         return STATUS_ERR;
@@ -169,11 +171,12 @@ uint8_t parse_il_read_operand(const char *line, unsigned int index) { // read ON
         default:
             r = (uint8_t) ERR_BADCHAR; // error
     }
-// return value or error
+    // return value or error
     return r;
 }
 
-uint8_t parse_il_read_type(const char *line, uint8_t *operand, unsigned int index) { // read characters from line[idx]
+// read characters from line[idx]
+uint8_t parse_il_read_type(const char *line, uint8_t *operand, unsigned int index) {
 // parse grammatically:
     int r = STATUS_OK;
     if (line == NULL || index > strlen(line))
@@ -195,7 +198,7 @@ uint8_t parse_il_read_type(const char *line, uint8_t *operand, unsigned int inde
                 break;
         }
     }
-// return ok or error
+    // return ok or error
     return r;
 }
 
@@ -355,8 +358,9 @@ int parse_il_find_arguments(const char *buf, uint8_t *operand, uint8_t *byte, ui
     return ret;
 }
 
-/// parse & generate code ///
-int parse_il_line(const char *line, rung_t r) { // line format:[label:]<operator>[<modifier>[%<operand><byte>[/<bit>]]|<label>][;comment]
+// parse & generate code
+// line format:[label:]<operator>[<modifier>[%<operand><byte>[/<bit>]]|<label>][;comment]
+int parse_il_line(const char *line, rung_t r) {
     char tmp[MAXSTR];
     char buf[MAXSTR];
     char label_buf[MAXSTR];
@@ -416,7 +420,7 @@ int parse_il_line(const char *line, rung_t r) { // line format:[label:]<operator
     return STATUS_OK;
 }
 
-///////////////////// entry point /////////////////////
+// entry point
 rung_t* parse_il_program(const char *name, const char lines[][MAXSTR]) {
     int rv = STATUS_OK;
     unsigned int i = 0;
@@ -460,7 +464,7 @@ rung_t* parse_il_program(const char *name, const char lines[][MAXSTR]) {
     return &il_r;
 }
 
-/// check ///
+// check
 int parse_il_check_modifier(const instruction_t op) {
     int r = 0;
     if (op->operation > IL_XOR && op->operation < IL_ADD && op->modifier != IL_NEG && op->modifier != IL_NORM) //only negation

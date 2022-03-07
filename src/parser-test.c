@@ -18,6 +18,8 @@
 #include "parser-tree.h"
 #include "plclib.h"
 
+#include "vm_tests.h"
+
 int main() {
 
     rung_t *rungs;

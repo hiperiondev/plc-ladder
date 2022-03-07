@@ -11,6 +11,7 @@ typedef enum {
     IL_PUSH,       // '('
     IL_NORM,       // ' '
     IL_COND,       // '?'
+
     N_IL_MODIFIERS //
 } IL_MODIFIERS;
 
@@ -49,7 +50,20 @@ int instruction_get_type(const instruction_t ins);
  */
 void instruction_deepcopy(const instruction_t from, instruction_t to);
 
+/**
+ * @brief
+ * @param
+ * @param
+ * @return
+ */
 void instruction_dump(instruction_t ins, char *dump);
+
+/**
+ * @brief
+ * @param
+ * @param
+ * @return
+ */
 void instruction_dump_label(char *label, char *dump);
 
 #endif // _INSTRUCTION_H_

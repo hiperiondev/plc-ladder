@@ -8,10 +8,10 @@
 typedef enum {
     HW_DRY,    //TODO
     HW_SIM,
-    HW_COMEDI,
+    //HW_COMEDI,
     HW_USPACE, //TODO: update with current linux kernels
-    HW_IIO,    //TODO: Linux industrial I/O
-    HW_USB,    //TODO: FAR IN THE FUTURE
+    //HW_IIO,    //TODO: Linux industrial I/O
+    //HW_USB,    //TODO: FAR IN THE FUTURE
     N_HW
 } HARDWARES;
 

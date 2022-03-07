@@ -86,7 +86,7 @@ static uint8_t parse_ld_digits(unsigned int i) {
 
 /////////////////////
 static int parse_ld_handle_coil(const int type, ld_line_t line) {
-// (expect Q,T,M,W followed by byte / bit)
+    // (expect Q,T,M,W followed by byte / bit)
     int rv = STATUS_OK;
     uint8_t byte = 0;
     uint8_t bit = 0;
@@ -135,8 +135,8 @@ static int parse_ld_handle_operand(int operand, uint8_t negate, ld_line_t line) 
 }
 
 uint8_t parse_ld_read_char(const char *line, unsigned int c) {
-// read ONE character from line[idx]
-// parse grammatically:
+    // read ONE character from line[idx]
+    // parse grammatically:
     int r = 0;
     if (line == NULL || c > strlen(line))
         return STATUS_ERR;
@@ -211,7 +211,7 @@ uint8_t parse_ld_read_char(const char *line, unsigned int c) {
             r = (uint8_t) ERR_BADCHAR; // error
     }
 
-// return value or error
+    // return value or error
     return r;
 }
 
@@ -379,7 +379,7 @@ static rung_t* parse_ld_generate_code(unsigned int length, const char *name, con
     return &r;
 }
 
-///////////////////// entry point /////////////////////
+// entry point
 rung_t* parse_ld_program(const char *name, const char lines[][MAXSTR]) {
     rungs = NULL;
     uint8_t rungno = 0;

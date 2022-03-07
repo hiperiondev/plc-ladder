@@ -22,7 +22,8 @@ typedef enum {
 typedef enum {
     LANG_LD,
     LANG_IL,
-    LANG_ST
+    LANG_ST,
+    LANG_PLC // precompiled file
 } LANGUAGES;
 
 // boolean function blocks supported
@@ -695,5 +696,19 @@ plc_t configure_timer_delay_mode(const plc_t p, uint8_t idx, const char *val);
  * @return plc instance with saved change or updated error status
  */
 plc_t configure_pulse_scale(const plc_t p, uint8_t idx, const char *val);
+
+/**
+ * @brief
+ * @param
+ * @return
+ */
+void read_inputs(plc_t p);
+
+/**
+ * @brief
+ * @param
+ * @return
+ */
+void write_outputs(plc_t p);
 
 #endif //_PLCLIB_H_

@@ -25,12 +25,13 @@ typedef struct opcode {
 typedef struct rung {
     instruction_t *instructions;
              char *id;
-       codeline_t code;    // original code for visual representation
-     unsigned int insno; // actual no of active lines
-      struct rung *next;  // linked list of rungs
-         opcode_t stack; ///head of stack
-    struct opcode prealloc[MAXSTACK]; ///preallocated stack
-    union accdata acc;    ///accumulator
+       codeline_t code;               // original code for visual representation
+     unsigned int insno;              // actual no of active lines
+      struct rung *next;              // linked list of rungs
+         opcode_t stack;              // head of stack
+    struct opcode prealloc[MAXSTACK]; // preallocated stack
+    union accdata acc;                // accumulator
+              int status;
 } *rung_t;
 
 /**
@@ -97,7 +98,6 @@ rung_t rung_make(const char *name, rung_t *rungs, uint8_t *rungno);
  * @return reference to rung or NULL
  */
 rung_t rung_get(rung_t *rungs, uint8_t *rungno, const unsigned int idx);
-
 
 /**
  * @brief

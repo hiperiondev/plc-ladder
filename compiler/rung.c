@@ -7,7 +7,6 @@
 #include "instruction.h"
 #include "rung.h"
 
-///////////////////// rung /////////////////////
 int rung_get_instruction(const rung_t r, const unsigned int idx, instruction_t *i) {
     if (r == NULL || idx >= r->insno)
         return STATUS_ERR;
