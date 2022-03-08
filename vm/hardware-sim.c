@@ -9,7 +9,7 @@
 #include "config.h"
 #include "schema.h"
 #include "hardware.h"
-#include "debug_mem.h"
+#include "mem.h"
 #include "common.h"
 
 #define ASCIISTART 0x30

@@ -15,7 +15,7 @@
 #include "instruction_vm.h"
 #include "util.h"
 #include "common.h"
-#include "debug_mem.h"
+#include "mem.h"
 
 const char *LibErrors[N_IE] = {
         "Unknown error",

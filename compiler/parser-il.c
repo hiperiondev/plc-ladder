@@ -13,7 +13,7 @@
 #include "rung.h"
 #include "log.h"
 #include "parser-il.h"
-#include "debug_mem.h"
+#include "mem.h"
 
 /* IL_task
  parsing:

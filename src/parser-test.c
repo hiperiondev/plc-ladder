@@ -17,7 +17,7 @@
 #include "parser-ld.h"
 #include "parser-tree.h"
 #include "plclib.h"
-#include "debug_mem.h"
+#include "mem.h"
 #include "common.h"
 
 #include "vm_tests.h"

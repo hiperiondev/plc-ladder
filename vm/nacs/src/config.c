@@ -17,7 +17,7 @@
  */
 
 #include "config.h"
-#include "debug_mem.h"
+#include "mem.h"
 
 char* strdup_r(char *dest, const char *src) {
 // strdup with realloc

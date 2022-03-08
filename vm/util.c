@@ -7,7 +7,7 @@
 
 // debugging tools
 
-#include "debug_mem.h"
+#include "mem.h"
 
 double Mean = 0;
 double M2 = 0;

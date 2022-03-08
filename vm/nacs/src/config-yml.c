@@ -18,7 +18,7 @@
 
 #include <yaml.h>
 #include "config.h"
-#include "debug_mem.h"
+#include "mem.h"
 
 static void yaml_parser_error(yaml_parser_t parser) {
 

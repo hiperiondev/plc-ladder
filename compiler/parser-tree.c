@@ -8,13 +8,14 @@
 #include "instruction.h"
 #include "rung.h"
 #include "parser-tree.h"
-#include "debug_mem.h"
+#include "mem.h"
 
 // TODO: memory optimization: create a factory to allocate different
 // size per node type
 
 item_t tree_mk_identifier(const uint8_t operand, const uint8_t byte, const uint8_t bit) {
-    item_t r = (item_t)MEM_CALLOC(1, sizeof(struct item), "tree_mk_identifier A");
+    printf("1\n");
+    item_t r = (item_t) MEM_CALLOC(1, sizeof(struct item), "tree_mk_identifier A");
     r->tag = TAG_IDENTIFIER;
     r->v.id.operand = operand;
     r->v.id.byte = byte;
@@ -23,7 +24,8 @@ item_t tree_mk_identifier(const uint8_t operand, const uint8_t byte, const uint8
 }
 
 item_t tree_mk_expression(const item_t a, const item_t b, const uint8_t op, const uint8_t mod) {
-    item_t r = (item_t)MEM_CALLOC(1, sizeof(struct item), "tree_mk_expression A");
+    printf("2\n");
+    item_t r = (item_t) MEM_CALLOC(1, sizeof(struct item), "tree_mk_expression A");
     r->tag = TAG_EXPRESSION;
     r->v.exp.op = op;
     r->v.exp.mod = mod;
@@ -33,7 +35,8 @@ item_t tree_mk_expression(const item_t a, const item_t b, const uint8_t op, cons
 }
 
 item_t tree_mk_assignment(const item_t identifier, const item_t expression, const uint8_t type) {
-    item_t r = (item_t)MEM_CALLOC(1, sizeof(struct item), "tree_mk_assignment A");
+    printf("3\n");
+    item_t r = (item_t) MEM_CALLOC(1, sizeof(struct item), "tree_mk_assignment A");
     r->tag = TAG_ASSIGNMENT;
     r->v.ass.left = identifier;
     r->v.ass.right = expression;

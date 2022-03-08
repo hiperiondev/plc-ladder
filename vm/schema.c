@@ -1,6 +1,6 @@
 #include "config.h"
 #include "schema.h"
-#include "debug_mem.h"
+#include "mem.h"
 
 struct entry HwSchema[N_HW_VARS] = {
         {

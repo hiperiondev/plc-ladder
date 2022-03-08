@@ -11,7 +11,7 @@
 #include "common.h"
 #include "rung.h"
 #include "data.h"
-#include "debug_mem.h"
+#include "mem.h"
 
 opcode_t take(rung_t r) {
     if (r->stack == NULL)

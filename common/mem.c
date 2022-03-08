@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "debug_mem.h"
+#include "mem.h"
 
 unsigned int totalAlloc = 0;
 void *ptrs[1000];
@@ -25,38 +25,66 @@ static void debug_mem_init(void) {
     mem_init = true;
 }
 
-void* debug_malloc(size_t size, char* mem_tag) {
+void* a_malloc(size_t size) {
+    void *ptr;
+    void **aligned;
+
+    if ((ptr = (void*) malloc(size + (MEM_ALIGN - 1) + sizeof(void*))) == NULL)
+        return NULL;
+
+    aligned = (void**) ((size_t) ptr + sizeof(void*));
+    if (((size_t) (aligned) % MEM_ALIGN) > 0)
+        aligned += (MEM_ALIGN - (((size_t) (aligned)) % MEM_ALIGN)) / sizeof(void*);
+    *(aligned - 1) = ptr;
+
+    return aligned;
+}
+
+void* a_calloc(size_t count, size_t eltsize) {
+    void *ptr = a_malloc(count * eltsize);
+    if (ptr == NULL)
+        return (ptr);
+
+    memset(ptr, 0, count * eltsize);
+    return (ptr);
+}
+
+void a_free(void *ptr) {
+    free(*(((void**) ptr) - 1));
+}
+
+void* debug_malloc(size_t size, char *mem_tag) {
     if (!mem_init)
         debug_mem_init();
 
     void *p;
     totalAlloc += size;
 
-    p = malloc(size + sizeof(int));
-    *(int*) p = size;
+    p = a_malloc(size + sizeof(int));
+
     ptrs[ptr_cnt] = p;
     strcpy(debug_mem_tags[ptr_cnt++], mem_tag);
 
     printf("debug_malloc [%s (%d)] (total: %d)\n", mem_tag, ptr_cnt - 1, totalAlloc);
-    return (void*) (((int*) p) + 1);
+    return p;
 }
 
-void* debug_calloc(size_t count, size_t size, char* mem_tag) {
+void* debug_calloc(size_t count, size_t size, char *mem_tag) {
     if (!mem_init)
         debug_mem_init();
     void *p;
     totalAlloc += size * count;
 
-    p = calloc(count, size + sizeof(int));
-    *(int*) p = size;
+    p = a_calloc(count, size + sizeof(int));
+
     ptrs[ptr_cnt] = p;
     strcpy(debug_mem_tags[ptr_cnt++], mem_tag);
 
     printf("debug_calloc [%s (%d)] (total: %d)\n", mem_tag, ptr_cnt - 1, totalAlloc);
-    return (void*) (((int*) p) + 1);
+    return p;
 }
 
-void debug_free(void *ptr, char* mem_tag) {
+void debug_free(void *ptr, char *mem_tag) {
     if (!mem_init)
         debug_mem_init();
 
@@ -74,7 +102,8 @@ void debug_free(void *ptr, char* mem_tag) {
             break;
         }
 
-    free(ptr);
+    a_free(ptr);
+
     if (ptr_id != -1)
         ptrs[ptr_id] = 0;
     printf("debug_free   [%s/%s (%d)] (total: %d/%d)\n", ptr_id == -1 ? "{unknown}" : debug_mem_tags[ptr_id], mem_tag, ptr_id, totalAlloc, ptr_cnt);
@@ -91,25 +120,4 @@ void debug_free_all(void) {
     if (cnt != 0)
         printf("WARNING!!! ");
     printf("debug_free_all: %d\n", cnt);
-}
-
-void* alligned_malloc(size_t size) {
-    if (!mem_init)
-        debug_mem_init();
-
-    void *p;
-    totalAlloc += size;
-
-    p = malloc(size + sizeof(int));
-    *(int*) p = size;
-
-    return (void*) (((int*) p) + 1);
-}
-
-void check_free(void *ptr) {
-    if (ptr == NULL) {
-        printf("free [WARNING: pointer NULL]");
-        return;
-    }
-    free(ptr);
 }

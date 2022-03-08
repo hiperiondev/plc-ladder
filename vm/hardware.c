@@ -1,6 +1,6 @@
 #include "config.h"
 #include "hardware.h"
-#include "debug_mem.h"
+#include "mem.h"
 
 //extern struct hardware Comedi;
 extern struct hardware Uspace;

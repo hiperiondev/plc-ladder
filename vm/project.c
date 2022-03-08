@@ -4,7 +4,7 @@
 #include "instruction.h"
 #include "rung.h"
 #include "plclib.h"
-#include "debug_mem.h"
+#include "mem.h"
 
 int project_task(plc_t p) {
 // start editing here

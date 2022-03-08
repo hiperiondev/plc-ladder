@@ -13,33 +13,33 @@ void ut_gen_expr() {
     memset(&ru, 0, sizeof(struct rung));
 
     instruction_t ins;
-    //ERROR: null
+    // ERROR: null
     int result = gen_expr(NULL, NULL, 0);
     CU_ASSERT(result == STATUS_ERR);
 
     item_t id1 = tree_mk_identifier(OP_INPUT, 0, 0);
     item_t id2 = tree_mk_identifier(OP_MEMORY, 1, 5);
 
-    //ERROR: wrong tag
+    // ERROR: wrong tag
     result = gen_expr(id1, &ru, 0);
     CU_ASSERT(result == STATUS_ERR);
 
-    //ERROR: bad operator
+    // ERROR: bad operator
     item_t it = tree_mk_expression(NULL, NULL, -1, -1);
     result = gen_expr(it, &ru, 0);
     CU_ASSERT(result == ERR_BADOPERATOR);
     tree_clear(it);
 
-    //ERROR: null left operand
+    // ERROR: null left operand
     it = tree_mk_expression(NULL, NULL, IL_AND, IL_NORM);
     result = gen_expr(it, &ru, 0);
     CU_ASSERT(result == ERR_BADOPERAND);
     tree_clear(it);
 
-    //I0.0 AND M1.5 =>
+    // I0.0 AND M1.5 =>
     //
-    //LD I0.0
-    //AND M1.5
+    // LD I0.0
+    // AND M1.5
     it = tree_mk_expression(id1, id2, IL_AND, IL_NORM);
 
     result = gen_expr(it, &ru, 0);
@@ -61,13 +61,14 @@ void ut_gen_expr() {
 
     tree_clear(it);
     rung_clear(&ru);
-    //null right operand (just evaluate left branch)
-    // A AND(null)
 
+    // null right operand (just evaluate left branch)
+    // A AND(null)
     id1 = tree_mk_identifier(OP_INPUT, 0, 0);
     id2 = tree_mk_identifier(OP_MEMORY, 1, 5);
-
+    printf("A\n");
     it = tree_mk_expression(id1, NULL, IL_AND, IL_PUSH);
+    printf("B\n");
 
     result = gen_expr(it, &ru, 0);
     get(&ru, 0, &ins);
@@ -82,7 +83,7 @@ void ut_gen_expr() {
     tree_clear(it);
     rung_clear(&ru);
 
-    //I0.0 OR (M1.1 AND M1.2) =>
+    // I0.0 OR (M1.1 AND M1.2) =>
     id1 = tree_mk_identifier(OP_INPUT, 0, 0);
     id2 = tree_mk_identifier(OP_MEMORY, 1, 1);
     item_t id3 = tree_mk_identifier(OP_MEMORY, 1, 2);
@@ -92,10 +93,10 @@ void ut_gen_expr() {
 
     result = gen_expr(outer, &ru, 0);
     //
-    //LD I0.0
-    //OR(M1.1
-    //AND M1.2
-    //)
+    // LD I0.0
+    // OR(M1.1
+    // AND M1.2
+    // )
     CU_ASSERT(ru.insno == 4);
     get(&ru, 0, &ins);
 
@@ -128,7 +129,7 @@ void ut_gen_expr() {
     tree_clear(outer);
     rung_clear(&ru);
 
-    //(I0.0 AND I0.1) OR (M1.1 AND M1.2) =>
+    // (I0.0 AND I0.1) OR (M1.1 AND M1.2) =>
     id1 = tree_mk_identifier(OP_INPUT, 0, 0);
     id2 = tree_mk_identifier(OP_MEMORY, 1, 1);
     id3 = tree_mk_identifier(OP_MEMORY, 1, 2);
@@ -138,11 +139,11 @@ void ut_gen_expr() {
     item_t right = tree_mk_expression(id2, id3, IL_AND, IL_NORM);
     outer = tree_mk_expression(left, right, IL_OR, IL_PUSH);
     //
-    //LD I0.0
-    //AND I0.1
-    //OR(M1.1
-    //AND M1.2
-    //)
+    // LD I0.0
+    // AND I0.1
+    // OR(M1.1
+    // AND M1.2
+    // )
     result = gen_expr(outer, &ru, 0);
 
     CU_ASSERT(ru.insno == 5);
@@ -186,7 +187,7 @@ void ut_gen_expr() {
     tree_clear(outer);
     rung_clear(&ru);
 
-//(I0.0 AND (I0.1 OR I0.2)) OR (M1.1 AND M1.2) =>
+    // (I0.0 AND (I0.1 OR I0.2)) OR (M1.1 AND M1.2) =>
     id1 = tree_mk_identifier(OP_INPUT, 0, 0);
     id2 = tree_mk_identifier(OP_MEMORY, 1, 1);
     id3 = tree_mk_identifier(OP_MEMORY, 1, 2);
@@ -201,13 +202,13 @@ void ut_gen_expr() {
     outer = tree_mk_expression(left, right, IL_OR, IL_PUSH);
 
     //
-    //LD I0.0
-    //AND(I0.1
-    //OR I0.2
-    //)
-    //OR(M1.1
-    //AND M1.2
-    //)
+    // LD I0.0
+    // AND(I0.1
+    // OR I0.2
+    // )
+    // OR(M1.1
+    // AND M1.2
+    // )
 
     result = gen_expr(outer, &ru, 0);
 

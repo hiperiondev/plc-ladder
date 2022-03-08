@@ -6,7 +6,7 @@
 #include "common.h"
 #include "instruction.h"
 #include "rung.h"
-#include "debug_mem.h"
+#include "mem.h"
 
 int rung_get_instruction(const rung_t r, const unsigned int idx, instruction_t *i) {
     if (r == NULL || idx >= r->insno)
