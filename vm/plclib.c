@@ -1669,16 +1669,12 @@ plc_t configure_io_limit(const plc_t p, int var, uint8_t idx, const char *val, u
     }
 
     if (io == NULL) {
-
         r->status = ERR_BADOPERAND;
     } else if (idx >= len) {
-
         r->status = ERR_BADINDEX;
     } else if (upper) {
-
         io[idx].max = strtod(val, &ptr); // atof(val);
     } else {
-
         io[idx].min = strtod(val, &ptr); // atof(val);
     }
     return r;
