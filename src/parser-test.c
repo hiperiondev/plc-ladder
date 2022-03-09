@@ -20,7 +20,7 @@
 #include "mem.h"
 #include "common.h"
 
-#include "../tests/white/include/vm_tests.h"
+#include "vm_tests.h"
 
 int main() {
 
