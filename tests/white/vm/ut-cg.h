@@ -66,9 +66,7 @@ void ut_gen_expr() {
     // A AND(null)
     id1 = tree_mk_identifier(OP_INPUT, 0, 0);
     id2 = tree_mk_identifier(OP_MEMORY, 1, 5);
-    printf("A\n");
     it = tree_mk_expression(id1, NULL, IL_AND, IL_PUSH);
-    printf("B\n");
 
     result = gen_expr(it, &ru, 0);
     get(&ru, 0, &ins);

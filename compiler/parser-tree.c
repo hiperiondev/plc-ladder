@@ -14,7 +14,6 @@
 // size per node type
 
 item_t tree_mk_identifier(const uint8_t operand, const uint8_t byte, const uint8_t bit) {
-    printf("1\n");
     item_t r = (item_t) MEM_CALLOC(1, sizeof(struct item), "tree_mk_identifier A");
     r->tag = TAG_IDENTIFIER;
     r->v.id.operand = operand;
@@ -24,7 +23,6 @@ item_t tree_mk_identifier(const uint8_t operand, const uint8_t byte, const uint8
 }
 
 item_t tree_mk_expression(const item_t a, const item_t b, const uint8_t op, const uint8_t mod) {
-    printf("2\n");
     item_t r = (item_t) MEM_CALLOC(1, sizeof(struct item), "tree_mk_expression A");
     r->tag = TAG_EXPRESSION;
     r->v.exp.op = op;
@@ -35,7 +33,6 @@ item_t tree_mk_expression(const item_t a, const item_t b, const uint8_t op, cons
 }
 
 item_t tree_mk_assignment(const item_t identifier, const item_t expression, const uint8_t type) {
-    printf("3\n");
     item_t r = (item_t) MEM_CALLOC(1, sizeof(struct item), "tree_mk_assignment A");
     r->tag = TAG_ASSIGNMENT;
     r->v.ass.left = identifier;

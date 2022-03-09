@@ -58,3 +58,5 @@ plcemu.log
 .project
 Release
 .settings/
+CUnitAutomated-Listing.xml
+CUnitAutomated-Results.xml

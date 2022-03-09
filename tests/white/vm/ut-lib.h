@@ -2648,7 +2648,7 @@ void ut_rung() {
 
     result = rung_intern(&r); //fail to find label
     CU_ASSERT(result == STATUS_ERR);
-//should cleanup    
+//should cleanup
     rung_clear(&r);
     CU_ASSERT(r.insno == 0);
     CU_ASSERT(r.instructions == NULL);

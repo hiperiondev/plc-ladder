@@ -225,7 +225,6 @@ int parse_ld_line(ld_line_t line) {
     uint8_t n_mode = false;
 
     while (line->status == STATUS_UNRESOLVED && c != LD_NODE) { // loop
-        printf("a\n");
         c = parse_ld_read_char(line->buf, line->cursor);
         switch (c) {
             case LD_NODE: // PAUSE
@@ -254,18 +253,15 @@ int parse_ld_line(ld_line_t line) {
             case LD_SET:
             case LD_RESET:
             case LD_DOWN:
-                printf("b\n");
                 rv = parse_ld_handle_coil(c, line);
                 break;
             default:  // otherwise operand is expected(i,q,f,r,m,t,c,b)
-                printf("c\n");
                 rv = parse_ld_handle_operand(c, n_mode, line);
                 n_mode = false;
                 break;
         }
     }
     if (rv < STATUS_OK) {
-        printf("e\n");
         line->stmt = tree_clear(line->stmt);
     }
     return rv;
@@ -394,7 +390,7 @@ rung_t* parse_ld_program(const char *name, const char lines[][MAXSTR]) {
 
     unsigned int len = parse_ld_program_length(lines, MAXBUF);
     if (len == 0) {
-        plc_log("parse_ld_program-> len == 0");
+        //plc_log("parse_ld_program-> len == 0");
         return NULL;
     }
 

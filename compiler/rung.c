@@ -66,7 +66,9 @@ void rung_clear(rung_t r) {
                 MEM_FREE(r->instructions[i], "rung_clear A");
             }
         }
+        if (r->instructions[i] != NULL)
         MEM_FREE(r->instructions, "rung_clear B");
+        if (r->code != NULL)
         MEM_FREE(r->code, "rung_clear C");
         r->instructions = NULL;
         r->insno = 0;

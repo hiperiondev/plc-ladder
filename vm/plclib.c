@@ -908,8 +908,10 @@ void write_outputs(plc_t p) {
     for (i = 0; i < p->nq; i++) {
         for (j = 0; j < BYTESIZE; j++) { // write n bit out
             n = BYTESIZE * i + j;
-            q_bit = (p->outputs[i] >> j) % 2;
-            p->hw->dio_write(p->outputs, n, q_bit);
+            if (p->outputs != NULL)
+                q_bit = (p->outputs[i] >> j) % 2;
+            if (p->hw->dio_write != NULL && p->outputs != NULL)
+                p->hw->dio_write(p->outputs, n, q_bit);
         }
     }
     for (i = 0; i < p->naq; i++) { // for each output sample
@@ -1286,19 +1288,16 @@ plc_t plc_start(plc_t p) {
 
 plc_t plc_stop(plc_t p) {
     if (p == NULL) {
-
         return NULL;
     }
     if (p->hw == NULL) {
         p->status = ERR_HARDWARE;
-
         return p;
     }
     if (p->status == ST_RUNNING) {
         memset(p->outputs, 0, p->nq);
         memset(p->real_out, 0, 8 * p->naq);
         write_outputs(p);
-
         p->hw->disable();
         p->update = CHANGED_STATUS;
         p->status = ST_STOPPED;
@@ -1476,39 +1475,51 @@ void clear_plc(plc_t plc) {
         if (plc->ai != NULL) {
             MEM_FREE(plc->ai, "clear_plc A");
         }
+
         if (plc->aq != NULL) {
             MEM_FREE(plc->aq, "clear_plc B");
         }
+
         if (plc->mr != NULL) {
             MEM_FREE(plc->mr, "clear_plc C");
         }
+
         if (plc->m != NULL) {
             MEM_FREE(plc->m, "clear_plc D");
         }
+
         if (plc->s != NULL) {
             MEM_FREE(plc->s, "clear_plc E");
         }
+
         if (plc->t != NULL) {
             MEM_FREE(plc->t, "clear_plc F");
         }
+
         if (plc->dq != NULL) {
             MEM_FREE(plc->dq, "clear_plc G");
         }
+
         if (plc->di != NULL) {
             MEM_FREE(plc->di, "clear_plc H");
         }
+
         if (plc->real_out != NULL) {
             MEM_FREE(plc->real_out, "clear_plc I");
         }
+
         if (plc->real_in != NULL) {
             MEM_FREE(plc->real_in, "clear_plc J");
         }
+
         if (plc->outputs != NULL) {
             MEM_FREE(plc->outputs, "clear_plc K");
         }
+
         if (plc->inputs != NULL) {
             MEM_FREE(plc->inputs, "clear_plc L");
         }
+
         MEM_FREE(plc, "clear_plc M");
     }
 }
@@ -1616,7 +1627,7 @@ plc_t configure_variable_readonly(const plc_t p, int var, uint8_t idx, const cha
             if (idx >= len) {
                 r->status = ERR_BADINDEX;
             } else {
-                r->mr[idx].RO = !strcmp(val, "true");
+                r->mr[idx].RO = !strcmp(val, "TRUE");
             }
             break;
 
@@ -1625,7 +1636,7 @@ plc_t configure_variable_readonly(const plc_t p, int var, uint8_t idx, const cha
             if (idx >= len) {
                 r->status = ERR_BADINDEX;
             } else {
-                r->m[idx].RO = !strcmp(val, "true");
+                r->m[idx].RO = !strcmp(val, "TRUE");
             }
             break;
 
@@ -1640,6 +1651,8 @@ plc_t configure_io_limit(const plc_t p, int var, uint8_t idx, const char *val, u
     plc_t r = p;
     aio_t io = NULL;
     uint8_t len = 0;
+    char *ptr;
+
     switch (var) {
         case OP_REAL_INPUT:
             io = r->ai;
@@ -1663,10 +1676,10 @@ plc_t configure_io_limit(const plc_t p, int var, uint8_t idx, const char *val, u
         r->status = ERR_BADINDEX;
     } else if (upper) {
 
-        io[idx].max = atof(val);
+        io[idx].max = strtod(val, &ptr); // atof(val);
     } else {
 
-        io[idx].min = atof(val);
+        io[idx].min = strtod(val, &ptr); // atof(val);
     }
     return r;
 }
