@@ -7,6 +7,7 @@
 #include "common.h"
 #include "plclib.h"
 #include "rung.h"
+#include "ut-lib.h"
 
 void ut_char() {
     int result = parse_ld_read_char(NULL, -1);

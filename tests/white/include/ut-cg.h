@@ -6,6 +6,7 @@
 
 #include "common.h"
 #include "parser-tree.h"
+#include "rung_vm.h"
 
 void ut_gen_expr() {
     struct rung ru;
