@@ -236,8 +236,8 @@ char* parse_il_trunk_whitespace(char *line) {
         return NULL;
     }
     int n = strlen(line);
-    char *buf = (char*) MEM_MALLOC(n + 1, "parse_il_trunk_whitespace A");
-    memset(buf, 0, n + 1);
+    char *buf = (char*) MEM_CALLOC(1, n + 1, "parse_il_trunk_whitespace A");
+    //memset(buf, 0, n + 1);
 
     // trim left
     int i = 0;

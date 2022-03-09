@@ -21,9 +21,8 @@
 
 // strdup with realloc
 char* strdup_r(char *dest, const char *src) {
-    char *r = (!dest) ? (char*) MEM_MALLOC(strlen(src), "strdup_r A") : realloc((void*) dest, strlen(src));
-
-    memset(r, 0, strlen(src));
+    char *r = (!dest) ? (char*) MEM_CALLOC(1, strlen(src), "strdup_r A") : realloc((void*) dest, strlen(src));
+    //memset(r, 0, strlen(src));
     sprintf(r, "%s", src);
 
     return r;
@@ -339,11 +338,11 @@ config_t copy_config(config_t other) {
 }
 
 sequence_t new_sequence(int size) {
-    sequence_t r = (sequence_t) MEM_MALLOC(size * sizeof(struct sequence), "new_sequence A");
-    memset(r, 0, sizeof(struct sequence));
+    sequence_t r = (sequence_t) MEM_CALLOC(1, size * sizeof(struct sequence), "new_sequence A");
+    //memset(r, 0, sizeof(struct sequence));
     r->size = size;
-    r->vars = (variable_t) MEM_MALLOC(size * sizeof(struct variable), "new_sequence B");
-    memset(r->vars, 0, size * sizeof(struct variable));
+    r->vars = (variable_t) MEM_CALLOC(1, size * sizeof(struct variable), "new_sequence B");
+    //memset(r->vars, 0, size * sizeof(struct variable));
 
     return r;
 }

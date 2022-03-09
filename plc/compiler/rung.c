@@ -26,8 +26,8 @@ int rung_append(const instruction_t i, rung_t r) {
         if (rung_lookup(i->label, r) >= 0)
             return STATUS_ERR; // don't allow duplicate labels
 
-        instruction_t ins = (instruction_t) MEM_MALLOC(sizeof(struct instruction), "rung_append B");
-        memset(ins, 0, sizeof(struct instruction));
+        instruction_t ins = (instruction_t) MEM_CALLOC(1, sizeof(struct instruction), "rung_append B");
+        //memset(ins, 0, sizeof(struct instruction));
         instruction_deepcopy(i, ins);
 
         r->instructions[(r->insno)++] = ins;
@@ -40,8 +40,8 @@ codeline_t rung_append_line(const char *l, codeline_t code) {
 
         return code;
     }
-    codeline_t r = (codeline_t) MEM_MALLOC(sizeof(struct codeline), "rung_append_line A");
-    memset(r, 0, sizeof(struct codeline));
+    codeline_t r = (codeline_t) MEM_CALLOC(1, sizeof(struct codeline), "rung_append_line A");
+    //memset(r, 0, sizeof(struct codeline));
     r->line = strdup(l);
 
     if (code != NULL) {
@@ -113,12 +113,12 @@ int rung_intern(rung_t r) {
 }
 
 rung_t rung_make(const char *name, rung_t *rungs, uint8_t *rungno) {
-    rung_t r = (rung_t) MEM_MALLOC(sizeof(struct rung), "rung_make A");
-    memset(r, 0, sizeof(struct rung));
+    rung_t r = (rung_t) MEM_CALLOC(1, sizeof(struct rung), "rung_make A");
+    //memset(r, 0, sizeof(struct rung));
     r->id = strdup(name);
     if (rungs == NULL) { // lazy allocation
-        rungs = (rung_t*) MEM_MALLOC(MAXRUNG * sizeof(rung_t), "rung_make B");
-        memset(rungs, 0, MAXRUNG * sizeof(rung_t));
+        rungs = (rung_t*) MEM_CALLOC(1, MAXRUNG * sizeof(rung_t), "rung_make B");
+        //memset(rungs, 0, MAXRUNG * sizeof(rung_t));
     }
     rungs[(*rungno)++] = r;
 

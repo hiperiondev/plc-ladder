@@ -590,8 +590,8 @@ char* serialize_config(const config_t conf) {
 
         return NULL;
     }
-    char *buf = (char*) MEM_MALLOC(CONF_STR, "serialize_config A");
-    memset(buf, 0, CONF_STR);
+    char *buf = (char*) MEM_CALLOC(1, CONF_STR, "serialize_config A");
+    //memset(buf, 0, CONF_STR);
     yaml_emitter_set_output_string(&emitter, (yaml_char_t*) buf,
     CONF_STR, &written);
     print_config_to_emitter(emitter, conf);

@@ -1417,8 +1417,8 @@ static plc_t allocate(plc_t plc) {
 // construct
 plc_t new_plc(int di, int dq, int ai, int aq, int nt, int ns, int nm, int nr, int step, hardware_t hw) {
 
-    plc_t plc = (plc_t) MEM_MALLOC(sizeof(struct PLC_regs), "new_plc A");
-    memset(plc, 0, sizeof(struct PLC_regs));
+    plc_t plc = (plc_t) MEM_CALLOC(1, sizeof(struct PLC_regs), "new_plc A");
+    //memset(plc, 0, sizeof(struct PLC_regs));
 
     plc->ni = di;
     plc->nq = dq;
@@ -1444,8 +1444,8 @@ plc_t new_plc(int di, int dq, int ai, int aq, int nt, int ns, int nm, int nr, in
 
 plc_t copy_plc(const plc_t plc) {
 
-    plc_t p = (plc_t) MEM_MALLOC(sizeof(struct PLC_regs), "copy_plc A");
-    memset(p, 0, sizeof(struct PLC_regs));
+    plc_t p = (plc_t) MEM_CALLOC(1, sizeof(struct PLC_regs), "copy_plc A");
+    //memset(p, 0, sizeof(struct PLC_regs));
     p->ni = plc->ni;
     p->nq = plc->nq;
     p->nai = plc->nai;
