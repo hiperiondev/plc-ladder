@@ -32,8 +32,6 @@ typedef enum{
     MAP_ROOT,          //
     MAP_HW,            //
     MAP_USPACE,        //
-    //MAP_COMEDI,        //
-    //MAP_COMEDI_SUBDEV, //
     MAP_SIM,           //
     MAP_VARIABLE,      //
     N_MAPPINGS         //
@@ -53,12 +51,6 @@ typedef enum{
     SUBDEV_DAC,        //
     N_SUBDEV_VARS      //
 } SUBDEV_VARS;
-
-//typedef enum{
-//    COMEDI_FILE,       //
-//    COMEDI_SUBDEV,     //
-//    N_COMEDI_VARS      //
-//} COMEDI_VARS;
 
 typedef enum {
     SIM_INPUT,         //

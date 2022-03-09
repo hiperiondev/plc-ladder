@@ -103,8 +103,8 @@ int sim_config(const config_t conf) {
 // enable bus communication
 int sim_enable() {
     int r = STATUS_OK;
-    // open input and output streams
 
+    // open input and output streams
     if (!(BufIn = (char*) MEM_MALLOC(Ni, "sim_enable A"))) {
         r = STATUS_ERR;
     } else {
@@ -132,6 +132,7 @@ int sim_enable() {
 // disable bus communication
 int sim_disable() {
     int r = STATUS_OK;
+
     // close streams
     if (Ifd && !fclose(Ifd)) {
         r = STATUS_ERR;
@@ -234,7 +235,8 @@ void sim_dio_bitfield(const uint8_t *mask, uint8_t *bits) {
      int i=0;
      unsigned int w = (unsigned int) (*mask);
      unsigned int b = (unsigned int) (*bits);
-     comedi_dio_bitfield(it, Comedi_subdev_i, w, &b);*/
+     comedi_dio_bitfield(it, Comedi_subdev_i, w, &b);
+     */
 }
 
 void sim_data_read(unsigned int index, uint64_t *value) {

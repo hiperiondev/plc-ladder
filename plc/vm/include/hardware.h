@@ -34,12 +34,10 @@
 
 typedef enum {
     HW_DRY,    //TODO
-    HW_SIM,
-    //HW_COMEDI,
+    HW_SIM,    //
     HW_USPACE, //TODO: update with current linux kernels
-    //HW_IIO,    //TODO: Linux industrial I/O
-    //HW_USB,    //TODO: FAR IN THE FUTURE
-    N_HW
+
+    N_HW       //
 } HARDWARES;
 
 typedef int (*helper_f)(); // generic helper functions only return an error code
