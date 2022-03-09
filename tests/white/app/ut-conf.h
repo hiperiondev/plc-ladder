@@ -3,6 +3,9 @@
 
 #include <stddef.h>
 
+#include "common.h"
+#include "config.h"
+
 extern struct entry ConfigSchema[];
 extern struct entry HwSchema[];
 void ut_conf()

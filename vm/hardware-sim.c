@@ -21,6 +21,7 @@ char *BufOut = NULL;
 char *AdcIn = NULL;
 char *AdcOut = NULL;
 
+int BufOut_len = 0;
 unsigned int Ni = 0;
 unsigned int Nq = 0;
 unsigned int Nai = 0;
@@ -83,8 +84,10 @@ int sim_enable() {
         memset(BufIn, 0, Ni);
     }
     if (!(BufOut = (char*) MEM_MALLOC(Nq, "sim_enable B"))) {
+        printf("WARNING!!! can't allocate BufOut\n");
         r = STATUS_ERR;
     } else {
+        BufOut_len = Nq;
         memset(BufOut, 0, Nq);
     }
     if (!(AdcIn = (char*) MEM_MALLOC( LONG_BYTES * Nai, "sim_enable C"))) {
@@ -186,6 +189,19 @@ void sim_dio_write(const unsigned char *buf, unsigned int n, uint8_t bit) {
     // write a byte to output stream
     q += ASCIISTART; // ASCII
     // plc_log("Send %d to byte %d", q, position);
+    if (BufOut_len == 0) {
+        //printf("sim_dio_write WARNING!!! BufOut len == 0\n");
+        return;
+    }
+    if (BufOut_len < position) {
+        //printf("sim_dio_write WARNING!!! BufOut len < position\n");
+        return;
+    }
+
+    if (BufOut == NULL) {
+        //printf("sim_dio_write WARNING!!! BufOut == NULL\n");
+        return;
+    }
     if (strlen(BufOut) >= position) {
         BufOut[position] = q;
     }
@@ -214,6 +230,10 @@ void sim_data_read(unsigned int index, uint64_t *value) {
 }
 
 void sim_data_write(unsigned int index, uint64_t value) {
+    if (AdcOut == NULL) {
+        //printf("sim_data_write WARNING!!! AdcOut == NULL\n");
+        return;
+    }
     unsigned int pos = index * LONG_BYTES;
     sprintf(AdcOut + pos, "%lx", value);
     return;

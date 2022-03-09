@@ -15,6 +15,7 @@ hardware_t get_hardware(int type) {
 //#else
 //            return NULL;
 //#endif
+
         case HW_USPACE:
             return &Uspace;
 

@@ -910,6 +910,7 @@ void write_outputs(plc_t p) {
             n = BYTESIZE * i + j;
             if (p->outputs != NULL)
                 q_bit = (p->outputs[i] >> j) % 2;
+
             if (p->hw->dio_write != NULL && p->outputs != NULL)
                 p->hw->dio_write(p->outputs, n, q_bit);
         }
