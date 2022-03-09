@@ -60,3 +60,4 @@ Release
 .settings/
 CUnitAutomated-Listing.xml
 CUnitAutomated-Results.xml
+temp/
