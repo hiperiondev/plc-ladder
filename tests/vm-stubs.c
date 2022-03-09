@@ -40,35 +40,7 @@
 #include "mem.h"
 #include "common.h"
 
-//char* strdup_r(char *dest, const char *src) {
-//    char *r = strdup(src);
-//    dest = r;
-//    return r;
-//}
-
-/*void plc_log(const char *msg, ...) {
- va_list arg;
- char msgstr[MAXSTR];
- memset(msgstr, 0, MAXSTR);
- va_start(arg, msg);
- vsprintf(msgstr, msg, arg);
- va_end(arg);
- printf("%s\n", msgstr);
- }
-
- int project_task(plc_t p) {
- return 0;
- }
-
- int project_init() {
- return 0;
- }
- */
-
-//void compute_variance(double x) {
-//}
-/********************stubbed hardware****************/
-
+// stubbed hardware
 unsigned char Mock_din = 0;
 unsigned char Mock_dout = 0;
 int Mock_flush_count = 0;

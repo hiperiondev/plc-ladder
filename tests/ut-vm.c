@@ -48,7 +48,6 @@
 #include "mem.h"
 
 #include "ut-conf.h"
-
 #include "ut-cg.h"
 #include "ut-data.h"
 #include "ut-il.h"
@@ -57,9 +56,6 @@
 #include "ut-ld.h"
 #include "ut-lib.h"
 #include "ut-tree.h"
-
-#define TRUE 1
-#define FALSE 0
 
 int init_suite_success(void) {
     return 0;
@@ -74,8 +70,7 @@ int clean_suite_failure(void) {
     return -1;
 }
 
-#define ADD_TEST(suite,name)\
-  (NULL == CU_add_test((suite),#name,name))
+#define ADD_TEST(suite,name) (NULL == CU_add_test((suite),#name,name))
 
 int vm_tests(void) {
     //CU_pSuite suite_conf = NULL;
@@ -128,8 +123,6 @@ int vm_tests(void) {
         CU_cleanup_registry();
         return CU_get_error();
     }
-
-   //start_thread();
 
    // plclib
     if (
@@ -237,14 +230,11 @@ int vm_tests(void) {
     printf("\n\n");
 
     // run all tests using the automated interface
-    //CU_automated_enable_junit_xml(0);
     CU_automated_run_tests();
     CU_list_tests_to_file();
 
     // lean up registry and return
     CU_cleanup_registry();
-
-    //stop_thread();
 
     return CU_get_error();
 }

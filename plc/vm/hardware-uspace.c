@@ -127,7 +127,8 @@ void usp_dio_bitfield(const uint8_t *write_mask, uint8_t *bits) {
      for (i = 0; i < Dq; i++)
      outb(bits[i] & write_mask[i], Base + Wr_offs + i);
      for (i = 0; i < Di; i++)
-     bits[i] = inb(Base + Rd_offs + i);*/
+     bits[i] = inb(Base + Rd_offs + i);
+     */
 }
 
 void usp_data_read(unsigned int index, uint64_t *value) {
@@ -140,7 +141,8 @@ void usp_data_write(unsigned int index, uint64_t value) {
 
 struct hardware Uspace = {
         HW_USPACE, 0,     // error code
-        "", usp_enable,   // enable
+        "",
+        usp_enable,       // enable
         usp_disable,      // disable
         usp_fetch,        // fetch
         usp_flush,        // flush

@@ -64,7 +64,7 @@ int push(uint8_t op, uint8_t t, const data_t val, rung_t r) {
     p->type = t;
     p->next = r->stack; //*stack;
     p->depth = (r->stack == NULL) ? 1 : r->stack->depth + 1;
-    //set stack head pointer to point at it
+    // set stack head pointer to point at it
     r->stack = p;
     return STATUS_OK;
 }

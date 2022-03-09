@@ -265,7 +265,6 @@ int task(long timeout, plc_t p, rung_t r) {
         }
         gettimeofday(&lapse, NULL);
         delta = lapse.tv_usec - start.tv_usec;
-        //plc_log("Instruction %d : OK", i);
         i = pc;
     }
     return rv;
@@ -283,8 +282,7 @@ int all_tasks(long timeout, plc_t p) {
     return rv;
 }
 
-/*************************VM*******************************************/
-
+// VM
 int handle_jmp(const rung_t r, unsigned int *pc) {
     if (r == NULL || pc == NULL)
         return STATUS_ERR;
@@ -423,7 +421,6 @@ int st_mem_r(const instruction_t op, double val, plc_t p) {
     if (op->byte >= p->nmr)
         return ERR_BADOPERAND;
     p->mr[op->byte].V = val;
-    // plc_log("store %lf to m%d", val, op->byte);
     return STATUS_OK;
 }
 
@@ -445,7 +442,6 @@ int st_mem(const instruction_t op, uint64_t val, plc_t p) {
         case T_DWORD:
         case T_LWORD:
             p->m[op->byte].V = val & ((compl << (BYTESIZE * offs)) - 1);
-            // plc_log("store 0x%lx to m%d", val, op->byte);
             break;
 
         default:
@@ -805,9 +801,7 @@ int instruct(plc_t p, rung_t r, unsigned int *pc) {
     type = get_type(op);
     if (type == STATUS_ERR)
         return ERR_BADOPERAND;
-      //char dump[MAXSTR] = "";
-      //dump_instruction(op, dump);
-      //plc_log("%d.%s", *pc, dump);
+
     switch (op->operation) {
         // IL OPCODES: no operand
         case IL_POP: // POP
@@ -874,8 +868,7 @@ rung_t get_rung(const plc_t p, const unsigned int idx) {
 
 // realtime loop
 int timeval_subtract(struct timeval *result, struct timeval *x, struct timeval *y) {
-    // subtract the `struct timeval' values X and Y,
-    //     storing the result in RESULT.
+    // subtract the `struct timeval' values X and Y, storing the result in RESULT.
     // return 1 if the difference is negative, otherwise 0.
     // perform the carry for the later subtraction by updating y.
     if (x->tv_usec < y->tv_usec) {
@@ -888,8 +881,7 @@ int timeval_subtract(struct timeval *result, struct timeval *x, struct timeval *
         y->tv_usec += MILLION * nsec;
         y->tv_sec -= nsec;
     }
-    // compute the time remaining to wait.
-    //     tv_usec is certainly positive.
+    // compute the time remaining to wait. tv_usec is certainly positive.
     result->tv_sec = x->tv_sec - y->tv_sec;
     result->tv_usec = x->tv_usec - y->tv_usec;
     // return 1 if result is negative.
@@ -1281,10 +1273,10 @@ plc_t plc_load_program_file(const char *path, plc_t plc) {
         if (r > STATUS_ERR) {
             if (lang == LANG_IL) {
                 plc_log("Loading IL code from %s...", path);
-                //plc = parse_il_program(path, program_lines, plc); TODO;//
+                //plc = parse_il_program(path, program_lines, plc); // TODO: LOAD PROGRAM
             } else if (lang == LANG_LD) {
                 plc_log("Loading LD code from %s...", path);
-                //plc = parse_ld_program(path, program_lines, plc); TODO://
+                //plc = parse_ld_program(path, program_lines, plc); // TODO: LOAD PROGRAM
             } else if (lang == LANG_PLC) {
                 plc_load_precompiled(path, &plc);
             }
@@ -1367,7 +1359,6 @@ plc_t plc_func(plc_t p) {
         io_time = dt.tv_usec; // THOUSAND;
         timeout -= io_time;
         timeout -= run_time;
-        //plc_log("I/O time approx:%d microseconds",dt.tv_usec);
         // poll on plcpipe for command, for max STEP msecs
         written = poll(p->com, 0, timeout / THOUSAND);
         // TODO: when a truly asynchronous UI is available,
@@ -1375,8 +1366,6 @@ plc_t plc_func(plc_t p) {
         gettimeofday(&tp, NULL); // how much time did poll wait?
         timeval_subtract(&dt, &tp, &tn);
         poll_time = dt.tv_usec;
-        //plc_log("Poll time approx:%d microseconds",dt.tv_usec);
-        //dt = time(input) + time(poll)
 
         if (written < 0) {
             r = STATUS_ERR;
@@ -1472,7 +1461,6 @@ plc_t new_plc(int di, int dq, int ai, int aq, int nt, int ns, int nm, int nr, in
 plc_t copy_plc(const plc_t plc) {
 
     plc_t p = (plc_t) MEM_CALLOC(1, sizeof(struct PLC_regs), "copy_plc A");
-    //memset(p, 0, sizeof(struct PLC_regs));
     p->ni = plc->ni;
     p->nq = plc->nq;
     p->nai = plc->nai;
@@ -1609,9 +1597,7 @@ plc_t declare_variable(const plc_t p, int var, uint8_t idx, const char *val) {
 
         r->status = ERR_BADINDEX;
     } else {
-        //*nick = strdup_r(*nick, val);
         *nick = strdup(val);
-        //snprintf(nick, NICKLEN, "%s", val);
     }
     return r;
 }
@@ -1701,9 +1687,9 @@ plc_t configure_io_limit(const plc_t p, int var, uint8_t idx, const char *val, u
     } else if (idx >= len) {
         r->status = ERR_BADINDEX;
     } else if (upper) {
-        io[idx].max = strtod(val, &ptr); // atof(val);
+        io[idx].max = strtod(val, &ptr);
     } else {
-        io[idx].min = strtod(val, &ptr); // atof(val);
+        io[idx].min = strtod(val, &ptr);
     }
     return r;
 }

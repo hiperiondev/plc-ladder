@@ -54,11 +54,11 @@ typedef enum{
     N_SUBDEV_VARS      //
 } SUBDEV_VARS;
 
-typedef enum{
-    COMEDI_FILE,       //
-    COMEDI_SUBDEV,     //
-    N_COMEDI_VARS      //
-} COMEDI_VARS;
+//typedef enum{
+//    COMEDI_FILE,       //
+//    COMEDI_SUBDEV,     //
+//    N_COMEDI_VARS      //
+//} COMEDI_VARS;
 
 typedef enum {
     SIM_INPUT,         //

@@ -128,4 +128,3 @@ int parse_ld_find_next_node(const ld_line_t *program, unsigned int start, unsign
 rung_t* parse_ld_program(const char *name, const char lines[][MAXSTR]);
 
 #endif //_PARSER_LD_H
-

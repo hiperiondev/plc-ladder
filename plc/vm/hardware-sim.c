@@ -168,7 +168,6 @@ int sim_fetch() {
         LONG_BYTES * analog, Ifd ? Ifd : stdin);
 
         if (bytes_read < digital + LONG_BYTES * analog) {
-            //plc_log("failed to read from %s, reopening", SimInFile);
             if (feof(Ifd)) {
                 rewind(Ifd);
             } else {
@@ -214,18 +213,14 @@ void sim_dio_write(const unsigned char *buf, unsigned int n, uint8_t bit) {
     q |= bit << n % BYTESIZE;
     // write a byte to output stream
     q += ASCIISTART; // ASCII
-    // plc_log("Send %d to byte %d", q, position);
     if (BufOut_len == 0) {
-        //printf("sim_dio_write WARNING!!! BufOut len == 0\n");
         return;
     }
     if (BufOut_len < position) {
-        //printf("sim_dio_write WARNING!!! BufOut len < position\n");
         return;
     }
 
     if (BufOut == NULL) {
-        //printf("sim_dio_write WARNING!!! BufOut == NULL\n");
         return;
     }
     if (strlen(BufOut) >= position) {
@@ -257,7 +252,6 @@ void sim_data_read(unsigned int index, uint64_t *value) {
 
 void sim_data_write(unsigned int index, uint64_t value) {
     if (AdcOut == NULL) {
-        //printf("sim_data_write WARNING!!! AdcOut == NULL\n");
         return;
     }
     unsigned int pos = index * LONG_BYTES;

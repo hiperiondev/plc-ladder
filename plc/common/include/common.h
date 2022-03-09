@@ -75,7 +75,7 @@
                              || x == OP_REAL_MEMIN
 
 typedef enum {
-    N_ERR = -20,     // ERROR CODES are negative
+    N_ERR = -20,     // error codes are negative
     ERR_OVFLOW,      //
     ERR_TIMEOUT,     //
     ERR_HARDWARE,    //
