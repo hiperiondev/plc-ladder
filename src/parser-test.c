@@ -1,13 +1,29 @@
 /*
- ============================================================================
- Name        : parser-ld-orig.c
- Author      : 
- Version     :
- Copyright   : Your copyright notice
- Description : Hello World in C, Ansi-style
- ============================================================================
+ * Copyright 2022 Emiliano Gonzalez (egonzalez . hiperion @ gmail . com))
+ * * Project Site: https://github.com/hiperiondev/plc-ladder *
+ *
+ * This is based on other projects:
+ *    plcemu (https://github.com/kalamara/plcemu)
+ *     - Antonis Kalamaras (kalamara AT ceid DOT upatras DOT gr)
+ *
+ * please contact their authors for more information.
+ *
+ * This is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3, or (at your option)
+ * any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this software; see the file COPYING.  If not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street,
+ * Boston, MA 02110-1301, USA.
+ *
  */
-
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -63,7 +79,7 @@ int main() {
     line.buf = " ---!i0/5--(Q0/3 ";
     result = parse_ld_line(&line);
 
-    printf("test  1: %s\n",                                        result == STATUS_OK               ? "ok" : "error");
+    printf("test  1: %s\n",                                        result == STATUS_OK            ? "ok" : "error");
     printf("test  2: %s\n",                                   line.cursor == strlen(line.buf) - 4 ? "ok" : "error");
     printf("test  3: %s\n",                                   line.status == STATUS_RESOLVED      ? "ok" : "error");
     printf("test  4: %s\n",                                line.stmt->tag == TAG_ASSIGNMENT       ? "ok" : "error");
