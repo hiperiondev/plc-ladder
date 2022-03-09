@@ -20,23 +20,23 @@
 //}
 
 /*void plc_log(const char *msg, ...) {
-    va_list arg;
-    char msgstr[MAXSTR];
-    memset(msgstr, 0, MAXSTR);
-    va_start(arg, msg);
-    vsprintf(msgstr, msg, arg);
-    va_end(arg);
-    printf("%s\n", msgstr);
-}
+ va_list arg;
+ char msgstr[MAXSTR];
+ memset(msgstr, 0, MAXSTR);
+ va_start(arg, msg);
+ vsprintf(msgstr, msg, arg);
+ va_end(arg);
+ printf("%s\n", msgstr);
+ }
 
-int project_task(plc_t p) {
-    return 0;
-}
+ int project_task(plc_t p) {
+ return 0;
+ }
 
-int project_init() {
-    return 0;
-}
-*/
+ int project_init() {
+ return 0;
+ }
+ */
 
 //void compute_variance(double x) {
 //}
@@ -52,8 +52,8 @@ int stub_config(const config_t conf) {
     return STATUS_OK;
 }
 
-int stub_enable() /* Enable bus communication */
-{
+// enable bus communication
+int stub_enable() {
     Mock_din = 0;
     Mock_ain = 0;
 
@@ -62,8 +62,8 @@ int stub_enable() /* Enable bus communication */
     return r;
 }
 
-int stub_enable_fails() /* Enable bus communication */
-{
+// enable bus communication
+int stub_enable_fails() {
     Mock_din = 0;
     Mock_ain = 0;
 
@@ -72,8 +72,8 @@ int stub_enable_fails() /* Enable bus communication */
     return r;
 }
 
-int stub_disable() /* Disable bus communication */
-{
+// Disable bus communication
+int stub_disable() {
     Mock_aout = 0;
     Mock_dout = 0;
     Mock_flush_count = 0;
@@ -96,12 +96,14 @@ void stub_dio_read(unsigned int n, uint8_t *bit) {
     *bit = Mock_din;
 }
 
-void stub_dio_write(const unsigned char *buf, unsigned int n, unsigned char bit) {	//write bit to n output
+// write bit to n output
+void stub_dio_write(const unsigned char *buf, unsigned int n, unsigned char bit) {
     if (n < 8)
         Mock_dout += (bit << n);
 }
 
-void stub_dio_bitfield(const unsigned char *mask, unsigned char *bits) {	//simultaneusly write output bits defined by mask and read all inputs
+// simultaneously write output bits defined by mask and read all inputs
+void stub_dio_bitfield(const unsigned char *mask, unsigned char *bits) {
 }
 
 void stub_data_read(unsigned int index, uint64_t *value) {
@@ -112,17 +114,19 @@ void stub_data_write(unsigned int index, uint64_t value) {
     Mock_aout = value;
 }
 
-struct hardware Hw_stub = { HW_SIM, 0, //errorcode
-        "stubbed hardware", stub_enable, // enable
-        stub_disable, //disable
-        stub_fetch, //fetch
-        stub_flush, //flush
-        stub_dio_read, //dio_read
-        stub_dio_write, //dio_write
-        stub_dio_bitfield, //dio_bitfield
-        stub_data_read, //data_read
-        stub_data_write, //data_write
-        stub_config, //hw_config
+struct hardware Hw_stub = {
+        HW_SIM, 0,         // error code
+        "stubbed hardware",
+        stub_enable,       // enable
+        stub_disable,      // disable
+        stub_fetch,        // fetch
+        stub_flush,        // flush
+        stub_dio_read,     // dio_read
+        stub_dio_write,    // dio_write
+        stub_dio_bitfield, // dio_bitfield
+        stub_data_read,    // data_read
+        stub_data_write,   // data_write
+        stub_config,       // hw_config
         };
 
 //hardware_t get_hardware(int type) {

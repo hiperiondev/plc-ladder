@@ -229,7 +229,6 @@ void ut_parse_real() {
     char lines[MAXBUF][MAXSTR];
     memset(lines, 0, MAXBUF * MAXSTR);
     /*
-
      Knuth's online variance:
      n = 1
      mean = 5.0

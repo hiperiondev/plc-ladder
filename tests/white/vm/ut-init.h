@@ -149,7 +149,7 @@ void ut_config() {
 
     plc->status = STATUS_OK;
     plc = configure_counter_direction(plc, 1, "DOWN");
-    CU_ASSERT(plc->m[1].DOWN == true);  //TODO: is correct????
+    CU_ASSERT(plc->m[1].DOWN == true);  // TODO: is correct????
     CU_ASSERT(plc->status == STATUS_OK);
 
     /*******************************************************************/
@@ -201,7 +201,7 @@ int stub_enable();
 void ut_start_stop() {
     extern unsigned char Mock_din;
     extern unsigned char Mock_dout;
-//degenerates
+    // degenerates
     plc_t r = plc_start(NULL);
     CU_ASSERT_PTR_NULL(r);
     plc_t plc = new_plc(8, 8, 4, 4, 4, 4, 4, 4, 100, NULL);
@@ -214,14 +214,14 @@ void ut_start_stop() {
     r = plc_stop(plc);
     CU_ASSERT(r->status == ERR_HARDWARE);
 
-    //hardware is not configured correctly
+    // hardware is not configured correctly
     plc->hw = get_hardware(HW_SIM);
     plc->hw->status = STATUS_ERR;
 
     r = plc_start(plc);
     CU_ASSERT(plc->status == ERR_HARDWARE);
 
-    //stop should have no effect
+    // stop should have no effect
     r = plc_stop(plc);
     CU_ASSERT(plc->status == ERR_HARDWARE);
 
@@ -230,7 +230,7 @@ void ut_start_stop() {
     plc->hw->status = STATUS_OK;
     plc->status = ST_STOPPED;
 
-    //stop should have no effect
+    // stop should have no effect
     r = plc_stop(plc);
     CU_ASSERT(plc->status == ST_STOPPED);
 
@@ -239,7 +239,7 @@ void ut_start_stop() {
     CU_ASSERT(plc->status == ERR_HARDWARE);
     plc->hw->enable = stub_enable;
 
-    //status other than ST_STOPPED
+    // status other than ST_STOPPED
     plc->status = ST_RUNNING;
 
     r = plc_start(plc);
@@ -247,10 +247,10 @@ void ut_start_stop() {
     CU_ASSERT(plc->status == ST_RUNNING);
     CU_ASSERT(plc->update == 0);
 
-    //finally all is well
+    // finally all is well
     plc->status = ST_STOPPED;
     r = plc_start(plc);
-    //this should reset inputs
+    // this should reset inputs
     CU_ASSERT(Mock_din == 0);
     CU_ASSERT(plc->status == ST_RUNNING);
     CU_ASSERT(plc->update == CHANGED_STATUS);
@@ -260,7 +260,7 @@ void ut_start_stop() {
     CU_ASSERT(plc->status == ST_STOPPED);
     CU_ASSERT(plc->update == CHANGED_STATUS);
 
-    //should reset outputs
+    // should reset outputs
     CU_ASSERT(Mock_dout == 0);
 
     clear_plc(plc);

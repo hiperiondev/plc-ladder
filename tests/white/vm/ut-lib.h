@@ -21,35 +21,22 @@ void init_mock_plc(plc_t plc) {
     plc->nm = 8;
     plc->nmr = 8;
     plc->hw = &Hw_stub;
-    plc->inputs = (uint8_t*) MEM_MALLOC(plc->ni, "init_mock_plc A");
-    plc->outputs = (uint8_t*) MEM_MALLOC(plc->nq, "init_mock_plc B");
-    plc->real_in = (uint64_t*) MEM_MALLOC(plc->nai * sizeof(uint64_t), "init_mock_plc C");
-    plc->real_out = (uint64_t*) MEM_MALLOC(plc->naq * sizeof(uint64_t), "init_mock_plc D");
+    plc->inputs = (uint8_t*) MEM_CALLOC(1, plc->ni, "init_mock_plc A");
+    plc->outputs = (uint8_t*) MEM_CALLOC(1, plc->nq, "init_mock_plc B");
+    plc->real_in = (uint64_t*) MEM_CALLOC(1, plc->nai * sizeof(uint64_t), "init_mock_plc C");
+    plc->real_out = (uint64_t*) MEM_CALLOC(1, plc->naq * sizeof(uint64_t), "init_mock_plc D");
 
-    plc->di = (di_t) MEM_MALLOC(BYTESIZE * plc->ni * sizeof(struct digital_input), "init_mock_plc E");
-    plc->dq = (do_t) MEM_MALLOC(BYTESIZE * plc->nq * sizeof(struct digital_output), "init_mock_plc F");
+    plc->di = (di_t) MEM_CALLOC(1, BYTESIZE * plc->ni * sizeof(struct digital_input), "init_mock_plc E");
+    plc->dq = (do_t) MEM_CALLOC(1, BYTESIZE * plc->nq * sizeof(struct digital_output), "init_mock_plc F");
 
-    plc->ai = (aio_t) MEM_MALLOC(plc->nai * sizeof(struct analog_io), "init_mock_plc G");
-    plc->aq = (aio_t) MEM_MALLOC(plc->naq * sizeof(struct analog_io), "init_mock_plc H");
+    plc->ai = (aio_t) MEM_CALLOC(1, plc->nai * sizeof(struct analog_io), "init_mock_plc G");
+    plc->aq = (aio_t) MEM_CALLOC(1, plc->naq * sizeof(struct analog_io), "init_mock_plc H");
 
-    plc->t = (dt_t) MEM_MALLOC(plc->nt * sizeof(struct timer), "init_mock_plc I");
+    plc->t = (dt_t) MEM_CALLOC(1, plc->nt * sizeof(struct timer), "init_mock_plc I");
 
-    plc->s = (blink_t) MEM_MALLOC(plc->ns * sizeof(struct blink), "init_mock_plc J");
-    plc->m = (mvar_t) MEM_MALLOC(plc->nm * sizeof(struct mvar), "init_mock_plc K");
-    plc->mr = (mreal_t) MEM_MALLOC(plc->nmr * sizeof(struct mreal), "init_mock_plc L");
-
-    memset(plc->inputs, 0, plc->ni);
-    memset(plc->outputs, 0, plc->nq);
-    memset(plc->real_in, 0, plc->nai * sizeof(uint64_t));
-    memset(plc->real_out, 0, plc->naq * sizeof(uint64_t));
-    memset(plc->di, 0, BYTESIZE * plc->ni * sizeof(struct digital_input));
-    memset(plc->dq, 0, BYTESIZE * plc->nq * sizeof(struct digital_output));
-    memset(plc->ai, 0, plc->nai * sizeof(struct analog_io));
-    memset(plc->aq, 0, plc->naq * sizeof(struct analog_io));
-    memset(plc->t, 0, plc->nt * sizeof(struct timer));
-    memset(plc->s, 0, plc->ns * sizeof(struct blink));
-    memset(plc->m, 0, plc->nm * sizeof(struct mvar));
-    memset(plc->mr, 0, plc->nmr * sizeof(struct mreal));
+    plc->s = (blink_t) MEM_CALLOC(1, plc->ns * sizeof(struct blink), "init_mock_plc J");
+    plc->m = (mvar_t) MEM_CALLOC(1, plc->nm * sizeof(struct mvar), "init_mock_plc K");
+    plc->mr = (mreal_t) MEM_CALLOC(1, plc->nmr * sizeof(struct mreal), "init_mock_plc L");
 }
 
 void ut_codec() {
