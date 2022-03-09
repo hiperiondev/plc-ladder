@@ -84,7 +84,6 @@ int sim_enable() {
         memset(BufIn, 0, Ni);
     }
     if (!(BufOut = (char*) MEM_MALLOC(Nq, "sim_enable B"))) {
-        printf("WARNING!!! can't allocate BufOut\n");
         r = STATUS_ERR;
     } else {
         BufOut_len = Nq;

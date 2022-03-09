@@ -19,9 +19,8 @@
 #include "config.h"
 #include "mem.h"
 
-char* strdup_r(char *dest, const char *src) {
 // strdup with realloc
-
+char* strdup_r(char *dest, const char *src) {
     char *r = (!dest) ? (char*) MEM_MALLOC(strlen(src), "strdup_r A") : realloc((void*) dest, strlen(src));
 
     memset(r, 0, strlen(src));
@@ -40,7 +39,6 @@ entry_t new_entry_int(int i, char *name) {
 }
 
 entry_t new_entry_str(char *str, char *name) {
-
     entry_t r = (entry_t) MEM_MALLOC(sizeof(struct entry), "new_entry_str A");
     r->type_tag = ENTRY_STR;
     r->name = name;
@@ -50,7 +48,6 @@ entry_t new_entry_str(char *str, char *name) {
 }
 
 entry_t new_entry_map(config_t map, char *name) {
-
     entry_t r = (entry_t) MEM_MALLOC(sizeof(struct entry), "new_entry_map A");
     r->type_tag = ENTRY_MAP;
     r->name = name;
@@ -60,7 +57,6 @@ entry_t new_entry_map(config_t map, char *name) {
 }
 
 entry_t new_entry_seq(sequence_t seq, char *name) {
-
     entry_t r = (entry_t) MEM_MALLOC(sizeof(struct entry), "new_entry_seq A");
     r->type_tag = ENTRY_SEQ;
     r->name = name;
@@ -79,21 +75,16 @@ entry_t new_entry_null() {
 }
 
 config_t update_entry(unsigned int key, const entry_t item, const config_t conf) {
-
     if (conf == NULL || key >= conf->size) {
-
         return conf;
     } else {
-
         config_t r = conf;
         r->map[key] = item;
-
         return r;
     }
 }
 
 entry_t get_entry(int key, const config_t conf) {
-
     if (conf == NULL || key < 0 || key > conf->size) {
 
         return NULL;
@@ -103,29 +94,32 @@ entry_t get_entry(int key, const config_t conf) {
 }
 
 entry_t copy_entry(entry_t other) {
-
     entry_t r = NULL;
     if (other == NULL) {
-
         return NULL;
     }
     switch (other->type_tag) {
         case ENTRY_INT:
+            printf("CE 1\n");
             r = new_entry_int(other->e.scalar_int, other->name);
             break;
         case ENTRY_STR:
+            printf("CE 2\n");
             r = new_entry_str(other->e.scalar_str, other->name);
             break;
         case ENTRY_MAP:
+            printf("CE 3\n");
             r = new_entry_map(copy_config(other->e.conf), other->name);
-
             break;
         case ENTRY_SEQ:
+            printf("CE 4\n");
             r = new_entry_seq(copy_sequence(other->e.seq), other->name);
             break;
         default: //NULL
+            printf("CE 5\n");
             r = new_entry_null();
     }
+    printf("CE 6\n");
     return r;
 }
 
@@ -154,7 +148,6 @@ config_t set_numeric_entry(int key, int val, config_t conf) {
 }
 
 char* get_string_entry(int key, const config_t conf) {
-
     entry_t e = get_entry(key, conf);
     if (e && e->type_tag == ENTRY_STR) {
 
@@ -278,7 +271,6 @@ config_t edit_seq_param(config_t conf, const char *seq_name, unsigned char idx, 
 }
 
 param_t append_param(const param_t params, const char *key, const char *val) {
-
     if (params == NULL) {
 
         return new_param(key, val);
@@ -295,7 +287,6 @@ param_t append_param(const param_t params, const char *key, const char *val) {
 }
 
 param_t update_param(const param_t params, const char *key, const char *val) {
-
     if (params == NULL) {
 
         return new_param(key, val);
@@ -327,18 +318,16 @@ int get_key(const char *name, const config_t where) {
 }
 
 config_t new_config(int size) {
-    config_t r = (config_t) MEM_MALLOC(sizeof(struct config), "new_config A");
-    memset(r, 0, sizeof(struct config));
+    config_t r = (config_t) MEM_CALLOC(1, sizeof(struct config), "new_config A");
+    //memset(r, 0, sizeof(struct config));
     r->size = size;
-    r->map = (entry_map_t) MEM_MALLOC(size * sizeof(struct entry), "new_config B");
-    memset(r->map, 0, size * sizeof(struct entry));
-
+    r->map = (entry_map_t) MEM_CALLOC(1, size * sizeof(struct entry), "new_config B");
+    //memset(r->map, 0, size * sizeof(struct entry));
     return r;
 }
 
 config_t copy_config(config_t other) {
     if (other == NULL) {
-
         return NULL;
     }
     config_t r = new_config(other->size);
@@ -350,7 +339,6 @@ config_t copy_config(config_t other) {
 }
 
 sequence_t new_sequence(int size) {
-
     sequence_t r = (sequence_t) MEM_MALLOC(size * sizeof(struct sequence), "new_sequence A");
     memset(r, 0, sizeof(struct sequence));
     r->size = size;
@@ -378,12 +366,10 @@ sequence_t copy_sequence(sequence_t other) {
 }
 
 config_t clear_config(config_t c) {
-
     return (config_t) NULL;
 }
 
 config_t store_value(unsigned char key, const char *value, config_t config) {
-
     entry_t e;
     if (config == NULL) {
 
@@ -450,7 +436,6 @@ config_t resize_sequence(config_t config, int sequence, int size) {
 }
 
 config_t copy_sequences(const config_t conf, config_t com) {
-
     if (!conf || !com) {
 
         return NULL;
@@ -466,7 +451,6 @@ config_t copy_sequences(const config_t conf, config_t com) {
 }
 
 config_t init_config(const struct entry schema[], unsigned int size) {
-
     config_t conf = new_config(size);
     int i = 0;
     for (; i < size; i++) {
@@ -482,6 +466,7 @@ config_t init_config(const struct entry schema[], unsigned int size) {
                     break;
                 case ENTRY_MAP:
                     conf = update_entry(i, new_entry_map(copy_config(iter->e.conf), iter->name), conf);
+                    printf("f-1\n");
                     break;
                 case ENTRY_SEQ:
                     if (iter->e.seq) {
