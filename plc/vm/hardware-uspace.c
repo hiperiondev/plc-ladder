@@ -140,7 +140,8 @@ void usp_data_write(unsigned int index, uint64_t value) {
 }
 
 struct hardware Uspace = {
-        HW_USPACE, 0,     // error code
+        HW_USPACE,
+        0,                // error code
         "",
         usp_enable,       // enable
         usp_disable,      // disable

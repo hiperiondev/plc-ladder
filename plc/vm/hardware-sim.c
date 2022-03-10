@@ -262,7 +262,8 @@ void sim_data_write(unsigned int index, uint64_t value) {
 }
 
 struct hardware Sim = {
-        HW_SIM, 0,        // error code
+        HW_SIM,
+        0,                // error code
         "simulated hardware",
         sim_enable,       // enable
         sim_disable,      // disable

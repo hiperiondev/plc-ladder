@@ -81,7 +81,8 @@ void dry_data_write(unsigned int index, uint64_t value) {
 }
 
 struct hardware Dry = {
-        HW_DRY, 0,        // error code
+        HW_DRY,
+        0,                // error code
         "no hardware",
         dry_enable,       // enable
         dry_disable,      // disable

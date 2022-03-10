@@ -189,19 +189,14 @@ int resolve(plc_t p, int type, int idx) {
     switch (type) {
         case BOOL_DQ:
             return p->dq[idx].Q || (p->dq[idx].SET && !p->dq[idx].RESET);
-
         case BOOL_COUNTER:
             return p->m[idx].PULSE;
-
         case BOOL_DI:
             return p->di[idx].I;
-
         case BOOL_BLINKER:
             return p->s[idx].Q;
-
         case BOOL_TIMER:
             return p->t[idx].Q;
-
         default:
             return STATUS_ERR;
     }
@@ -436,14 +431,12 @@ int st_mem(const instruction_t op, uint64_t val, plc_t p) {
         case T_BOOL:
             r = contact(p, BOOL_COUNTER, op->byte, BOOL(val));
             break;
-
         case T_BYTE:
         case T_WORD:
         case T_DWORD:
         case T_LWORD:
             p->m[op->byte].V = val & ((compl << (BYTESIZE * offs)) - 1);
             break;
-
         default:
             return ERR_BADOPERAND;
     }
@@ -463,27 +456,21 @@ int handle_st(const instruction_t op, const data_t acc, plc_t p) {
         case OP_REAL_CONTACT: // set output %QX.Y
             r = st_out_r(op, val.r, p);
             break;
-
         case OP_CONTACT: // set output %QX.Y
             r = st_out(op, val.u, p);
             break;
-
         case OP_START: // bits are irrelevant
             r = contact(p, BOOL_TIMER, op->byte, val.u % 2);
             break;
-
         case OP_REAL_MEMIN:
             r = st_mem_r(op, val.r, p);
             break;
-
         case OP_PULSEIN:
             r = st_mem(op, val.u, p);
             break;
-
         case OP_WRITE:
             p->command = val.u;
             break;
-
         default:
             r = ERR_BADOPERAND;
     }
@@ -514,7 +501,6 @@ int ld_in(const instruction_t op, uint64_t *val, plc_t p) {
             if (op->modifier == IL_NEG)
                 *val = *val ? false : true;
             break;
-
         case T_BYTE:
         case T_WORD:
         case T_DWORD:
@@ -527,7 +513,6 @@ int ld_in(const instruction_t op, uint64_t *val, plc_t p) {
             if (op->modifier == IL_NEG)
                 *val = (complement << offs * BYTESIZE) - *val;
             break;
-
         default:
             return ERR_BADOPERAND;
     }
@@ -664,9 +649,7 @@ int ld_timer(const instruction_t op, uint64_t *val, plc_t p) {
             *val = resolve(p, BOOL_TIMER, op->byte);
             if (op->modifier == IL_NEG)
                 *val = *val ? false : true;
-
             break;
-
         case T_BYTE:
         case T_WORD:
         case T_DWORD:
@@ -676,7 +659,6 @@ int ld_timer(const instruction_t op, uint64_t *val, plc_t p) {
             if (op->modifier == IL_NEG)
                 *val = (compl << offs * BYTESIZE) - *val;
             break;
-
         default:
             r = ERR_BADOPERAND;
     }
@@ -696,51 +678,40 @@ int handle_ld(const instruction_t op, data_t *acc, plc_t p) {
         case OP_OUTPUT: // set output %QX.Y
             r = ld_out(op, &(acc->u), p);
             break;
-
         case OP_INPUT: // load input %IX.Y
             r = ld_in(op, &(acc->u), p);
             break;
-
         case OP_REAL_OUTPUT: // set output %QX.Y
             r = ld_out_r(op, &(acc->r), p);
             break;
-
         case OP_REAL_INPUT: // load input %IX.Y
             r = ld_in_r(op, &(acc->r), p);
             break;
-
         case OP_MEMORY:
             r = ld_mem(op, &(acc->u), p);
             break;
-
         case OP_REAL_MEMORY:
             r = ld_mem_r(op, &(acc->r), p);
             break;
-
         case OP_TIMEOUT:
             r = ld_timer(op, &(acc->u), p);
             break;
-
         case OP_BLINKOUT: // bit is irrelevant
             if (op->byte >= p->ns)
                 return ERR_BADOPERAND;
             acc->u = resolve(p, BOOL_BLINKER, op->byte);
             break;
-
         case OP_COMMAND:
             acc->u = p->command;
             break;
-
         case OP_RISING: // only boolean
             r = ld_re(op, &edge, p);
             acc->u = edge;
             break;
-
         case OP_FALLING: // only boolean
             r = ld_fe(op, &edge, p);
             acc->u = edge;
             break;
-
         default:
             r = ERR_BADOPERAND;
             break;
@@ -820,7 +791,7 @@ int instruct(plc_t p, rung_t r, unsigned int *pc) {
             increment = false;
             // retrieve line number from label, set pc
             break;
-        // boolean, no modifier, outputs.
+            // boolean, no modifier, outputs.
         case IL_SET: // S
             error = handle_set(op, r->acc, //.u % 0x100,
                     type == T_BOOL, p);
@@ -1059,7 +1030,8 @@ int is_forced(const plc_t p, int op, uint8_t i) {
     return r;
 }
 
-uint8_t dec_inp(plc_t p) { // decode input bytes
+// decode input bytes
+uint8_t dec_inp(plc_t p) {
     uint8_t i = 0;
     uint8_t j = 0;
     uint8_t i_changed = false;
@@ -1095,7 +1067,8 @@ uint8_t dec_inp(plc_t p) { // decode input bytes
     return i_changed;
 }
 
-uint8_t enc_out(plc_t p) { // encode digital outputs to output bytes
+// encode digital outputs to output bytes
+uint8_t enc_out(plc_t p) {
     uint8_t i = 0;
     uint8_t j = 0;
     uint8_t o_changed = false;
@@ -1297,7 +1270,6 @@ plc_t plc_start(plc_t p) {
 
     if (p->hw == NULL || p->hw->status != STATUS_OK || p->hw->enable() != STATUS_OK) {
         p->status = ERR_HARDWARE;
-        //p->hw->status = STATUS_ERR;
     }
     if (p->status == ST_STOPPED) {
         p->update = CHANGED_STATUS;
@@ -1341,7 +1313,7 @@ plc_t plc_func(plc_t p) {
     uint8_t m_changed = false;
     uint8_t t_changed = false;
     uint8_t s_changed = false;
-    //char test[NICKLEN];
+
     dt.tv_sec = 0;
     dt.tv_usec = 0;
     if ((p->status) == ST_RUNNING) { // run
@@ -1434,7 +1406,6 @@ static plc_t allocate(plc_t plc) {
 plc_t new_plc(int di, int dq, int ai, int aq, int nt, int ns, int nm, int nr, int step, hardware_t hw) {
 
     plc_t plc = (plc_t) MEM_CALLOC(1, sizeof(struct PLC_regs), "new_plc A");
-    //memset(plc, 0, sizeof(struct PLC_regs));
 
     plc->ni = di;
     plc->nq = dq;
