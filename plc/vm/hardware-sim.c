@@ -56,7 +56,7 @@ unsigned int Naq = 0;
 
 struct hardware Sim;
 
-int sim_config(const config_t conf) {
+int vm_sim_config(const config_t conf) {
     int r = STATUS_OK;
     config_t hw = get_recursive_entry(CONFIG_HW, conf);
     config_t ifc = get_recursive_entry(HW_IFACE, hw);
@@ -101,7 +101,7 @@ int sim_config(const config_t conf) {
 }
 
 // enable bus communication
-int sim_enable() {
+int vm_sim_enable() {
     int r = STATUS_OK;
 
     // open input and output streams
@@ -130,7 +130,7 @@ int sim_enable() {
 }
 
 // disable bus communication
-int sim_disable() {
+int vm_sim_disable() {
     int r = STATUS_OK;
 
     // close streams
@@ -153,7 +153,7 @@ int sim_disable() {
     return r;
 }
 
-int sim_fetch() {
+int vm_sim_fetch() {
     unsigned int digital = Ni;
     unsigned int analog = Nai;
     int bytes_read = 0;
@@ -172,15 +172,15 @@ int sim_fetch() {
             if (feof(Ifd)) {
                 rewind(Ifd);
             } else {
-                sim_disable();
-                sim_enable();
+                vm_sim_disable();
+                vm_sim_enable();
             }
         }
     }
     return bytes_read;
 }
 
-int sim_flush() {
+int vm_sim_flush() {
     int bytes_written = 0;
     unsigned int digital = Nq;
     unsigned int analog = Naq;
@@ -194,7 +194,7 @@ int sim_flush() {
 }
 
 // write input n to bit
-void sim_dio_read(unsigned int n, uint8_t *bit) {
+void vm_sim_dio_read(unsigned int n, uint8_t *bit) {
     unsigned int b, position;
     position = n / BYTESIZE;
     uint8_t i = 0;
@@ -207,7 +207,7 @@ void sim_dio_read(unsigned int n, uint8_t *bit) {
 }
 
 // write bit to n output
-void sim_dio_write(const unsigned char *buf, unsigned int n, uint8_t bit) {
+void vm_sim_dio_write(const unsigned char *buf, unsigned int n, uint8_t bit) {
     uint8_t q;
     unsigned int position = n / BYTESIZE;
     q = buf[position];
@@ -230,7 +230,7 @@ void sim_dio_write(const unsigned char *buf, unsigned int n, uint8_t bit) {
 }
 
 // simultaneusly write output bits defined by mask and read all inputs
-void sim_dio_bitfield(const uint8_t *mask, uint8_t *bits) {
+void vm_sim_dio_bitfield(const uint8_t *mask, uint8_t *bits) {
     /* FIXME
      int i=0;
      unsigned int w = (unsigned int) (*mask);
@@ -239,7 +239,7 @@ void sim_dio_bitfield(const uint8_t *mask, uint8_t *bits) {
      */
 }
 
-void sim_data_read(unsigned int index, uint64_t *value) {
+void vm_sim_data_read(unsigned int index, uint64_t *value) {
     unsigned int pos = index * LONG_BYTES;
     int i = LONG_BYTES - 1;
     *value = 0;
@@ -252,7 +252,7 @@ void sim_data_read(unsigned int index, uint64_t *value) {
     }
 }
 
-void sim_data_write(unsigned int index, uint64_t value) {
+void vm_sim_data_write(unsigned int index, uint64_t value) {
     if (AdcOut == NULL) {
         return;
     }
@@ -265,14 +265,14 @@ struct hardware Sim = {
         HW_SIM,
         0,                // error code
         "simulated hardware",
-        sim_enable,       // enable
-        sim_disable,      // disable
-        sim_fetch,        // fetch
-        sim_flush,        // flush
-        sim_dio_read,     // dio_read
-        sim_dio_write,    // dio_write
-        sim_dio_bitfield, // dio_bitfield
-        sim_data_read,    // data_read
-        sim_data_write,   // data_write
-        sim_config,       // hw_config
+        vm_sim_enable,       // enable
+        vm_sim_disable,      // disable
+        vm_sim_fetch,        // fetch
+        vm_sim_flush,        // flush
+        vm_sim_dio_read,     // dio_read
+        vm_sim_dio_write,    // dio_write
+        vm_sim_dio_bitfield, // dio_bitfield
+        vm_sim_data_read,    // data_read
+        vm_sim_data_write,   // data_write
+        vm_sim_config,       // hw_config
         };

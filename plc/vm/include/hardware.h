@@ -50,8 +50,8 @@ typedef void (*data_wr_f)(unsigned int, uint64_t);
 typedef  int (*config_f) (const config_t);
 
 typedef struct hardware {
-    int type;
-    int status;
+     int type;
+     int status;
     char *label;
 
     /**
@@ -115,6 +115,6 @@ typedef struct hardware {
 } *hardware_t;
 
 // hardware ctor factory
-hardware_t get_hardware(int type);
+hardware_t vm_get_hardware(int type);
 
 #endif //_HARDWARE_H_

@@ -33,7 +33,7 @@
 #include "data.h"
 #include "mem.h"
 
-opcode_t take(rung_t r) {
+opcode_t vm_take(rung_t r) {
     if (r->stack == NULL)
         return &(r->prealloc[0]);
     else if (r->stack->depth < MAXSTACK - 1)
@@ -42,11 +42,11 @@ opcode_t take(rung_t r) {
         return NULL;
 }
 
-void give(opcode_t head) {
+void vm_give(opcode_t head) {
     memset(head, 0, sizeof(struct opcode));
 }
 
-int get(const rung_t r, const unsigned int idx, instruction_t *i) {
+int vm_get(const rung_t r, const unsigned int idx, instruction_t *i) {
     if (r == NULL || idx >= r->insno)
         return STATUS_ERR;
     *i = r->instructions[idx];
@@ -54,8 +54,8 @@ int get(const rung_t r, const unsigned int idx, instruction_t *i) {
 }
 
 // push an opcode and a value into stack.
-int push(uint8_t op, uint8_t t, const data_t val, rung_t r) {
-    struct opcode *p = take(r);
+int vm_push(uint8_t op, uint8_t t, const data_t val, rung_t r) {
+    struct opcode *p = vm_take(r);
     if (!p)
         return STATUS_ERR;
     //initialize
@@ -70,16 +70,16 @@ int push(uint8_t op, uint8_t t, const data_t val, rung_t r) {
 }
 
 // retrieve stack heads operation and operand, apply it to val and return result
-data_t pop(const data_t val, opcode_t *stack) {
+data_t vm_pop(const data_t val, opcode_t *stack) {
     data_t r = val; // return value
     opcode_t p;
     if (*stack != NULL) {
         // safety
-        r = operate((*stack)->operation, (*stack)->type, (*stack)->value, val); // execute instruction
+        r = vm_operate((*stack)->operation, (*stack)->type, (*stack)->value, val); // execute instruction
         p = *stack;
         *stack = (*stack)->next;
         // set stack head to point to next opcode in stack
-        give(p);
+        vm_give(p);
     }
     return r;
 }

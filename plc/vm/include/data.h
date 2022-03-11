@@ -38,9 +38,9 @@ typedef union accdata {
     double r;
 } data_t; // what can the accumulator be
 
-uint64_t operate_u(unsigned char op, uint64_t a, uint64_t b);
-  double operate_d(unsigned char op, double a, double b);
-   float operate_f(unsigned char op, float a, float b);
+uint64_t vm_operate_u(unsigned char op, uint64_t a, uint64_t b);
+  double vm_operate_d(unsigned char op, double a, double b);
+   //float operate_f(unsigned char op, float a, float b);
 
 /**
  * @brief operate operator op of type t on data a and b
@@ -50,6 +50,6 @@ uint64_t operate_u(unsigned char op, uint64_t a, uint64_t b);
  * @param b
  * @return result if available
  */
-data_t operate(unsigned char op, unsigned char t, const data_t a, const data_t b);
+data_t vm_operate(unsigned char op, unsigned char t, const data_t a, const data_t b);
 
 #endif //_DATA_H_

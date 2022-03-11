@@ -32,7 +32,7 @@
 #include "instruction.h"
 #include "mem.h"
 
-int get_type(const instruction_t ins) {
+int vm_get_type(const instruction_t ins) {
     int rv = -1; // err
 
     if (ins != NULL && OP_VALID(ins->operand)) {
@@ -44,19 +44,15 @@ int get_type(const instruction_t ins) {
                 case BYTESIZE:
                     rv = T_BYTE;
                     break;
-
                 case WORDSIZE:
                     rv = T_WORD;
                     break;
-
                 case DWORDSIZE:
                     rv = T_DWORD;
                     break;
-
                 case LWORDSIZE:
                     rv = T_LWORD;
                     break;
-
                 default:
                     if (0 <= x && x < BYTESIZE)
                         rv = T_BOOL;
@@ -66,7 +62,7 @@ int get_type(const instruction_t ins) {
     return rv;
 }
 
-void deepcopy(const instruction_t from, instruction_t to) {
+void vm_deepcopy(const instruction_t from, instruction_t to) {
     to->operation = from->operation;
     to->operand = from->operand;
     to->modifier = from->modifier;

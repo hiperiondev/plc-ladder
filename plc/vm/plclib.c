@@ -56,7 +56,7 @@ const char *LibErrors[N_IE] = {
 
 struct timeval Curtime;
 
-int open_pipe(const char *pipe, plc_t p) {
+int vm_open_pipe(const char *pipe, plc_t p) {
     p->com[0].fd = open(pipe, O_NONBLOCK | O_RDONLY);
     p->com[0].events = POLLIN | POLLPRI;
     int r = p->com[0].fd > 0 ? STATUS_OK : STATUS_ERR;
@@ -67,7 +67,7 @@ int open_pipe(const char *pipe, plc_t p) {
 }
 
 // return rising edge of operand
-int re(const plc_t p, int type, int idx) {
+int vm_re(const plc_t p, int type, int idx) {
     switch (type) {
         case BOOL_DI:
             return (p->di[idx].RE);
@@ -81,7 +81,7 @@ int re(const plc_t p, int type, int idx) {
 }
 
 // return falling edge of operand
-int fe(const plc_t p, int type, int idx) {
+int vm_fe(const plc_t p, int type, int idx) {
     switch (type) {
         case BOOL_DI:
             return (p->di[idx].FE);
@@ -95,7 +95,7 @@ int fe(const plc_t p, int type, int idx) {
 }
 
 // set operand
-int set(plc_t p, int type, int idx) {
+int vm_set(plc_t p, int type, int idx) {
     switch (type) {
         case BOOL_DQ:
             if (idx / BYTESIZE >= p->nq)
@@ -123,7 +123,7 @@ int set(plc_t p, int type, int idx) {
 }
 
 // reset operand
-int reset(plc_t p, int type, int idx) {
+int vm_reset(plc_t p, int type, int idx) {
     switch (type) {
         case BOOL_DQ:
             if (idx / BYTESIZE >= p->nq)
@@ -154,7 +154,7 @@ int reset(plc_t p, int type, int idx) {
 }
 
 // contacts an output with a value
-int contact(plc_t p, int type, int idx, uint8_t val) {
+int vm_contact(plc_t p, int type, int idx, uint8_t val) {
     switch (type) {
         case BOOL_DQ:
             if (idx / BYTESIZE >= p->nq)
@@ -185,7 +185,7 @@ int contact(plc_t p, int type, int idx, uint8_t val) {
 }
 
 // return an operand value
-int resolve(plc_t p, int type, int idx) {
+int vm_resolve(plc_t p, int type, int idx) {
     switch (type) {
         case BOOL_DQ:
             return p->dq[idx].Q || (p->dq[idx].SET && !p->dq[idx].RESET);
@@ -203,14 +203,14 @@ int resolve(plc_t p, int type, int idx) {
 }
 
 // reset timer
-int down_timer(plc_t p, int idx) {
+int vm_down_timer(plc_t p, int idx) {
     p->t[idx].START = false;
     p->t[idx].V = 0;
     p->t[idx].Q = 0;
     return 0;
 }
 
-int task(long timeout, plc_t p, rung_t r) {
+int vm_task(long timeout, plc_t p, rung_t r) {
     unsigned int i = 0;
     unsigned int pc = 0;
     struct timeval start;
@@ -230,7 +230,7 @@ int task(long timeout, plc_t p, rung_t r) {
             break;
         }
         pc = i;
-        rv = instruct(p, r, &pc);
+        rv = vm_instruct(p, r, &pc);
         if (rv < STATUS_OK) {
             switch (rv) {
                 case STATUS_ERR:
@@ -265,25 +265,25 @@ int task(long timeout, plc_t p, rung_t r) {
     return rv;
 }
 
-int all_tasks(long timeout, plc_t p) {
+int vm_all_tasks(long timeout, plc_t p) {
     int i = 0;
     int rv = STATUS_OK;
     if (p == NULL)
         return STATUS_ERR;
 
     for (; i < p->rungno; i++)
-        rv = task(timeout, p, p->rungs[i]);
+        rv = vm_task(timeout, p, p->rungs[i]);
 
     return rv;
 }
 
 // VM
-int handle_jmp(const rung_t r, unsigned int *pc) {
+int vm_handle_jmp(const rung_t r, unsigned int *pc) {
     if (r == NULL || pc == NULL)
         return STATUS_ERR;
 
     instruction_t op;
-    if (get(r, *pc, &op) < STATUS_OK)
+    if (vm_get(r, *pc, &op) < STATUS_OK)
         return ERR_BADOPERAND;
 
     if (op->operation != IL_JMP)
@@ -296,38 +296,31 @@ int handle_jmp(const rung_t r, unsigned int *pc) {
     return STATUS_OK;
 }
 
-int handle_set(const instruction_t op, const data_t acc, uint8_t is_bit, plc_t p) {
+int vm_handle_set(const instruction_t op, const data_t acc, uint8_t is_bit, plc_t p) {
     int r = STATUS_OK;
     if (op == NULL || p == NULL) {
-
         return STATUS_ERR;
     }
     if (op->operation != IL_SET) {
-
         return ERR_BADOPERATOR; // sanity
     }
     if (op->modifier == IL_COND && acc.u == false) {
-
         return r;
     }
     switch (op->operand) {
-
         case OP_CONTACT: // set output %QX.Y
             if (!is_bit) { // only gets called when bit is defined
                 r = ERR_BADOPERAND;
             } else {
-                r = set(p, BOOL_DQ, (op->byte) * BYTESIZE + op->bit);
+                r = vm_set(p, BOOL_DQ, (op->byte) * BYTESIZE + op->bit);
             }
             break;
-
         case OP_START: // bits are irrelevant
-            r = set(p, BOOL_TIMER, op->byte);
+            r = vm_set(p, BOOL_TIMER, op->byte);
             break;
-
         case OP_PULSEIN: // same here
-            r = set(p, BOOL_COUNTER, op->byte);
+            r = vm_set(p, BOOL_COUNTER, op->byte);
             break;
-
         default:
             r = ERR_BADOPERAND;
             break;
@@ -335,7 +328,7 @@ int handle_set(const instruction_t op, const data_t acc, uint8_t is_bit, plc_t p
     return r;
 }
 
-int handle_reset(const instruction_t op, const data_t acc, uint8_t is_bit, plc_t p) {
+int vm_handle_reset(const instruction_t op, const data_t acc, uint8_t is_bit, plc_t p) {
     int r = STATUS_OK;
     if (op == NULL || p == NULL)
         return STATUS_ERR;
@@ -351,24 +344,21 @@ int handle_reset(const instruction_t op, const data_t acc, uint8_t is_bit, plc_t
             if (!is_bit) // only gets called when bit is defined
                 r = ERR_BADOPERAND;
             else
-                r = reset(p, BOOL_DQ, (op->byte) * BYTESIZE + op->bit);
+                r = vm_reset(p, BOOL_DQ, (op->byte) * BYTESIZE + op->bit);
             break;
-
         case OP_START: // bits are irrelevant
-            r = reset(p, BOOL_TIMER, op->byte);
+            r = vm_reset(p, BOOL_TIMER, op->byte);
             break;
-
         case OP_PULSEIN: // same here
-            r = reset(p, BOOL_COUNTER, op->byte);
+            r = vm_reset(p, BOOL_COUNTER, op->byte);
             break;
-
         default:
             r = ERR_BADOPERAND;
     }
     return r;
 }
 
-int st_out_r(const instruction_t op, double val, plc_t p) {
+int vm_st_out_r(const instruction_t op, double val, plc_t p) {
     if (op->byte >= p->naq)
         return ERR_BADOPERAND;
     uint8_t i = op->byte;
@@ -376,9 +366,9 @@ int st_out_r(const instruction_t op, double val, plc_t p) {
     return STATUS_OK;
 }
 
-int st_out(const instruction_t op, uint64_t val, plc_t p) {
+int vm_st_out(const instruction_t op, uint64_t val, plc_t p) {
     int r = STATUS_OK;
-    int t = get_type(op);
+    int t = vm_get_type(op);
     uint8_t offs = (op->bit / BYTESIZE) - 1;
     int i = 0;
     switch (t) {
@@ -388,9 +378,8 @@ int st_out(const instruction_t op, uint64_t val, plc_t p) {
             if (op->byte >= p->nq)
                 r = ERR_BADOPERAND;
             else
-                r = contact(p, BOOL_DQ, (op->byte) * BYTESIZE + op->bit, BOOL(val));
+                r = vm_contact(p, BOOL_DQ, (op->byte) * BYTESIZE + op->bit, BOOL(val));
             break;
-
         case T_BYTE:
         case T_WORD:
         case T_DWORD:
@@ -405,23 +394,22 @@ int st_out(const instruction_t op, uint64_t val, plc_t p) {
                 }
 
             break;
-
         default:
             r = ERR_BADOPERAND;
     }
     return r;
 }
 
-int st_mem_r(const instruction_t op, double val, plc_t p) {
+int vm_st_mem_r(const instruction_t op, double val, plc_t p) {
     if (op->byte >= p->nmr)
         return ERR_BADOPERAND;
     p->mr[op->byte].V = val;
     return STATUS_OK;
 }
 
-int st_mem(const instruction_t op, uint64_t val, plc_t p) {
+int vm_st_mem(const instruction_t op, uint64_t val, plc_t p) {
     int r = STATUS_OK;
-    int t = get_type(op);
+    int t = vm_get_type(op);
     uint8_t offs = (op->bit / BYTESIZE) - 1;
     uint64_t compl = 0x100;
 
@@ -429,7 +417,7 @@ int st_mem(const instruction_t op, uint64_t val, plc_t p) {
         return ERR_BADOPERAND;
     switch (t) {
         case T_BOOL:
-            r = contact(p, BOOL_COUNTER, op->byte, BOOL(val));
+            r = vm_contact(p, BOOL_COUNTER, op->byte, BOOL(val));
             break;
         case T_BYTE:
         case T_WORD:
@@ -443,7 +431,7 @@ int st_mem(const instruction_t op, uint64_t val, plc_t p) {
     return r;
 }
 
-int handle_st(const instruction_t op, const data_t acc, plc_t p) {
+int vm_handle_st(const instruction_t op, const data_t acc, plc_t p) {
     int r = STATUS_OK;
     data_t val = acc;
     if (op == NULL || p == NULL)
@@ -454,19 +442,19 @@ int handle_st(const instruction_t op, const data_t acc, plc_t p) {
 
     switch (op->operand) {
         case OP_REAL_CONTACT: // set output %QX.Y
-            r = st_out_r(op, val.r, p);
+            r = vm_st_out_r(op, val.r, p);
             break;
         case OP_CONTACT: // set output %QX.Y
-            r = st_out(op, val.u, p);
+            r = vm_st_out(op, val.u, p);
             break;
         case OP_START: // bits are irrelevant
-            r = contact(p, BOOL_TIMER, op->byte, val.u % 2);
+            r = vm_contact(p, BOOL_TIMER, op->byte, val.u % 2);
             break;
         case OP_REAL_MEMIN:
-            r = st_mem_r(op, val.r, p);
+            r = vm_st_mem_r(op, val.r, p);
             break;
         case OP_PULSEIN:
-            r = st_mem(op, val.u, p);
+            r = vm_st_mem(op, val.u, p);
             break;
         case OP_WRITE:
             p->command = val.u;
@@ -477,7 +465,7 @@ int handle_st(const instruction_t op, const data_t acc, plc_t p) {
     return r;
 }
 
-uint64_t ld_bytes(uint8_t start, uint8_t offset, uint8_t *arr) {
+uint64_t vm_ld_bytes(uint8_t start, uint8_t offset, uint8_t *arr) {
     uint64_t rv = 0;
     int i = offset;
     for (; i >= 0; i--) {
@@ -487,9 +475,9 @@ uint64_t ld_bytes(uint8_t start, uint8_t offset, uint8_t *arr) {
     return rv;
 }
 
-int ld_in(const instruction_t op, uint64_t *val, plc_t p) {
+int vm_ld_in(const instruction_t op, uint64_t *val, plc_t p) {
     int r = STATUS_OK;
-    int t = get_type(op);
+    int t = vm_get_type(op);
     uint8_t offs = (op->bit / BYTESIZE) - 1;
     uint64_t complement = 0x100;
 
@@ -497,7 +485,7 @@ int ld_in(const instruction_t op, uint64_t *val, plc_t p) {
         case T_BOOL:
             if (op->byte >= p->ni)
                 return ERR_BADOPERAND;
-            *val = resolve(p, BOOL_DI, (op->byte) * BYTESIZE + op->bit);
+            *val = vm_resolve(p, BOOL_DI, (op->byte) * BYTESIZE + op->bit);
             if (op->modifier == IL_NEG)
                 *val = *val ? false : true;
             break;
@@ -508,7 +496,7 @@ int ld_in(const instruction_t op, uint64_t *val, plc_t p) {
             if (op->byte + offs >= p->ni)
                 return ERR_BADOPERAND;
 
-            *val = ld_bytes(op->byte, offs, p->inputs);
+            *val = vm_ld_bytes(op->byte, offs, p->inputs);
 
             if (op->modifier == IL_NEG)
                 *val = (complement << offs * BYTESIZE) - *val;
@@ -519,31 +507,31 @@ int ld_in(const instruction_t op, uint64_t *val, plc_t p) {
     return r;
 }
 
-int ld_re(const instruction_t op, uint8_t *val, plc_t p) {
+int vm_ld_re(const instruction_t op, uint8_t *val, plc_t p) {
     int r = STATUS_OK;
-    int t = get_type(op);
+    int t = vm_get_type(op);
     if (op->byte >= p->ni)
         return ERR_BADOPERAND;
     if (t == T_BOOL)
-        *val = re(p, BOOL_DI, (op->byte) * BYTESIZE + op->bit);
+        *val = vm_re(p, BOOL_DI, (op->byte) * BYTESIZE + op->bit);
     else
         r = ERR_BADOPERAND;
     return r;
 }
 
-int ld_fe(const instruction_t op, uint8_t *val, plc_t p) {
+int vm_ld_fe(const instruction_t op, uint8_t *val, plc_t p) {
     int r = STATUS_OK;
-    int t = get_type(op);
+    int t = vm_get_type(op);
     if (op->byte >= p->ni)
         return ERR_BADOPERAND;
     if (t == T_BOOL)
-        *val = fe(p, BOOL_DI, (op->byte) * BYTESIZE + op->bit);
+        *val = vm_fe(p, BOOL_DI, (op->byte) * BYTESIZE + op->bit);
     else
         r = ERR_BADOPERAND;
     return r;
 }
 
-int ld_in_r(const instruction_t op, double *val, plc_t p) {
+int vm_ld_in_r(const instruction_t op, double *val, plc_t p) {
     if (op->byte >= p->nai)
         return ERR_BADOPERAND;
     uint8_t i = op->byte;
@@ -551,7 +539,7 @@ int ld_in_r(const instruction_t op, double *val, plc_t p) {
     return STATUS_OK;
 }
 
-int ld_out_r(const instruction_t op, double *val, plc_t p) {
+int vm_ld_out_r(const instruction_t op, double *val, plc_t p) {
     if (op->byte >= p->naq)
         return ERR_BADOPERAND;
     uint8_t i = op->byte;
@@ -559,20 +547,19 @@ int ld_out_r(const instruction_t op, double *val, plc_t p) {
     return STATUS_OK;
 }
 
-int ld_out(const instruction_t op, uint64_t *val, plc_t p) {
+int vm_ld_out(const instruction_t op, uint64_t *val, plc_t p) {
     int r = STATUS_OK;
-    int t = get_type(op);
+    int t = vm_get_type(op);
     uint8_t offs = (op->bit / BYTESIZE) - 1;
     uint64_t complement = 0x100;
     switch (t) {
         case T_BOOL:
             if (op->byte >= p->nq)
                 return ERR_BADOPERAND;
-            *val = resolve(p, BOOL_DQ, (op->byte) * BYTESIZE + op->bit);
+            *val = vm_resolve(p, BOOL_DQ, (op->byte) * BYTESIZE + op->bit);
             if (op->modifier == IL_NEG)
                 *val = *val ? false : true;
             break;
-
         case T_BYTE:
         case T_WORD:
         case T_DWORD:
@@ -580,21 +567,20 @@ int ld_out(const instruction_t op, uint64_t *val, plc_t p) {
             if (op->byte + offs >= p->nq)
                 return ERR_BADOPERAND;
 
-            *val = ld_bytes(op->byte, offs, p->outputs);
+            *val = vm_ld_bytes(op->byte, offs, p->outputs);
 
             if (op->modifier == IL_NEG)
                 *val = (complement << offs * BYTESIZE) - *val;
             break;
-
         default:
             return ERR_BADOPERAND;
     }
     return r;
 }
 
-int ld_mem(const instruction_t op, uint64_t *val, plc_t p) {
+int vm_ld_mem(const instruction_t op, uint64_t *val, plc_t p) {
     int r = STATUS_OK;
-    int t = get_type(op);
+    int t = vm_get_type(op);
     if (op->byte >= p->nm)
         return ERR_BADOPERAND;
     int offs = (op->bit / BYTESIZE) - 1;
@@ -602,28 +588,25 @@ int ld_mem(const instruction_t op, uint64_t *val, plc_t p) {
 
     switch (t) {
         case T_BOOL:
-            *val = resolve(p, BOOL_COUNTER, op->byte);
+            *val = vm_resolve(p, BOOL_COUNTER, op->byte);
             if (op->modifier == IL_NEG)
                 *val = (*val) ? false : true;
             break;
-
         case T_BYTE:
         case T_WORD:
         case T_DWORD:
         case T_LWORD:
             *val = p->m[op->byte].V & ((compl << offs * BYTESIZE) - 1);
-
             if (op->modifier == IL_NEG)
                 *val = (compl << offs * BYTESIZE) - *val;
             break;
-
         default:
             return ERR_BADOPERAND;
     }
     return r;
 }
 
-int ld_mem_r(const instruction_t op, double *val, plc_t p) {
+int vm_ld_mem_r(const instruction_t op, double *val, plc_t p) {
     if (op->byte >= p->nmr)
         return ERR_BADOPERAND;
 
@@ -634,9 +617,9 @@ int ld_mem_r(const instruction_t op, double *val, plc_t p) {
     return STATUS_OK;
 }
 
-int ld_timer(const instruction_t op, uint64_t *val, plc_t p) {
+int vm_ld_timer(const instruction_t op, uint64_t *val, plc_t p) {
     int r = STATUS_OK;
-    int t = get_type(op);
+    int t = vm_get_type(op);
     int offs = (op->bit / BYTESIZE) - 1;
     uint64_t compl = 0x100;
 
@@ -646,7 +629,7 @@ int ld_timer(const instruction_t op, uint64_t *val, plc_t p) {
         return ERR_BADOPERAND;
     switch (t) {
         case T_BOOL:
-            *val = resolve(p, BOOL_TIMER, op->byte);
+            *val = vm_resolve(p, BOOL_TIMER, op->byte);
             if (op->modifier == IL_NEG)
                 *val = *val ? false : true;
             break;
@@ -655,7 +638,6 @@ int ld_timer(const instruction_t op, uint64_t *val, plc_t p) {
         case T_DWORD:
         case T_LWORD:
             *val = p->t[op->byte].V & ((compl << offs * BYTESIZE) - 1);
-
             if (op->modifier == IL_NEG)
                 *val = (compl << offs * BYTESIZE) - *val;
             break;
@@ -665,7 +647,7 @@ int ld_timer(const instruction_t op, uint64_t *val, plc_t p) {
     return r;
 }
 
-int handle_ld(const instruction_t op, data_t *acc, plc_t p) {
+int vm_handle_ld(const instruction_t op, data_t *acc, plc_t p) {
     int r = 0;
     uint8_t edge = 0;
     if (op == NULL || p == NULL || acc == NULL)
@@ -676,40 +658,40 @@ int handle_ld(const instruction_t op, data_t *acc, plc_t p) {
 
     switch (op->operand) {
         case OP_OUTPUT: // set output %QX.Y
-            r = ld_out(op, &(acc->u), p);
+            r = vm_ld_out(op, &(acc->u), p);
             break;
         case OP_INPUT: // load input %IX.Y
-            r = ld_in(op, &(acc->u), p);
+            r = vm_ld_in(op, &(acc->u), p);
             break;
         case OP_REAL_OUTPUT: // set output %QX.Y
-            r = ld_out_r(op, &(acc->r), p);
+            r = vm_ld_out_r(op, &(acc->r), p);
             break;
         case OP_REAL_INPUT: // load input %IX.Y
-            r = ld_in_r(op, &(acc->r), p);
+            r = vm_ld_in_r(op, &(acc->r), p);
             break;
         case OP_MEMORY:
-            r = ld_mem(op, &(acc->u), p);
+            r = vm_ld_mem(op, &(acc->u), p);
             break;
         case OP_REAL_MEMORY:
-            r = ld_mem_r(op, &(acc->r), p);
+            r = vm_ld_mem_r(op, &(acc->r), p);
             break;
         case OP_TIMEOUT:
-            r = ld_timer(op, &(acc->u), p);
+            r = vm_ld_timer(op, &(acc->u), p);
             break;
         case OP_BLINKOUT: // bit is irrelevant
             if (op->byte >= p->ns)
                 return ERR_BADOPERAND;
-            acc->u = resolve(p, BOOL_BLINKER, op->byte);
+            acc->u = vm_resolve(p, BOOL_BLINKER, op->byte);
             break;
         case OP_COMMAND:
             acc->u = p->command;
             break;
         case OP_RISING: // only boolean
-            r = ld_re(op, &edge, p);
+            r = vm_ld_re(op, &edge, p);
             acc->u = edge;
             break;
         case OP_FALLING: // only boolean
-            r = ld_fe(op, &edge, p);
+            r = vm_ld_fe(op, &edge, p);
             acc->u = edge;
             break;
         default:
@@ -720,7 +702,7 @@ int handle_ld(const instruction_t op, data_t *acc, plc_t p) {
 }
 
 // all others (stackable operations)
-int handle_stackable(const instruction_t op, rung_t r, plc_t p) {
+int vm_handle_stackable(const instruction_t op, rung_t r, plc_t p) {
     int rv = 0;
     data_t val;
     val.u = 0;
@@ -731,12 +713,12 @@ int handle_stackable(const instruction_t op, rung_t r, plc_t p) {
     if (op->operation < FIRST_BITWISE || op->operation >= N_IL_INSN)
         return ERR_BADOPERATOR; // sanity
 
-    int type = get_type(op);
+    int type = vm_get_type(op);
     if (type == STATUS_ERR)
         return ERR_BADOPERAND;
 
     struct instruction loader;
-    deepcopy(op, &loader);
+    vm_deepcopy(op, &loader);
     loader.operation = IL_LD;
     loader.modifier = IL_NORM;
 
@@ -746,16 +728,16 @@ int handle_stackable(const instruction_t op, rung_t r, plc_t p) {
         stackable += NEGATE;
 
     if (op->modifier == IL_PUSH) {
-        push(stackable, type, r->acc, r);
-        rv = handle_ld(&loader, &(r->acc), p);
+        vm_push(stackable, type, r->acc, r);
+        rv = vm_handle_ld(&loader, &(r->acc), p);
     } else {
-        rv = handle_ld(&loader, &val, p);
-        r->acc = operate(stackable, type, r->acc, val);
+        rv = vm_handle_ld(&loader, &val, p);
+        r->acc = vm_operate(stackable, type, r->acc, val);
     }
     return rv;
 }
 
-int instruct(plc_t p, rung_t r, unsigned int *pc) {
+int vm_instruct(plc_t p, rung_t r, unsigned int *pc) {
     uint8_t type = 0;
     int error = 0;
     instruction_t op;
@@ -764,19 +746,19 @@ int instruct(plc_t p, rung_t r, unsigned int *pc) {
         (*pc)++;
         return STATUS_ERR;
     }
-    if (get(r, *pc, &op) < STATUS_OK) {
+    if (vm_get(r, *pc, &op) < STATUS_OK) {
         (*pc)++;
         return ERR_BADOPERAND;
     }
 
-    type = get_type(op);
+    type = vm_get_type(op);
     if (type == STATUS_ERR)
         return ERR_BADOPERAND;
 
     switch (op->operation) {
         // IL OPCODES: no operand
         case IL_POP: // POP
-            r->acc = pop(r->acc, &(r->stack));
+            r->acc = vm_pop(r->acc, &(r->stack));
             break;
         case IL_NOP:
         // null operation
@@ -787,37 +769,37 @@ int instruct(plc_t p, rung_t r, unsigned int *pc) {
             break;
         // arithmetic LABEL
         case IL_JMP: // JMP
-            error = handle_jmp(r, pc);
+            error = vm_handle_jmp(r, pc);
             increment = false;
             // retrieve line number from label, set pc
             break;
             // boolean, no modifier, outputs.
         case IL_SET: // S
-            error = handle_set(op, r->acc, //.u % 0x100,
+            error = vm_handle_set(op, r->acc, //.u % 0x100,
                     type == T_BOOL, p);
             break;
         case IL_RESET: // R
-            error = handle_reset(op, r->acc, //.u % 0x100,
+            error = vm_handle_reset(op, r->acc, //.u % 0x100,
                     type == T_BOOL, p);
             break;
         case IL_LD: // LD
-            error = handle_ld(op, &(r->acc), p);
+            error = vm_handle_ld(op, &(r->acc), p);
 
             break;
         case IL_ST: // ST: output
             // if negate, negate acc
-            error = handle_st(op, r->acc, p);
+            error = vm_handle_st(op, r->acc, p);
             // any operand, only push
             break;
         default:
-            error = handle_stackable(op, r, p);
+            error = vm_handle_stackable(op, r, p);
     }
     if (increment == true)
         (*pc)++;
     return error;
 }
 
-rung_t mk_rung(const char *name, plc_t p) {
+rung_t vm_mk_rung(const char *name, plc_t p) {
     rung_t r = (rung_t) MEM_CALLOC(1, sizeof(struct rung), "mk_rung A");
 
     r->id = strdup(name);
@@ -830,7 +812,7 @@ rung_t mk_rung(const char *name, plc_t p) {
     return r;
 }
 
-rung_t get_rung(const plc_t p, const unsigned int idx) {
+rung_t vm_get_rung(const plc_t p, const unsigned int idx) {
     if (p == NULL || idx >= p->rungno) {
         return NULL;
     }
@@ -838,7 +820,7 @@ rung_t get_rung(const plc_t p, const unsigned int idx) {
 }
 
 // realtime loop
-int timeval_subtract(struct timeval *result, struct timeval *x, struct timeval *y) {
+int vm_timeval_subtract(struct timeval *result, struct timeval *x, struct timeval *y) {
     // subtract the `struct timeval' values X and Y, storing the result in RESULT.
     // return 1 if the difference is negative, otherwise 0.
     // perform the carry for the later subtraction by updating y.
@@ -859,7 +841,7 @@ int timeval_subtract(struct timeval *result, struct timeval *x, struct timeval *
     return x->tv_sec < y->tv_sec;
 }
 
-void read_inputs(plc_t p) {
+void vm_read_inputs(plc_t p) {
     int i = 0;
     int n = 0;
     int j = 0;
@@ -886,7 +868,7 @@ void read_inputs(plc_t p) {
     }
 }
 
-void write_outputs(plc_t p) {
+void vm_write_outputs(plc_t p) {
     int j = 0;
     int n = 0;
     int q_bit = 0;
@@ -912,7 +894,7 @@ void write_outputs(plc_t p) {
 }
 
 // TODO: how is force implemented for variables and timers?
-plc_t force(plc_t p, int op, uint8_t i, char *val) {
+plc_t vm_force(plc_t p, int op, uint8_t i, char *val) {
     if (p == NULL || val == NULL) {
         return NULL;
     }
@@ -962,7 +944,7 @@ plc_t force(plc_t p, int op, uint8_t i, char *val) {
     return r;
 }
 
-plc_t unforce(plc_t p, int op, uint8_t i) {
+plc_t vm_unforce(plc_t p, int op, uint8_t i) {
     if (p == NULL) {
         return NULL;
     }
@@ -1000,7 +982,7 @@ plc_t unforce(plc_t p, int op, uint8_t i) {
     return r;
 }
 
-int is_forced(const plc_t p, int op, uint8_t i) {
+int vm_is_forced(const plc_t p, int op, uint8_t i) {
     int r = STATUS_ERR;
     switch (op) {
         case OP_INPUT:
@@ -1031,7 +1013,7 @@ int is_forced(const plc_t p, int op, uint8_t i) {
 }
 
 // decode input bytes
-uint8_t dec_inp(plc_t p) {
+uint8_t vm_dec_inp(plc_t p) {
     uint8_t i = 0;
     uint8_t j = 0;
     uint8_t i_changed = false;
@@ -1050,7 +1032,7 @@ uint8_t dec_inp(plc_t p) {
         }
     }
     for (i = 0; i < p->nai; i++) {
-        if (is_forced(p, OP_REAL_INPUT, i)) {
+        if (vm_is_forced(p, OP_REAL_INPUT, i)) {
             p->ai[i].V = p->ai[i].mask;
         } else {
             double denom = (double) UINT64_MAX;
@@ -1068,7 +1050,7 @@ uint8_t dec_inp(plc_t p) {
 }
 
 // encode digital outputs to output bytes
-uint8_t enc_out(plc_t p) {
+uint8_t vm_enc_out(plc_t p) {
     uint8_t i = 0;
     uint8_t j = 0;
     uint8_t o_changed = false;
@@ -1092,7 +1074,7 @@ uint8_t enc_out(plc_t p) {
         double min = p->aq[i].min;
         double max = p->aq[i].max;
         double val = p->aq[i].V;
-        if (is_forced(p, OP_REAL_OUTPUT, i)) {
+        if (vm_is_forced(p, OP_REAL_OUTPUT, i)) {
             val = p->aq[i].mask;
         }
         p->real_out[i] = UINT64_MAX * ((val - min) / (max - min));
@@ -1104,7 +1086,7 @@ uint8_t enc_out(plc_t p) {
     return o_changed;
 }
 
-void read_mvars(plc_t p) {
+void vm_read_mvars(plc_t p) {
     int i;
     for (i = 0; i < p->nm; i++) {
         if (p->m[i].SET || p->m[i].RESET)
@@ -1112,7 +1094,7 @@ void read_mvars(plc_t p) {
     }
 }
 
-void write_mvars(plc_t p) {
+void vm_write_mvars(plc_t p) {
     int i;
     for (i = 0; i < p->nm; i++) {
         if (!p->m[i].RO) {
@@ -1124,7 +1106,7 @@ void write_mvars(plc_t p) {
     }
 }
 
-uint8_t check_pulses(plc_t p) {
+uint8_t vm_check_pulses(plc_t p) {
     uint8_t changed = 0;
     int i = 0;
     for (i = 0; i < p->nm; i++) { // check counter pulses
@@ -1136,7 +1118,7 @@ uint8_t check_pulses(plc_t p) {
     return changed;
 }
 
-plc_t save_state(uint8_t mask, plc_t p) {
+plc_t vm_save_state(uint8_t mask, plc_t p) {
     if (mask & CHANGED_I) { // input changed!
         memcpy(p->old->inputs, p->inputs, p->ni);
         plc_log("%s", "input updated");
@@ -1161,7 +1143,7 @@ plc_t save_state(uint8_t mask, plc_t p) {
     return p;
 }
 
-void write_response(plc_t p) {
+void vm_write_response(plc_t p) {
     int rfd = 0; // response file descriptor
     rfd = open(p->response_file, O_NONBLOCK | O_WRONLY);
     // dummy code until this feature goes away
@@ -1172,7 +1154,7 @@ void write_response(plc_t p) {
     close(rfd);
 }
 
-uint8_t manage_timers(plc_t p) {
+uint8_t vm_manage_timers(plc_t p) {
     int i = 0;
     uint8_t t_changed = 0;
     for (i = 0; i < p->nt; i++) {
@@ -1192,7 +1174,7 @@ uint8_t manage_timers(plc_t p) {
     return t_changed;
 }
 
-uint8_t manage_blinkers(plc_t p) {
+uint8_t vm_manage_blinkers(plc_t p) {
     uint8_t s_changed = 0;
     int i = 0;
     for (i = 0; i < p->ns; i++) {
@@ -1208,11 +1190,11 @@ uint8_t manage_blinkers(plc_t p) {
     return s_changed;
 }
 
-void plc_load_precompiled(const char *path, plc_t *plc_prog) {
+void vm_plc_load_precompiled(const char *path, plc_t *plc_prog) {
 
 }
 
-plc_t plc_load_program_file(const char *path, plc_t plc) {
+plc_t vm_plc_load_program_file(const char *path, plc_t plc) {
     FILE *f;
     int r = ERR_BADFILE;
     char program_lines[MAXBUF][MAXSTR]; // program lines
@@ -1251,7 +1233,7 @@ plc_t plc_load_program_file(const char *path, plc_t plc) {
                 plc_log("Loading LD code from %s...", path);
                 //plc = parse_ld_program(path, program_lines, plc); // TODO: LOAD PROGRAM
             } else if (lang == LANG_PLC) {
-                plc_load_precompiled(path, &plc);
+                vm_plc_load_precompiled(path, &plc);
             }
         } else {
             plc_log("Could not open program file %s...", path);
@@ -1262,7 +1244,7 @@ plc_t plc_load_program_file(const char *path, plc_t plc) {
     return plc;
 }
 
-plc_t plc_start(plc_t p) {
+plc_t vm_plc_start(plc_t p) {
     if (p == NULL) {
 
         return p;
@@ -1278,7 +1260,7 @@ plc_t plc_start(plc_t p) {
     return p;
 }
 
-plc_t plc_stop(plc_t p) {
+plc_t vm_plc_stop(plc_t p) {
     if (p == NULL) {
         return NULL;
     }
@@ -1289,7 +1271,7 @@ plc_t plc_stop(plc_t p) {
     if (p->status == ST_RUNNING) {
         memset(p->outputs, 0, p->nq);
         memset(p->real_out, 0, 8 * p->naq);
-        write_outputs(p);
+        vm_write_outputs(p);
         p->hw->disable();
         p->update = CHANGED_STATUS;
         p->status = ST_STOPPED;
@@ -1297,7 +1279,7 @@ plc_t plc_stop(plc_t p) {
     return p;
 }
 
-plc_t plc_func(plc_t p) {
+plc_t vm_plc_func(plc_t p) {
     struct timeval tp; // time for poll
     struct timeval tn; // time since beginning of last output
     struct timeval dt;
@@ -1318,15 +1300,15 @@ plc_t plc_func(plc_t p) {
     dt.tv_usec = 0;
     if ((p->status) == ST_RUNNING) { // run
         // remaining time = step
-        read_inputs(p);
-        t_changed = manage_timers(p);
-        s_changed = manage_blinkers(p);
-        read_mvars(p);
+        vm_read_inputs(p);
+        t_changed = vm_manage_timers(p);
+        s_changed = vm_manage_blinkers(p);
+        vm_read_mvars(p);
 
         gettimeofday(&tn, NULL);
         // dt = time for input + output
         // how much time passed since previous cycle?
-        timeval_subtract(&dt, &tn, &Curtime);
+        vm_timeval_subtract(&dt, &tn, &Curtime);
         dt.tv_usec = dt.tv_usec % (THOUSAND * p->step);
         io_time = dt.tv_usec; // THOUSAND;
         timeout -= io_time;
@@ -1336,7 +1318,7 @@ plc_t plc_func(plc_t p) {
         // TODO: when a truly asynchronous UI is available,
         // replace poll() with sleep() for better accuracy
         gettimeofday(&tp, NULL); // how much time did poll wait?
-        timeval_subtract(&dt, &tp, &tn);
+        vm_timeval_subtract(&dt, &tp, &tn);
         poll_time = dt.tv_usec;
 
         if (written < 0) {
@@ -1344,34 +1326,34 @@ plc_t plc_func(plc_t p) {
             plc_log("PIPE ERROR\n");
             p->command = 0;
         }
-        i_changed = dec_inp(p); //decode inputs
+        i_changed = vm_dec_inp(p); //decode inputs
         // TODO: a better user plugin system when function blocks are implemented
-        project_task(p); // plugin code
+        vm_project_task(p); // plugin code
 
         if (r >= STATUS_OK)
-            r = all_tasks(p->step * THOUSAND, p);
+            r = vm_all_tasks(p->step * THOUSAND, p);
 
         gettimeofday(&Curtime, NULL); // start timing next cycle
-        timeval_subtract(&dt, &Curtime, &tp);
+        vm_timeval_subtract(&dt, &Curtime, &tp);
         run_time = dt.tv_usec;
-        compute_variance((double) (run_time + poll_time + io_time));
+        vm_compute_variance((double) (run_time + poll_time + io_time));
 
         if (r == ERR_TIMEOUT) {
             plc_log("timeout! i/o: %d us, poll: %d us, run: %d us", io_time, poll_time, run_time);
         }
-        o_changed = enc_out(p);
+        o_changed = vm_enc_out(p);
         p->command = 0;
 
-        write_outputs(p);
+        vm_write_outputs(p);
 
-        m_changed = check_pulses(p);
-        write_mvars(p);
+        m_changed = vm_check_pulses(p);
+        vm_write_mvars(p);
         change_mask |= CHANGED_I * i_changed;
         change_mask |= CHANGED_O * o_changed;
         change_mask |= CHANGED_M * m_changed;
         change_mask |= CHANGED_T * t_changed;
         change_mask |= CHANGED_S * s_changed;
-        p = save_state(change_mask, p);
+        p = vm_save_state(change_mask, p);
     } else {
         usleep(p->step * THOUSAND);
         timeout = 0;
@@ -1383,7 +1365,7 @@ plc_t plc_func(plc_t p) {
 }
 
 // initialize
-static plc_t allocate(plc_t plc) {
+static plc_t vm_allocate(plc_t plc) {
     plc->inputs = (uint8_t*) MEM_CALLOC(1, plc->ni, "allocate A");
     plc->outputs = (uint8_t*) MEM_CALLOC(1, plc->nq, "allocate B");
     plc->real_in = (uint64_t*) MEM_CALLOC(plc->nai, sizeof(uint64_t), "allocate C");
@@ -1403,7 +1385,7 @@ static plc_t allocate(plc_t plc) {
 }
 
 // construct
-plc_t new_plc(int di, int dq, int ai, int aq, int nt, int ns, int nm, int nr, int step, hardware_t hw) {
+plc_t vm_new_plc(int di, int dq, int ai, int aq, int nt, int ns, int nm, int nr, int step, hardware_t hw) {
 
     plc_t plc = (plc_t) MEM_CALLOC(1, sizeof(struct PLC_regs), "new_plc A");
 
@@ -1422,14 +1404,14 @@ plc_t new_plc(int di, int dq, int ai, int aq, int nt, int ns, int nm, int nr, in
     plc->command = 0;
     plc->status = ST_STOPPED;
 
-    plc = allocate(plc);
+    plc = vm_allocate(plc);
 
-    plc->old = copy_plc(plc);
+    plc->old = vm_copy_plc(plc);
 
     return plc;
 }
 
-plc_t copy_plc(const plc_t plc) {
+plc_t vm_copy_plc(const plc_t plc) {
 
     plc_t p = (plc_t) MEM_CALLOC(1, sizeof(struct PLC_regs), "copy_plc A");
     p->ni = plc->ni;
@@ -1441,7 +1423,7 @@ plc_t copy_plc(const plc_t plc) {
     p->nm = plc->nm;
     p->nmr = plc->nmr;
 
-    p = allocate(p);
+    p = vm_allocate(p);
 
     memcpy(p->inputs, plc->inputs, plc->ni);
     memcpy(p->outputs, plc->outputs, plc->nq);
@@ -1457,7 +1439,7 @@ plc_t copy_plc(const plc_t plc) {
 }
 
 // destroy
-void clear_plc(plc_t plc) {
+void vm_clear_plc(plc_t plc) {
     if (plc != NULL) {
         if (plc->ai != NULL) {
             MEM_FREE(plc->ai, "clear_plc A");
@@ -1512,7 +1494,7 @@ void clear_plc(plc_t plc) {
 }
 
 // configurators
-plc_t declare_variable(const plc_t p, int var, uint8_t idx, const char *val) {
+plc_t vm_declare_variable(const plc_t p, int var, uint8_t idx, const char *val) {
     plc_t r = p;
     char **nick = NULL;
     uint8_t max = 0;
@@ -1521,42 +1503,34 @@ plc_t declare_variable(const plc_t p, int var, uint8_t idx, const char *val) {
             max = p->ni * BYTESIZE;
             nick = &(r->di[idx].nick);
             break;
-
         case OP_OUTPUT:
             max = p->nq * BYTESIZE;
             nick = &(r->dq[idx].nick);
             break;
-
         case OP_REAL_INPUT:
             max = p->nai;
             nick = &(r->ai[idx].nick);
             break;
-
         case OP_REAL_OUTPUT:
             max = p->naq;
             nick = &(r->aq[idx].nick);
             break;
-
         case OP_MEMORY:
             max = p->nm;
             nick = &(r->m[idx].nick);
             break;
-
         case OP_REAL_MEMORY:
             max = p->nmr;
             nick = &(r->mr[idx].nick);
             break;
-
         case OP_TIMEOUT:
             max = p->nt;
             nick = &(r->t[idx].nick);
             break;
-
         case OP_BLINKOUT:
             max = p->ns;
             nick = &(r->s[idx].nick);
             break;
-
         default:
             break;
     }
@@ -1573,7 +1547,7 @@ plc_t declare_variable(const plc_t p, int var, uint8_t idx, const char *val) {
     return r;
 }
 
-plc_t init_variable(const plc_t p, int var, uint8_t idx, const char *val) {
+plc_t vm_init_variable(const plc_t p, int var, uint8_t idx, const char *val) {
     plc_t r = p;
     uint8_t len = 0;
 
@@ -1586,7 +1560,6 @@ plc_t init_variable(const plc_t p, int var, uint8_t idx, const char *val) {
                 r->mr[idx].V = atof(val);
             }
             break;
-
         case OP_MEMORY:
             len = r->nm;
             if (idx >= len) {
@@ -1595,7 +1568,6 @@ plc_t init_variable(const plc_t p, int var, uint8_t idx, const char *val) {
                 r->m[idx].V = atol(val);
             }
             break;
-
         default:
             r->status = ERR_BADOPERAND;
             break;
@@ -1603,7 +1575,7 @@ plc_t init_variable(const plc_t p, int var, uint8_t idx, const char *val) {
     return r;
 }
 
-plc_t configure_variable_readonly(const plc_t p, int var, uint8_t idx, const char *val) {
+plc_t vm_configure_variable_readonly(const plc_t p, int var, uint8_t idx, const char *val) {
     plc_t r = p;
     uint8_t len = 0;
     switch (var) {
@@ -1615,7 +1587,6 @@ plc_t configure_variable_readonly(const plc_t p, int var, uint8_t idx, const cha
                 r->mr[idx].RO = !strcmp(val, "TRUE");
             }
             break;
-
         case OP_MEMORY:
             len = r->nm;
             if (idx >= len) {
@@ -1624,7 +1595,6 @@ plc_t configure_variable_readonly(const plc_t p, int var, uint8_t idx, const cha
                 r->m[idx].RO = !strcmp(val, "TRUE");
             }
             break;
-
         default:
             r->status = ERR_BADOPERAND;
             break;
@@ -1632,7 +1602,7 @@ plc_t configure_variable_readonly(const plc_t p, int var, uint8_t idx, const cha
     return r;
 }
 
-plc_t configure_io_limit(const plc_t p, int var, uint8_t idx, const char *val, uint8_t upper) {
+plc_t vm_configure_io_limit(const plc_t p, int var, uint8_t idx, const char *val, uint8_t upper) {
     plc_t r = p;
     aio_t io = NULL;
     uint8_t len = 0;
@@ -1643,12 +1613,10 @@ plc_t configure_io_limit(const plc_t p, int var, uint8_t idx, const char *val, u
             io = r->ai;
             len = r->nai;
             break;
-
         case OP_REAL_OUTPUT:
             io = r->aq;
             len = r->naq;
             break;
-
         default:
             break;
     }
@@ -1665,7 +1633,7 @@ plc_t configure_io_limit(const plc_t p, int var, uint8_t idx, const char *val, u
     return r;
 }
 
-plc_t configure_counter_direction(const plc_t p, uint8_t idx, const char *val) {
+plc_t vm_configure_counter_direction(const plc_t p, uint8_t idx, const char *val) {
     plc_t r = p;
     uint8_t len = r->nm;
 
@@ -1677,7 +1645,7 @@ plc_t configure_counter_direction(const plc_t p, uint8_t idx, const char *val) {
     return r;
 }
 
-plc_t configure_timer_scale(const plc_t p, uint8_t idx, const char *val) {
+plc_t vm_configure_timer_scale(const plc_t p, uint8_t idx, const char *val) {
     plc_t r = p;
     uint8_t len = r->nt;
 
@@ -1689,7 +1657,7 @@ plc_t configure_timer_scale(const plc_t p, uint8_t idx, const char *val) {
     return r;
 }
 
-plc_t configure_timer_preset(const plc_t p, uint8_t idx, const char *val) {
+plc_t vm_configure_timer_preset(const plc_t p, uint8_t idx, const char *val) {
     plc_t r = p;
     uint8_t len = r->nt;
 
@@ -1701,7 +1669,7 @@ plc_t configure_timer_preset(const plc_t p, uint8_t idx, const char *val) {
     return r;
 }
 
-plc_t configure_timer_delay_mode(const plc_t p, uint8_t idx, const char *val) {
+plc_t vm_configure_timer_delay_mode(const plc_t p, uint8_t idx, const char *val) {
     plc_t r = p;
     uint8_t len = r->nt;
     if (idx >= len) {
@@ -1712,7 +1680,7 @@ plc_t configure_timer_delay_mode(const plc_t p, uint8_t idx, const char *val) {
     return r;
 }
 
-plc_t configure_pulse_scale(const plc_t p, uint8_t idx, const char *val) {
+plc_t vm_configure_pulse_scale(const plc_t p, uint8_t idx, const char *val) {
     plc_t r = p;
     uint8_t len = r->ns;
 

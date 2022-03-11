@@ -35,7 +35,7 @@
 #include "plclib.h"
 
 void ut_construct() {
-    plc_t plc = new_plc(8, 8, 4, 4, 4, 4, 4, 4, 100, NULL);
+    plc_t plc = vm_new_plc(8, 8, 4, 4, 4, 4, 4, 4, 100, NULL);
 
     CU_ASSERT_PTR_NULL(plc->hw);
     //printf("hw: %s\n", plc.hw);
@@ -99,127 +99,127 @@ void ut_construct() {
     CU_ASSERT(plc->command == 0);
     CU_ASSERT(plc->status == ST_STOPPED);
 
-    clear_plc(plc);
+    vm_clear_plc(plc);
 }
 
 void ut_config() {
-    plc_t plc = new_plc(8, 8, 4, 4, 4, 4, 4, 4, 100, NULL);
+    plc_t plc = vm_new_plc(8, 8, 4, 4, 4, 4, 4, 4, 100, NULL);
 
-    plc = declare_variable(plc, 0, 99, "input_1");
+    plc = vm_declare_variable(plc, 0, 99, "input_1");
     CU_ASSERT(plc->status == ERR_BADOPERAND);
 
     plc->status = STATUS_OK;
-    plc = declare_variable(plc, OP_INPUT, 99, "input_1");
+    plc = vm_declare_variable(plc, OP_INPUT, 99, "input_1");
     CU_ASSERT(plc->status == ERR_BADINDEX);
 
     plc->status = STATUS_OK;
-    plc = declare_variable(plc, OP_INPUT, 1, "input_1");
+    plc = vm_declare_variable(plc, OP_INPUT, 1, "input_1");
     CU_ASSERT_STRING_EQUAL(plc->di[1].nick, "input_1");
     CU_ASSERT(plc->status == STATUS_OK);
 
-    plc = declare_variable(plc, OP_OUTPUT, 2, "output_1");
+    plc = vm_declare_variable(plc, OP_OUTPUT, 2, "output_1");
     CU_ASSERT_STRING_EQUAL(plc->dq[2].nick, "output_1");
 
-    plc = declare_variable(plc, OP_REAL_INPUT, 5, "input_1");
+    plc = vm_declare_variable(plc, OP_REAL_INPUT, 5, "input_1");
     CU_ASSERT(plc->status == ERR_BADINDEX);
 
     plc->status = STATUS_OK;
 
-    plc = declare_variable(plc, OP_REAL_OUTPUT, 2, "output_1");
+    plc = vm_declare_variable(plc, OP_REAL_OUTPUT, 2, "output_1");
     CU_ASSERT_STRING_EQUAL(plc->aq[2].nick, "output_1");
 
     /*******************************************************************/
 
-    plc = configure_io_limit(plc, 0, 99, "0.0", true);
+    plc = vm_configure_io_limit(plc, 0, 99, "0.0", true);
     CU_ASSERT(plc->status == ERR_BADOPERAND);
 
     plc->status = STATUS_OK;
-    plc = configure_io_limit(plc, OP_REAL_OUTPUT, 99, "", false);
+    plc = vm_configure_io_limit(plc, OP_REAL_OUTPUT, 99, "", false);
     CU_ASSERT(plc->status == ERR_BADINDEX);
 
     plc->status = STATUS_OK;
-    plc = configure_io_limit(plc, OP_REAL_INPUT, 1, "-10.0", true);
+    plc = vm_configure_io_limit(plc, OP_REAL_INPUT, 1, "-10.0", true);
     CU_ASSERT_DOUBLE_EQUAL(plc->ai[1].max, -10.0, FLOAT_PRECISION); //TOD: is correct?
     CU_ASSERT(plc->status == STATUS_OK);
 
     /*******************************************************************/
 
-    plc = init_variable(plc, 0, 99, "0.0");
+    plc = vm_init_variable(plc, 0, 99, "0.0");
     CU_ASSERT(plc->status == ERR_BADOPERAND);
 
     plc->status = STATUS_OK;
-    plc = init_variable(plc, OP_MEMORY, 99, "");
+    plc = vm_init_variable(plc, OP_MEMORY, 99, "");
     CU_ASSERT(plc->status == ERR_BADINDEX);
 
     plc->status = STATUS_OK;
-    plc = init_variable(plc, OP_REAL_MEMORY, 1, "-10.0");
+    plc = vm_init_variable(plc, OP_REAL_MEMORY, 1, "-10.0");
     CU_ASSERT_DOUBLE_EQUAL(plc->mr[1].V, -10.0, FLOAT_PRECISION);
     CU_ASSERT(plc->status == STATUS_OK);
 
     /*******************************************************************/
 
-    plc = configure_variable_readonly(plc, 0, 99, "FALSE");
+    plc = vm_configure_variable_readonly(plc, 0, 99, "FALSE");
     CU_ASSERT(plc->status == ERR_BADOPERAND);
 
-    plc = configure_variable_readonly(plc, OP_MEMORY, 99, "TRUE");
+    plc = vm_configure_variable_readonly(plc, OP_MEMORY, 99, "TRUE");
     CU_ASSERT(plc->status == ERR_BADINDEX);
 
     plc->status = STATUS_OK;
-    plc = configure_variable_readonly(plc, OP_REAL_MEMORY, 1, "TRUE");
+    plc = vm_configure_variable_readonly(plc, OP_REAL_MEMORY, 1, "TRUE");
     CU_ASSERT(plc->mr[1].RO == true);
     CU_ASSERT(plc->status == STATUS_OK);
 
     /*******************************************************************/
 
-    plc = configure_counter_direction(plc, 99, "UP");
+    plc = vm_configure_counter_direction(plc, 99, "UP");
     CU_ASSERT(plc->status == ERR_BADINDEX);
 
     plc->status = STATUS_OK;
-    plc = configure_counter_direction(plc, 1, "DOWN");
+    plc = vm_configure_counter_direction(plc, 1, "DOWN");
     CU_ASSERT(plc->m[1].DOWN == true);  // TODO: is correct????
     CU_ASSERT(plc->status == STATUS_OK);
 
     /*******************************************************************/
 
-    plc = configure_timer_scale(plc, 99, "105");
+    plc = vm_configure_timer_scale(plc, 99, "105");
     CU_ASSERT(plc->status == ERR_BADINDEX);
 
     plc->status = STATUS_OK;
-    plc = configure_timer_scale(plc, 1, "105");
+    plc = vm_configure_timer_scale(plc, 1, "105");
     CU_ASSERT(plc->t[1].S == 105);
     CU_ASSERT(plc->status == STATUS_OK);
 
     /*******************************************************************/
 
-    plc = configure_timer_preset(plc, 99, "105");
+    plc = vm_configure_timer_preset(plc, 99, "105");
     CU_ASSERT(plc->status == ERR_BADINDEX);
 
     plc->status = STATUS_OK;
-    plc = configure_timer_preset(plc, 1, "105");
+    plc = vm_configure_timer_preset(plc, 1, "105");
     CU_ASSERT(plc->t[1].P == 105);
     CU_ASSERT(plc->status == STATUS_OK);
 
     /*******************************************************************/
 
-    plc = configure_timer_delay_mode(plc, 99, "OFF");
+    plc = vm_configure_timer_delay_mode(plc, 99, "OFF");
     CU_ASSERT(plc->status == ERR_BADINDEX);
 
     plc->status = STATUS_OK;
-    plc = configure_timer_delay_mode(plc, 1, "ON");
+    plc = vm_configure_timer_delay_mode(plc, 1, "ON");
     CU_ASSERT(plc->t[1].ONDELAY == true);
     CU_ASSERT(plc->status == STATUS_OK);
 
     /******************************************************************/
 
-    plc = configure_pulse_scale(plc, 99, "105");
+    plc = vm_configure_pulse_scale(plc, 99, "105");
     CU_ASSERT(plc->status == ERR_BADINDEX);
 
     plc->status = STATUS_OK;
-    plc = configure_pulse_scale(plc, 1, "105");
+    plc = vm_configure_pulse_scale(plc, 1, "105");
     CU_ASSERT(plc->s[1].S == 105);
     CU_ASSERT(plc->status == STATUS_OK);
 
-    clear_plc(plc);
+    vm_clear_plc(plc);
 }
 
 int stub_enable_fails();
@@ -229,27 +229,27 @@ void ut_start_stop() {
     extern unsigned char Mock_din;
     extern unsigned char Mock_dout;
     // degenerates
-    plc_t r = plc_start(NULL);
+    plc_t r = vm_plc_start(NULL);
     CU_ASSERT_PTR_NULL(r);
-    plc_t plc = new_plc(8, 8, 4, 4, 4, 4, 4, 4, 100, NULL);
-    r = plc_start(plc);
+    plc_t plc = vm_new_plc(8, 8, 4, 4, 4, 4, 4, 4, 100, NULL);
+    r = vm_plc_start(plc);
     CU_ASSERT(r->status == ERR_HARDWARE);
 
-    r = plc_stop(NULL);
+    r = vm_plc_stop(NULL);
     CU_ASSERT_PTR_NULL(r);
 
-    r = plc_stop(plc);
+    r = vm_plc_stop(plc);
     CU_ASSERT(r->status == ERR_HARDWARE);
 
     // hardware is not configured correctly
-    plc->hw = get_hardware(HW_SIM);
+    plc->hw = vm_get_hardware(HW_SIM);
     plc->hw->status = STATUS_ERR;
 
-    r = plc_start(plc);
+    r = vm_plc_start(plc);
     CU_ASSERT(plc->status == ERR_HARDWARE);
 
     // stop should have no effect
-    r = plc_stop(plc);
+    r = vm_plc_stop(plc);
     CU_ASSERT(plc->status == ERR_HARDWARE);
 
     //hardware is configured correctly but fails to start
@@ -258,10 +258,10 @@ void ut_start_stop() {
     plc->status = ST_STOPPED;
 
     // stop should have no effect
-    r = plc_stop(plc);
+    r = vm_plc_stop(plc);
     CU_ASSERT(plc->status == ST_STOPPED);
 
-    r = plc_start(plc);
+    r = vm_plc_start(plc);
 
     CU_ASSERT(plc->status == ERR_HARDWARE);
     plc->hw->enable = stub_enable;
@@ -269,28 +269,28 @@ void ut_start_stop() {
     // status other than ST_STOPPED
     plc->status = ST_RUNNING;
 
-    r = plc_start(plc);
+    r = vm_plc_start(plc);
 
     CU_ASSERT(plc->status == ST_RUNNING);
     CU_ASSERT(plc->update == 0);
 
     // finally all is well
     plc->status = ST_STOPPED;
-    r = plc_start(plc);
+    r = vm_plc_start(plc);
     // this should reset inputs
     CU_ASSERT(Mock_din == 0);
     CU_ASSERT(plc->status == ST_RUNNING);
     CU_ASSERT(plc->update == CHANGED_STATUS);
 
     plc->update = 0;
-    r = plc_stop(plc); // TODO: CORRECT!!!
+    r = vm_plc_stop(plc); // TODO: CORRECT!!!
     CU_ASSERT(plc->status == ST_STOPPED);
     CU_ASSERT(plc->update == CHANGED_STATUS);
 
     // should reset outputs
     CU_ASSERT(Mock_dout == 0);
 
-    clear_plc(plc);
+    vm_clear_plc(plc);
 }
 #endif //_UT_INIT_H_
 

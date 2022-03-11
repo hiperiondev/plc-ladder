@@ -71,7 +71,7 @@ void ut_gen_expr() {
     it = tree_mk_expression(id1, id2, IL_AND, IL_NORM);
 
     result = gen_expr(it, &ru, 0);
-    get(&ru, 0, &ins);
+    vm_get(&ru, 0, &ins);
 
     CU_ASSERT(ins->operation == IL_LD);
     CU_ASSERT(ins->operand == OP_INPUT);
@@ -79,7 +79,7 @@ void ut_gen_expr() {
     CU_ASSERT(ins->byte == 0);
     CU_ASSERT(ins->bit == 0);
 
-    get(&ru, 1, &ins);
+    vm_get(&ru, 1, &ins);
 
     CU_ASSERT(ins->operation == IL_AND);
     CU_ASSERT(ins->operand == OP_MEMORY);
@@ -97,7 +97,7 @@ void ut_gen_expr() {
     it = tree_mk_expression(id1, NULL, IL_AND, IL_PUSH);
 
     result = gen_expr(it, &ru, 0);
-    get(&ru, 0, &ins);
+    vm_get(&ru, 0, &ins);
     // LD A
     CU_ASSERT(ru.insno == 1);
     CU_ASSERT(ins->operation == IL_LD);
@@ -124,7 +124,7 @@ void ut_gen_expr() {
     // AND M1.2
     // )
     CU_ASSERT(ru.insno == 4);
-    get(&ru, 0, &ins);
+    vm_get(&ru, 0, &ins);
 
     CU_ASSERT(ins->operation == IL_LD);
     CU_ASSERT(ins->operand == OP_INPUT);
@@ -132,7 +132,7 @@ void ut_gen_expr() {
     CU_ASSERT(ins->byte == 0);
     CU_ASSERT(ins->bit == 0);
 
-    get(&ru, 1, &ins);
+    vm_get(&ru, 1, &ins);
 
     CU_ASSERT(ins->operation == IL_OR);
     CU_ASSERT(ins->operand == OP_MEMORY);
@@ -140,7 +140,7 @@ void ut_gen_expr() {
     CU_ASSERT(ins->byte == 1);
     CU_ASSERT(ins->bit == 1);
 
-    get(&ru, 2, &ins);
+    vm_get(&ru, 2, &ins);
 
     CU_ASSERT(ins->operation == IL_AND);
     CU_ASSERT(ins->operand == OP_MEMORY);
@@ -148,7 +148,7 @@ void ut_gen_expr() {
     CU_ASSERT(ins->byte == 1);
     CU_ASSERT(ins->bit == 2);
 
-    get(&ru, 3, &ins);
+    vm_get(&ru, 3, &ins);
 
     CU_ASSERT(ins->operation == IL_POP);
 
@@ -174,7 +174,7 @@ void ut_gen_expr() {
 
     CU_ASSERT(ru.insno == 5);
 
-    get(&ru, 0, &ins);
+    vm_get(&ru, 0, &ins);
 
     CU_ASSERT(ins->operation == IL_LD);
     CU_ASSERT(ins->operand == OP_INPUT);
@@ -182,7 +182,7 @@ void ut_gen_expr() {
     CU_ASSERT(ins->byte == 0);
     CU_ASSERT(ins->bit == 0);
 
-    get(&ru, 1, &ins);
+    vm_get(&ru, 1, &ins);
 
     CU_ASSERT(ins->operation == IL_AND);
     CU_ASSERT(ins->operand == OP_INPUT);
@@ -190,7 +190,7 @@ void ut_gen_expr() {
     CU_ASSERT(ins->byte == 0);
     CU_ASSERT(ins->bit == 1);
 
-    get(&ru, 2, &ins);
+    vm_get(&ru, 2, &ins);
 
     CU_ASSERT(ins->operation == IL_OR);
     CU_ASSERT(ins->operand == OP_MEMORY);
@@ -198,7 +198,7 @@ void ut_gen_expr() {
     CU_ASSERT(ins->byte == 1);
     CU_ASSERT(ins->bit == 1);
 
-    get(&ru, 3, &ins);
+    vm_get(&ru, 3, &ins);
 
     CU_ASSERT(ins->operation == IL_AND);
     CU_ASSERT(ins->operand == OP_MEMORY);
@@ -206,7 +206,7 @@ void ut_gen_expr() {
     CU_ASSERT(ins->byte == 1);
     CU_ASSERT(ins->bit == 2);
 
-    get(&ru, 4, &ins);
+    vm_get(&ru, 4, &ins);
 
     CU_ASSERT(ins->operation == IL_POP);
 
@@ -240,7 +240,7 @@ void ut_gen_expr() {
 
     CU_ASSERT(ru.insno == 7);
 
-    get(&ru, 0, &ins);
+    vm_get(&ru, 0, &ins);
 
     CU_ASSERT(ins->operation == IL_LD);
     CU_ASSERT(ins->operand == OP_INPUT);
@@ -248,7 +248,7 @@ void ut_gen_expr() {
     CU_ASSERT(ins->byte == 0);
     CU_ASSERT(ins->bit == 0);
 
-    get(&ru, 1, &ins);
+    vm_get(&ru, 1, &ins);
 
     CU_ASSERT(ins->operation == IL_AND);
     CU_ASSERT(ins->operand == OP_INPUT);
@@ -256,7 +256,7 @@ void ut_gen_expr() {
     CU_ASSERT(ins->byte == 0);
     CU_ASSERT(ins->bit == 1);
 
-    get(&ru, 2, &ins);
+    vm_get(&ru, 2, &ins);
 
     CU_ASSERT(ins->operation == IL_OR);
     CU_ASSERT(ins->operand == OP_INPUT);
@@ -264,24 +264,24 @@ void ut_gen_expr() {
     CU_ASSERT(ins->byte == 0);
     CU_ASSERT(ins->bit == 2);
 
-    get(&ru, 3, &ins);
+    vm_get(&ru, 3, &ins);
     CU_ASSERT(ins->operation == IL_POP);
 
-    get(&ru, 4, &ins);
+    vm_get(&ru, 4, &ins);
     CU_ASSERT(ins->operation == IL_OR);
     CU_ASSERT(ins->operand == OP_MEMORY);
     CU_ASSERT(ins->modifier == IL_PUSH);
     CU_ASSERT(ins->byte == 1);
     CU_ASSERT(ins->bit == 1);
 
-    get(&ru, 5, &ins);
+    vm_get(&ru, 5, &ins);
     CU_ASSERT(ins->operation == IL_AND);
     CU_ASSERT(ins->operand == OP_MEMORY);
     CU_ASSERT(ins->modifier == IL_NORM);
     CU_ASSERT(ins->byte == 1);
     CU_ASSERT(ins->bit == 2);
 
-    get(&ru, 6, &ins);
+    vm_get(&ru, 6, &ins);
 
     CU_ASSERT(ins->operation == IL_POP);
 
@@ -340,7 +340,7 @@ void ut_gen_ass() {
 
     instruction_t ins;
 
-    get(&ru, 0, &ins);
+    vm_get(&ru, 0, &ins);
 
     CU_ASSERT(ins->operation == IL_LD);
     CU_ASSERT(ins->operand == OP_INPUT);
@@ -348,7 +348,7 @@ void ut_gen_ass() {
     CU_ASSERT(ins->byte == 0);
     CU_ASSERT(ins->bit == 0);
 
-    get(&ru, 1, &ins);
+    vm_get(&ru, 1, &ins);
 
     CU_ASSERT(ins->operation == IL_ST);
     CU_ASSERT(ins->operand == OP_MEMORY);
@@ -370,7 +370,7 @@ void ut_gen_ass() {
     //ST B
     CU_ASSERT(ru.insno == 2);
 
-    get(&ru, 1, &ins);
+    vm_get(&ru, 1, &ins);
 
     CU_ASSERT(ins->operation == IL_ST);
     CU_ASSERT(ins->operand == OP_MEMORY);
@@ -393,7 +393,7 @@ void ut_gen_ass() {
     //ST B
     CU_ASSERT(ru.insno == 2);
 
-    get(&ru, 1, &ins);
+    vm_get(&ru, 1, &ins);
 
     CU_ASSERT(ins->operation == IL_ST);
     CU_ASSERT(ins->operand == OP_CONTACT);

@@ -317,7 +317,7 @@ void ut_parse_real() {
 
     sprintf(lines[0], "%s\n", "LD %mf0  ; n = n+1");
     result = parse_il_line(lines[0], &ru);
-    get(&ru, 0, &it);
+    vm_get(&ru, 0, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -329,7 +329,7 @@ void ut_parse_real() {
 
     sprintf(lines[1], "%s\n", "ADD %mf1  ;");
     result = parse_il_line(lines[1], &ru);
-    get(&ru, 1, &it);
+    vm_get(&ru, 1, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -341,7 +341,7 @@ void ut_parse_real() {
 
     sprintf(lines[2], "%s\n", "ST %mf0  ;");
     result = parse_il_line(lines[2], &ru);
-    get(&ru, 2, &it);
+    vm_get(&ru, 2, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -354,7 +354,7 @@ void ut_parse_real() {
     sprintf(lines[3], "%s\n", "LD %if0 ; read x");
 
     result = parse_il_line(lines[3], &ru);
-    get(&ru, 3, &it);
+    vm_get(&ru, 3, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -367,7 +367,7 @@ void ut_parse_real() {
     sprintf(lines[4], "%s\n", "SUB %mf1 ; ");
 
     result = parse_il_line(lines[4], &ru);
-    get(&ru, 4, &it);
+    vm_get(&ru, 4, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -380,7 +380,7 @@ void ut_parse_real() {
     sprintf(lines[5], "%s\n", "ST %mf3  ; delta = x - mean");
 
     result = parse_il_line(lines[5], &ru);
-    get(&ru, 5, &it);
+    vm_get(&ru, 5, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -392,7 +392,7 @@ void ut_parse_real() {
 
     sprintf(lines[6], "%s\n", "LD %mf1  ; Acc = mean");
     result = parse_il_line(lines[6], &ru);
-    get(&ru, 6, &it);
+    vm_get(&ru, 6, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -404,7 +404,7 @@ void ut_parse_real() {
 
     sprintf(lines[7], "%s\n", "ADD(%mf3 ; Acc = delta, Stack = ADD mean");
     result = parse_il_line(lines[7], &ru);
-    get(&ru, 7, &it);
+    vm_get(&ru, 7, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -416,7 +416,7 @@ void ut_parse_real() {
 
     sprintf(lines[8], "%s\n", "DIV %mf0 ; Acc = delta/n, Stack = ADD mean");
     result = parse_il_line(lines[8], &ru);
-    get(&ru, 8, &it);
+    vm_get(&ru, 8, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -429,7 +429,7 @@ void ut_parse_real() {
     sprintf(lines[9], "%s\n", ")       ; Acc = mean + ( delta/n )");
 
     result = parse_il_line(lines[9], &ru);
-    get(&ru, 9, &it);
+    vm_get(&ru, 9, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -438,7 +438,7 @@ void ut_parse_real() {
     sprintf(lines[10], "%s\n", "ST %mf1  ; mean = mean + ( delta/n )");
 
     result = parse_il_line(lines[10], &ru);
-    get(&ru, 10, &it);
+    vm_get(&ru, 10, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -451,7 +451,7 @@ void ut_parse_real() {
     sprintf(lines[11], "%s\n", "LD %mf2  ; Acc = m2");
 
     result = parse_il_line(lines[11], &ru);
-    get(&ru, 11, &it);
+    vm_get(&ru, 11, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -463,7 +463,7 @@ void ut_parse_real() {
 
     sprintf(lines[12], "%s\n", "ADD(%mf3 ; Acc = delta, Stack = ADD m2");
     result = parse_il_line(lines[12], &ru);
-    get(&ru, 12, &it);
+    vm_get(&ru, 12, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -475,7 +475,7 @@ void ut_parse_real() {
 
     sprintf(lines[13], "%s\n", "MUL(%if0 ;Acc = x,Stack=MUL delta,ADD m2");
     result = parse_il_line(lines[13], &ru);
-    get(&ru, 13, &it);
+    vm_get(&ru, 13, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -487,7 +487,7 @@ void ut_parse_real() {
 
     sprintf(lines[14], "%s\n", "SUB %mf1 ;Acc=x-mean,Stack=MUL delta,ADD m2");
     result = parse_il_line(lines[14], &ru);
-    get(&ru, 14, &it);
+    vm_get(&ru, 14, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -500,7 +500,7 @@ void ut_parse_real() {
     sprintf(lines[15], "%s\n", "); Acc = delta * (x - mean), Stack = ADD m2");
 
     result = parse_il_line(lines[15], &ru);
-    get(&ru, 15, &it);
+    vm_get(&ru, 15, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -509,7 +509,7 @@ void ut_parse_real() {
     sprintf(lines[16], "%s\n", ") ; Acc = m2 + (delta * (x - mean))");
 
     result = parse_il_line(lines[16], &ru);
-    get(&ru, 16, &it);
+    vm_get(&ru, 16, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -518,7 +518,7 @@ void ut_parse_real() {
     sprintf(lines[17], "%s\n", "ST %mf2  ; m2 = m2 + (delta * (x - mean))");
 
     result = parse_il_line(lines[17], &ru);
-    get(&ru, 17, &it);
+    vm_get(&ru, 17, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -530,7 +530,7 @@ void ut_parse_real() {
 
     sprintf(lines[18], "%s\n", "LD %mf2  ; Acc = m2");
     result = parse_il_line(lines[18], &ru);
-    get(&ru, 18, &it);
+    vm_get(&ru, 18, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -542,7 +542,7 @@ void ut_parse_real() {
 
     sprintf(lines[19], "%s\n", "DIV(%mf0 ; Acc = n, Stack = DIV m2");
     result = parse_il_line(lines[19], &ru);
-    get(&ru, 19, &it);
+    vm_get(&ru, 19, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -554,7 +554,7 @@ void ut_parse_real() {
 
     sprintf(lines[20], "%s\n", "SUB %mf4   ; Acc = n-1, Stack = DIV m2");
     result = parse_il_line(lines[20], &ru);
-    get(&ru, 20, &it);
+    vm_get(&ru, 20, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -567,7 +567,7 @@ void ut_parse_real() {
     sprintf(lines[21], "%s\n", ")       ; Acc = m2 / n-1");
 
     result = parse_il_line(lines[21], &ru);
-    get(&ru, 21, &it);
+    vm_get(&ru, 21, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -576,7 +576,7 @@ void ut_parse_real() {
     sprintf(lines[22], "%s\n", "ST %Qf0  ; y = m2 / (n - 1)");
 
     result = parse_il_line(lines[22], &ru);
-    get(&ru, 22, &it);
+    vm_get(&ru, 22, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -671,7 +671,7 @@ void ut_parse() {
      */
     sprintf(lines[0], "%s\n", "while:LD %m0      ; A");
     result = parse_il_line(lines[0], &ru);
-    get(&ru, 0, &it);
+    vm_get(&ru, 0, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -684,7 +684,7 @@ void ut_parse() {
 
     sprintf(lines[1], "%s\n", "EQ %m1            ; A == B");
     result = parse_il_line(lines[1], &ru);
-    get(&ru, 1, &it);
+    vm_get(&ru, 1, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -699,7 +699,7 @@ void ut_parse() {
 
     sprintf(lines[2], "%s\n", "JMP?endwhile      ; while(A != B)");
     result = parse_il_line(lines[2], &ru);
-    get(&ru, 2, &it);
+    vm_get(&ru, 2, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -713,7 +713,7 @@ void ut_parse() {
 
     sprintf(lines[3], "%s\n", "LT %m1            ; A < B");
     result = parse_il_line(lines[3], &ru);
-    get(&ru, 3, &it);
+    vm_get(&ru, 3, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -727,7 +727,7 @@ void ut_parse() {
 
     sprintf(lines[4], "%s\n", "JMP?reverse");
     result = parse_il_line(lines[4], &ru);
-    get(&ru, 4, &it);
+    vm_get(&ru, 4, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -741,7 +741,7 @@ void ut_parse() {
 
     sprintf(lines[5], "%s\n", "SUB %m1           ; A - B");
     result = parse_il_line(lines[5], &ru);
-    get(&ru, 5, &it);
+    vm_get(&ru, 5, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -755,7 +755,7 @@ void ut_parse() {
 
     sprintf(lines[6], "%s\n", "ST %m0            ; A = A - B");
     result = parse_il_line(lines[6], &ru);
-    get(&ru, 6, &it);
+    vm_get(&ru, 6, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -769,7 +769,7 @@ void ut_parse() {
 
     sprintf(lines[7], "%s\n", "JMP while");
     result = parse_il_line(lines[7], &ru);
-    get(&ru, 7, &it);
+    vm_get(&ru, 7, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -783,7 +783,7 @@ void ut_parse() {
 
     sprintf(lines[8], "%s\n", "reverse:LD %m1  ; B");
     result = parse_il_line(lines[8], &ru);
-    get(&ru, 8, &it);
+    vm_get(&ru, 8, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -797,7 +797,7 @@ void ut_parse() {
 
     sprintf(lines[9], "%s\n", "SUB %m0     ; B - A");
     result = parse_il_line(lines[9], &ru);
-    get(&ru, 9, &it);
+    vm_get(&ru, 9, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -811,7 +811,7 @@ void ut_parse() {
 
     sprintf(lines[10], "%s\n", "ST %m1      ; B = B - A");
     result = parse_il_line(lines[10], &ru);
-    get(&ru, 10, &it);
+    vm_get(&ru, 10, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -825,7 +825,7 @@ void ut_parse() {
 
     sprintf(lines[11], "%s\n", "JMP while");
     result = parse_il_line(lines[11], &ru);
-    get(&ru, 11, &it);
+    vm_get(&ru, 11, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -839,7 +839,7 @@ void ut_parse() {
 
     sprintf(lines[12], "%s\n", "endwhile:LD %m0 ;");
     result = parse_il_line(lines[12], &ru);
-    get(&ru, 12, &it);
+    vm_get(&ru, 12, &it);
 
     CU_ASSERT(result == STATUS_OK);
 
@@ -853,7 +853,7 @@ void ut_parse() {
 
     sprintf(lines[13], "%s\n", "ST %q0 ; output gcd");
     result = parse_il_line(lines[13], &ru);
-    get(&ru, 13, &it);
+    vm_get(&ru, 13, &it);
 
     CU_ASSERT(result == STATUS_OK);
 

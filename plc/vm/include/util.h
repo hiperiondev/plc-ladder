@@ -28,8 +28,8 @@
 #ifndef INCLUDE_UTIL_H_
 #define INCLUDE_UTIL_H_
 
-         void compute_variance(double x);
-         void get_variance(double *mean, double *var);
-unsigned long get_loop();
+         void vm_compute_variance(double x);
+         void vm_get_variance(double *mean, double *var);
+unsigned long vm_get_loop();
 
 #endif /* INCLUDE_UTIL_H_ */

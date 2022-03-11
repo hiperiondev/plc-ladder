@@ -83,7 +83,7 @@ void ut_codec() {
     p.ai[0].min = 0.0l;
     p.ai[0].max = 10.0l;
 
-    uint8_t changed = dec_inp(&p);
+    uint8_t changed = vm_dec_inp(&p);
 
     CU_ASSERT(changed == true);
     //everything in buffer should be transferred to inputs
@@ -108,7 +108,7 @@ void ut_codec() {
     p.aq[0].max = 10.0l;
     p.aq[0].V = -7.5l;
 
-    changed = enc_out(&p);
+    changed = vm_enc_out(&p);
     CU_ASSERT(changed == true);
 
     //printf("\n%x\n", p.outputs[0]);
@@ -129,13 +129,13 @@ void ut_codec() {
     p.old->outputs[0] = 0xff;
 
     //only analog changed
-    changed = dec_inp(&p);
+    changed = vm_dec_inp(&p);
 
     CU_ASSERT(changed == true);
 
     p.old->aq[0].V = -7.5l;
 //same values as old
-    changed = enc_out(&p);
+    changed = vm_enc_out(&p);
 
     CU_ASSERT(changed == false);
 
@@ -151,7 +151,7 @@ void ut_codec() {
     //RE = 0x44
     //FE = 0x22
 
-    changed = dec_inp(&p);
+    changed = vm_dec_inp(&p);
 
     CU_ASSERT(changed == true);
 
@@ -187,7 +187,7 @@ void ut_codec() {
     //fe:      1010
     //re:      0001
 
-    changed = dec_inp(&p);
+    changed = vm_dec_inp(&p);
 
     CU_ASSERT(changed == true);
 
@@ -202,7 +202,7 @@ void ut_codec() {
         CU_ASSERT(p.di[i].FE == (0xaa >> i) % 2);
     }
 
-    changed = enc_out(&p);
+    changed = vm_enc_out(&p);
 
     CU_ASSERT(changed == true);
     //printf("%x\n", p.outputs[0]);
@@ -214,13 +214,13 @@ void ut_codec() {
 void ut_jmp() {
     //degenerates
     unsigned int pc = 0;
-    int result = handle_jmp(NULL, &pc);
+    int result = vm_handle_jmp(NULL, &pc);
     CU_ASSERT(result == STATUS_ERR);
 
     struct rung r;
     memset(&r, 0, sizeof(struct rung));
 
-    result = handle_jmp(&r, &pc);
+    result = vm_handle_jmp(&r, &pc);
     CU_ASSERT(result == ERR_BADOPERAND);
 
     struct instruction ins;
@@ -232,7 +232,7 @@ void ut_jmp() {
     result = rung_append(&ins, &r);
     CU_ASSERT(result == STATUS_OK);
 
-    result = handle_jmp(&r, &pc);
+    result = vm_handle_jmp(&r, &pc);
     CU_ASSERT(result == ERR_BADOPERATOR);
 
     //jump to instruction 5
@@ -243,7 +243,7 @@ void ut_jmp() {
     result = rung_append(&ins, &r);
     CU_ASSERT(result == STATUS_OK);
 
-    result = handle_jmp(&r, &pc);
+    result = vm_handle_jmp(&r, &pc);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(pc == 5);
 
@@ -257,7 +257,7 @@ void ut_jmp() {
     result = rung_append(&ins, &r);
     CU_ASSERT(result == STATUS_OK);
 
-    result = handle_jmp(&r, &pc);
+    result = vm_handle_jmp(&r, &pc);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(pc == 3);
 }
@@ -270,26 +270,26 @@ void ut_set_reset() {
     struct instruction ins;
     memset(&ins, 0, sizeof(struct instruction));
     //degenerates
-    int result = handle_set( NULL, acc, false, &p);
+    int result = vm_handle_set( NULL, acc, false, &p);
     CU_ASSERT(result == STATUS_ERR);
 
-    result = handle_set(&ins, acc, false, &p);
+    result = vm_handle_set(&ins, acc, false, &p);
     CU_ASSERT(result == ERR_BADOPERATOR);
 
-    result = handle_reset( NULL, acc, false, &p);
+    result = vm_handle_reset( NULL, acc, false, &p);
     CU_ASSERT(result == STATUS_ERR);
 
-    result = handle_reset(&ins, acc, false, &p);
+    result = vm_handle_reset(&ins, acc, false, &p);
     CU_ASSERT(result == ERR_BADOPERATOR);
 
     ins.operand = -1;
 
     ins.operation = IL_SET;
-    result = handle_set(&ins, acc, false, &p);
+    result = vm_handle_set(&ins, acc, false, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
 
     ins.operation = IL_RESET;
-    result = handle_reset(&ins, acc, false, &p);
+    result = vm_handle_reset(&ins, acc, false, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
     memset(&ins, 0, sizeof(struct instruction));
 
@@ -298,11 +298,11 @@ void ut_set_reset() {
     ins.modifier = IL_NORM;
     //only boolean
     ins.operation = IL_SET;
-    result = handle_set(&ins, acc, false, &p);
+    result = vm_handle_set(&ins, acc, false, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
 
     ins.operation = IL_RESET;
-    result = handle_reset(&ins, acc, false, &p);
+    result = vm_handle_reset(&ins, acc, false, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
 
     acc.u = true;
@@ -310,19 +310,19 @@ void ut_set_reset() {
     ins.bit = 2;
     ins.operation = IL_SET;
     ins.modifier = IL_COND;
-    result = handle_set(&ins, acc, true, &p);
+    result = vm_handle_set(&ins, acc, true, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
 
     ins.operation = IL_RESET;
     ins.modifier = IL_COND;
-    result = handle_reset(&ins, acc, true, &p);
+    result = vm_handle_reset(&ins, acc, true, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
 
     ins.byte = 1;
     ins.bit = 2;
     ins.operation = IL_SET;
     ins.modifier = IL_COND;
-    result = handle_set(&ins, acc, true, &p);
+    result = vm_handle_set(&ins, acc, true, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(p.dq[10].SET == true);
     CU_ASSERT(p.dq[10].RESET == false);
@@ -333,7 +333,7 @@ void ut_set_reset() {
     //   p.dq[10].RESET == false;
     ins.operation = IL_RESET;
     ins.modifier = IL_COND;
-    result = handle_reset(&ins, acc, true, &p);
+    result = vm_handle_reset(&ins, acc, true, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(p.dq[10].SET == false);
     CU_ASSERT(p.dq[10].RESET == false);
@@ -346,21 +346,21 @@ void ut_set_reset() {
     ins.operation = IL_SET;
 
     ins.byte = p.nt;
-    result = handle_set(&ins, acc, true, &p);
+    result = vm_handle_set(&ins, acc, true, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
 
     ins.byte = 1;
-    result = handle_set(&ins, acc, true, &p);
+    result = vm_handle_set(&ins, acc, true, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(p.t[1].START == true);
 
     ins.operation = IL_RESET;
     ins.byte = p.nt;
-    result = handle_reset(&ins, acc, true, &p);
+    result = vm_handle_reset(&ins, acc, true, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
 
     ins.byte = 1;
-    result = handle_reset(&ins, acc, false, &p);
+    result = vm_handle_reset(&ins, acc, false, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(p.t[1].START == false);
 
@@ -371,22 +371,22 @@ void ut_set_reset() {
     ins.operation = IL_SET;
 
     ins.byte = p.nm;
-    result = handle_set(&ins, acc, true, &p);
+    result = vm_handle_set(&ins, acc, true, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
 
     ins.byte = 1;
-    result = handle_set(&ins, acc, true, &p);
+    result = vm_handle_set(&ins, acc, true, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(p.m[1].SET == true);
     CU_ASSERT(p.m[1].RESET == false);
 
     ins.operation = IL_RESET;
     ins.byte = p.nm;
-    result = handle_reset(&ins, acc, true, &p);
+    result = vm_handle_reset(&ins, acc, true, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
 
     ins.byte = 1;
-    result = handle_reset(&ins, acc, false, &p);
+    result = vm_handle_reset(&ins, acc, false, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(p.m[1].SET == false);
     CU_ASSERT(p.m[1].RESET == true);
@@ -401,16 +401,16 @@ void ut_st() {
     acc.u = -1;
 
     //degenerates
-    int result = handle_st( NULL, acc, &p);
+    int result = vm_handle_st( NULL, acc, &p);
     CU_ASSERT(result == STATUS_ERR);
 
-    result = handle_st(&ins, acc, &p);
+    result = vm_handle_st(&ins, acc, &p);
     CU_ASSERT(result == ERR_BADOPERATOR);
 
     ins.operand = -1;
 
     ins.operation = IL_ST;
-    result = handle_st(&ins, acc, &p);
+    result = vm_handle_st(&ins, acc, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
 
     //CONTACT
@@ -421,22 +421,22 @@ void ut_st() {
     acc.u = 123;
     ins.bit = 8;
     ins.byte = p.nq;
-    result = handle_st(&ins, acc, &p);
+    result = vm_handle_st(&ins, acc, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
 
     ins.byte = 1;
-    result = handle_st(&ins, acc, &p);
+    result = vm_handle_st(&ins, acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(p.outputs[1] == 133);
 
     //bool
     ins.byte = p.nq;
-    result = handle_st(&ins, acc, &p);
+    result = vm_handle_st(&ins, acc, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
 
     ins.byte = 1;
     ins.bit = 2;
-    result = handle_st(&ins, acc, &p);
+    result = vm_handle_st(&ins, acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(p.dq[10].Q == true);
 
@@ -449,11 +449,11 @@ void ut_st() {
     p.aq[1].min = -5.0l;
     p.aq[1].max = 5.0l;
     ins.byte = p.nq;
-    result = handle_st(&ins, acc, &p);
+    result = vm_handle_st(&ins, acc, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
 
     ins.byte = 1;
-    result = handle_st(&ins, acc, &p);
+    result = vm_handle_st(&ins, acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT_DOUBLE_EQUAL(p.aq[1].V, 1.25l, FLOAT_PRECISION);
     //0xa000000000000000);
@@ -466,11 +466,11 @@ void ut_st() {
     //START
     ins.operand = OP_START;
     ins.byte = p.nt;
-    result = handle_st(&ins, acc, &p);
+    result = vm_handle_st(&ins, acc, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
 
     ins.byte = 1;
-    result = handle_st(&ins, acc, &p);
+    result = vm_handle_st(&ins, acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(p.t[1].START == true);
 
@@ -480,24 +480,24 @@ void ut_st() {
     //bool
 
     ins.byte = p.nm;
-    result = handle_st(&ins, acc, &p);
+    result = vm_handle_st(&ins, acc, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
 
     ins.byte = 1;
-    result = handle_st(&ins, acc, &p);
+    result = vm_handle_st(&ins, acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(p.m[1].PULSE == true);
     CU_ASSERT(p.m[1].EDGE == true);
 
     //byte
     ins.bit = 8;
-    result = handle_st(&ins, acc, &p);
+    result = vm_handle_st(&ins, acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(p.m[1].V == 123);
 
     //WRITE
     ins.operand = OP_WRITE;
-    result = handle_st(&ins, acc, &p);
+    result = vm_handle_st(&ins, acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(p.command == 123);
 
@@ -506,13 +506,13 @@ void ut_st() {
     //real
 
     ins.byte = p.nmr;
-    result = handle_st(&ins, acc, &p);
+    result = vm_handle_st(&ins, acc, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
 
     ins.byte = 1;
     acc.r = -1.25l;
 
-    result = handle_st(&ins, acc, &p);
+    result = vm_handle_st(&ins, acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT_DOUBLE_EQUAL(p.mr[1].V, -1.25l, FLOAT_PRECISION);
 }
@@ -534,12 +534,12 @@ void ut_st_discrete() {
     ins.bit = 16;
 
     //overflow
-    result = st_out(&ins, acc, &p);
+    result = vm_st_out(&ins, acc, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
 
     ins.byte = 1;
     //BIG endianness
-    result = st_out(&ins, acc, &p);
+    result = vm_st_out(&ins, acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(p.outputs[1] == 0xAA);
     CU_ASSERT(p.outputs[2] == 0xBB);
@@ -549,7 +549,7 @@ void ut_st_discrete() {
     ins.byte = 0;
     ins.bit = 32;
 
-    result = st_out(&ins, acc, &p);
+    result = vm_st_out(&ins, acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(p.outputs[0] == 0xAA);
     CU_ASSERT(p.outputs[1] == 0xBB);
@@ -562,7 +562,7 @@ void ut_st_discrete() {
     ins.byte = 0;
     ins.bit = 64;
 
-    result = st_out(&ins, acc, &p);
+    result = vm_st_out(&ins, acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(p.outputs[0] == 0xAA);
     CU_ASSERT(p.outputs[1] == 0xBB);
@@ -583,19 +583,19 @@ void ut_st_discrete() {
     ins.byte = 1;
     ins.bit = 16;
 
-    result = st_mem(&ins, acc, &p);
+    result = vm_st_mem(&ins, acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(p.m[1].V == 0x1122);
 
     ins.bit = 32;
 
-    result = st_mem(&ins, acc, &p);
+    result = vm_st_mem(&ins, acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(p.m[1].V == 0xEEFF1122);
 
     ins.bit = 64;
 
-    result = st_mem(&ins, acc, &p);
+    result = vm_st_mem(&ins, acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(p.m[1].V == 0xAABBCCDDEEFF1122);
 }
@@ -612,7 +612,7 @@ void ut_st_real() {
     //CONTACT
     ins.operand = OP_REAL_CONTACT;
     ins.operation = IL_ST;
-    result = st_out_r(&ins, acc, &p);
+    result = vm_st_out_r(&ins, acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT_DOUBLE_EQUAL(p.aq[0].V, 5.0l, FLOAT_PRECISION);
     //0x8000000000000000);
@@ -620,7 +620,7 @@ void ut_st_real() {
     //MEMORY
     ins.operand = OP_REAL_MEMIN;
     ins.operation = IL_ST;
-    result = st_mem_r(&ins, acc, &p);
+    result = vm_st_mem_r(&ins, acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT_DOUBLE_EQUAL(p.mr[0].V, 5.0l, FLOAT_PRECISION);
     //printf("%lx\n", p.aq[0].V);
@@ -635,16 +635,16 @@ void ut_ld() {
     acc.u = -1;
     //degenerates
 
-    int result = handle_ld( NULL, &acc, &p);
+    int result = vm_handle_ld( NULL, &acc, &p);
     CU_ASSERT(result == STATUS_ERR);
 
-    result = handle_ld(&ins, &acc, &p);
+    result = vm_handle_ld(&ins, &acc, &p);
     CU_ASSERT(result == ERR_BADOPERATOR);
 
     ins.operand = -1;
 
     ins.operation = IL_LD;
-    result = handle_ld(&ins, &acc, &p);
+    result = vm_handle_ld(&ins, &acc, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
 
     //OUTPUT
@@ -652,18 +652,18 @@ void ut_ld() {
     p.outputs[1] = 123;
     ins.byte = p.nq;
 
-    result = handle_ld(&ins, &acc, &p);
+    result = vm_handle_ld(&ins, &acc, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
     ins.bit = 8;
     ins.byte = 1;
 
-    result = handle_ld(&ins, &acc, &p);
+    result = vm_handle_ld(&ins, &acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(acc.u == 123);
 
     ins.bit = 2;
     p.dq[10].Q = true;
-    result = handle_ld(&ins, &acc, &p);
+    result = vm_handle_ld(&ins, &acc, &p);
     CU_ASSERT(acc.u == 1);
     init_mock_plc(&p);
 
@@ -675,11 +675,11 @@ void ut_ld() {
     p.aq[1].max = 5.0l;
     ins.byte = p.nq;
 
-    result = handle_ld(&ins, &acc, &p);
+    result = vm_handle_ld(&ins, &acc, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
     ins.byte = 1;
 
-    result = handle_ld(&ins, &acc, &p);
+    result = vm_handle_ld(&ins, &acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT_DOUBLE_EQUAL(acc.r, -2.5l, FLOAT_PRECISION);
     //printf("%f\n", acc.r);
@@ -690,18 +690,18 @@ void ut_ld() {
 
     ins.byte = p.ni;
 
-    result = handle_ld(&ins, &acc, &p);
+    result = vm_handle_ld(&ins, &acc, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
     ins.bit = 8;
     ins.byte = 1;
     p.inputs[1] = 123;
-    result = handle_ld(&ins, &acc, &p);
+    result = vm_handle_ld(&ins, &acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(acc.u == 123);
 
     ins.bit = 2;
     p.di[10].I = true;
-    result = handle_ld(&ins, &acc, &p);
+    result = vm_handle_ld(&ins, &acc, &p);
     CU_ASSERT(acc.u == 1);
     init_mock_plc(&p);
 
@@ -710,14 +710,14 @@ void ut_ld() {
 
     ins.byte = p.ni;
 
-    result = handle_ld(&ins, &acc, &p);
+    result = vm_handle_ld(&ins, &acc, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
     ins.byte = 1;
     p.ai[1].V = 0.0l;
     // 0x8000000000000000;
     p.ai[1].min = -5.0l;
     p.ai[1].max = 5.0l;
-    result = handle_ld(&ins, &acc, &p);
+    result = vm_handle_ld(&ins, &acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT_DOUBLE_EQUAL(acc.r, 0.0l, FLOAT_PRECISION);
 
@@ -727,14 +727,14 @@ void ut_ld() {
     ins.operand = OP_MEMORY;
     ins.byte = p.nm;
 
-    result = handle_ld(&ins, &acc, &p);
+    result = vm_handle_ld(&ins, &acc, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
 
     ins.modifier = IL_NEG;
     ins.byte = 1;
     ins.bit = 8;
     p.m[1].V = 123;
-    result = handle_ld(&ins, &acc, &p);
+    result = vm_handle_ld(&ins, &acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(acc.u == 133);
 
@@ -742,7 +742,7 @@ void ut_ld() {
 
     ins.bit = 0;
     p.m[1].PULSE = true;
-    result = handle_ld(&ins, &acc, &p);
+    result = vm_handle_ld(&ins, &acc, &p);
     CU_ASSERT(acc.u == false);
     init_mock_plc(&p);
 
@@ -750,14 +750,14 @@ void ut_ld() {
     ins.operand = OP_REAL_MEMORY;
     ins.byte = p.nm;
 
-    result = handle_ld(&ins, &acc, &p);
+    result = vm_handle_ld(&ins, &acc, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
 
     ins.modifier = IL_NEG;
     ins.byte = 1;
     ins.bit = 8;
     p.mr[1].V = 123.4567l;
-    result = handle_ld(&ins, &acc, &p);
+    result = vm_handle_ld(&ins, &acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT_DOUBLE_EQUAL(acc.r, -123.4567l, FLOAT_PRECISION);
     //printf("%f\n", acc.r);
@@ -769,19 +769,19 @@ void ut_ld() {
     ins.modifier = 0;
     ins.byte = p.nt;
 
-    result = handle_ld(&ins, &acc, &p);
+    result = vm_handle_ld(&ins, &acc, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
 
     ins.bit = 8;
     ins.byte = 1;
     p.t[1].V = 123;
-    result = handle_ld(&ins, &acc, &p);
+    result = vm_handle_ld(&ins, &acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(acc.u == 123);
 
     ins.bit = 0;
     p.t[1].Q = true;
-    result = handle_ld(&ins, &acc, &p);
+    result = vm_handle_ld(&ins, &acc, &p);
     CU_ASSERT(acc.u == 1);
     init_mock_plc(&p);
 
@@ -789,12 +789,12 @@ void ut_ld() {
     ins.operand = OP_BLINKOUT;
     ins.byte = p.ns;
 
-    result = handle_ld(&ins, &acc, &p);
+    result = vm_handle_ld(&ins, &acc, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
 
     ins.byte = 1;
     p.s[1].Q = true;
-    result = handle_ld(&ins, &acc, &p);
+    result = vm_handle_ld(&ins, &acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(acc.u == 1);
 
@@ -802,7 +802,7 @@ void ut_ld() {
     ins.operand = OP_COMMAND;
     ins.byte = 1;
     p.command = 123;
-    result = handle_ld(&ins, &acc, &p);
+    result = vm_handle_ld(&ins, &acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(acc.u == 123);
 
@@ -810,16 +810,16 @@ void ut_ld() {
     ins.operand = OP_RISING;
     ins.byte = p.ni;
 
-    result = handle_ld(&ins, &acc, &p);
+    result = vm_handle_ld(&ins, &acc, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
 
     ins.byte = 1;
     ins.bit = 8;
-    result = handle_ld(&ins, &acc, &p);
+    result = vm_handle_ld(&ins, &acc, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
     ins.bit = 2;
     p.di[10].RE = true;
-    result = handle_ld(&ins, &acc, &p);
+    result = vm_handle_ld(&ins, &acc, &p);
     CU_ASSERT(acc.u == 1);
     init_mock_plc(&p);
 
@@ -827,15 +827,15 @@ void ut_ld() {
     ins.operand = OP_FALLING;
     ins.byte = p.ni;
 
-    result = handle_ld(&ins, &acc, &p);
+    result = vm_handle_ld(&ins, &acc, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
     ins.bit = 8;
     ins.byte = 1;
-    result = handle_ld(&ins, &acc, &p);
+    result = vm_handle_ld(&ins, &acc, &p);
     CU_ASSERT(result == ERR_BADOPERAND);
     ins.bit = 2;
     p.di[10].FE = true;
-    result = handle_ld(&ins, &acc, &p);
+    result = vm_handle_ld(&ins, &acc, &p);
     CU_ASSERT(acc.u == 1);
     init_mock_plc(&p);
 
@@ -863,20 +863,20 @@ void ut_ld_discrete() {
     p.outputs[6] = 0x11;
     p.outputs[7] = 0x22;
 
-    result = ld_out(&ins, &acc, &p);
+    result = vm_ld_out(&ins, &acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(acc == 0xAABB);
 
     acc = 0;
     ins.bit = 32;
-    result = ld_out(&ins, &acc, &p);
+    result = vm_ld_out(&ins, &acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(acc == 0xAABBCCDD);
     //printf("%lx\n", acc); 
 
     acc = 0;
     ins.bit = 64;
-    result = ld_out(&ins, &acc, &p);
+    result = vm_ld_out(&ins, &acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(acc == 0xAABBCCDDEEFF1122);
 
@@ -888,19 +888,19 @@ void ut_ld_discrete() {
     p.m[0].V = 0xAABBCCDDEEFF1122;
 
     ins.bit = 16;
-    result = ld_mem(&ins, &acc, &p);
+    result = vm_ld_mem(&ins, &acc, &p);
 
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(acc == 0x1122);
 
     ins.bit = 32;
-    result = ld_mem(&ins, &acc, &p);
+    result = vm_ld_mem(&ins, &acc, &p);
 
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(acc == 0xEEFF1122);
 
     ins.bit = 64;
-    result = ld_mem(&ins, &acc, &p);
+    result = vm_ld_mem(&ins, &acc, &p);
 
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(acc == 0xAABBCCDDEEFF1122);
@@ -922,7 +922,7 @@ void ut_ld_real() {
 
     p.aq[0].V = 5.0l;
 
-    result = ld_out_r(&ins, &acc, &p);
+    result = vm_ld_out_r(&ins, &acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT_DOUBLE_EQUAL(acc, 5.0l, FLOAT_PRECISION);
     //INPUT
@@ -934,7 +934,7 @@ void ut_ld_real() {
     p.ai[0].V = 7.5l;
 
     acc = 0;
-    result = ld_in_r(&ins, &acc, &p);
+    result = vm_ld_in_r(&ins, &acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT_DOUBLE_EQUAL(acc, 7.5l, FLOAT_PRECISION);
 
@@ -946,7 +946,7 @@ void ut_ld_real() {
 
     p.mr[0].V = -2.5l;
     acc = 0;
-    result = ld_mem_r(&ins, &acc, &p);
+    result = vm_ld_mem_r(&ins, &acc, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT_DOUBLE_EQUAL(acc, -2.5l, FLOAT_PRECISION);
 }
@@ -965,10 +965,10 @@ void ut_stackable() {
     memset(&r, 0, sizeof(struct rung));
 
     //degenerates
-    int result = handle_stackable( NULL, NULL, NULL);
+    int result = vm_handle_stackable( NULL, NULL, NULL);
     CU_ASSERT(result == STATUS_ERR);
 
-    result = handle_stackable(&ins, &r, &p);
+    result = vm_handle_stackable(&ins, &r, &p);
     CU_ASSERT(result == ERR_BADOPERATOR);
 
     //no modifier should be the same as operate()
@@ -979,7 +979,7 @@ void ut_stackable() {
     data_t a, b, t;
     a.u = 123;
     b.u = 210;
-    t = operate(op, T_BYTE, a, b);
+    t = vm_operate(op, T_BYTE, a, b);
 
     r.acc.u = 123;
     p.m[0].V = 210;
@@ -988,7 +988,7 @@ void ut_stackable() {
     ins.bit = BYTESIZE;
     ins.modifier = IL_NEG;
 
-    result = handle_stackable(&ins, &r, &p);
+    result = vm_handle_stackable(&ins, &r, &p);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(t.u == r.acc.u);
 
@@ -1020,7 +1020,7 @@ void ut_stackable() {
     ins.operand = OP_MEMORY;
     ins.byte = 0;
 
-    result = handle_stackable(&ins, &r, &p);
+    result = vm_handle_stackable(&ins, &r, &p);
 
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(r.acc.u = 3);
@@ -1036,13 +1036,13 @@ void ut_stackable() {
     ins.operand = OP_MEMORY;
     ins.byte = 1;
 
-    result = handle_stackable(&ins, &r, &p);
+    result = vm_handle_stackable(&ins, &r, &p);
 
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(r.acc.u = 6);
     CU_ASSERT(r.stack->depth == 1);
 
-    acc = pop(r.acc, &(r.stack));
+    acc = vm_pop(r.acc, &(r.stack));
 
     CU_ASSERT(acc.u == 11);
 
@@ -1073,11 +1073,11 @@ void ut_instruct_bitwise() {
 
     unsigned int pc = 0;
     //degenerates
-    int result = instruct(NULL, NULL, &pc);
+    int result = vm_instruct(NULL, NULL, &pc);
     CU_ASSERT(result == STATUS_ERR);
 
     pc = 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT(result == STATUS_ERR);
 
     /* Bitwise:
@@ -1116,7 +1116,7 @@ void ut_instruct_bitwise() {
     ins.bit = 0;
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT(r.acc.u == false); //A
     memset(&ins, 0, sizeof(struct instruction));
 
@@ -1127,7 +1127,7 @@ void ut_instruct_bitwise() {
     ins.bit = 1;
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT(r.acc.u == false); //A AND B
     memset(&ins, 0, sizeof(struct instruction));
 
@@ -1139,7 +1139,7 @@ void ut_instruct_bitwise() {
     ins.modifier = IL_PUSH;
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT(r.acc.u == true); //C, stack = OR(A AND B)
     CU_ASSERT(r.stack->depth == 1);
     memset(&ins, 0, sizeof(struct instruction));
@@ -1151,7 +1151,7 @@ void ut_instruct_bitwise() {
     ins.bit = 1;
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT(r.acc.u == true);
     //;B AND C, stack = OR( A AND B)
     CU_ASSERT(r.stack->depth == 1);
@@ -1161,7 +1161,7 @@ void ut_instruct_bitwise() {
     ins.operation = IL_POP;
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT(r.acc.u == true);
     CU_ASSERT(r.stack == NULL);
     //;(B AND C) OR(A AND B)
@@ -1175,7 +1175,7 @@ void ut_instruct_bitwise() {
     ins.modifier = IL_PUSH;
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT(r.acc.u == true);
     CU_ASSERT(r.stack->depth == 1);
     //C, stack = OR ((B AND C) OR (A AND B))
@@ -1188,7 +1188,7 @@ void ut_instruct_bitwise() {
     ins.bit = 0;
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT(r.acc.u == false);
     //(A AND C),stack = OR((B AND C)OR(A AND B))
     CU_ASSERT(r.stack->depth == 1);
@@ -1198,7 +1198,7 @@ void ut_instruct_bitwise() {
     ins.operation = IL_POP;
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT(r.acc.u == true);
     CU_ASSERT(r.stack == NULL); //(A AND C) OR (B AND C) OR (A AND B)
     //ST %Q0.0
@@ -1209,7 +1209,7 @@ void ut_instruct_bitwise() {
     ins.bit = 0;
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT(p.dq[0].Q == true);
 
     rung_clear(&r);
@@ -1228,7 +1228,7 @@ void ut_instruct_scalar() {
 
     unsigned int pc = 0;
     //degenerates
-    int result = instruct(NULL, NULL, &pc);
+    int result = vm_instruct(NULL, NULL, &pc);
     CU_ASSERT(result == STATUS_ERR);
     /* scalar arithmetic:
 
@@ -1280,7 +1280,7 @@ void ut_instruct_scalar() {
     ins.bit = 8;
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT(r.acc.u == 0xff); //A
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1293,7 +1293,7 @@ void ut_instruct_scalar() {
     ins.bit = 8;
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT(p.m[0].V == 0xff); //A
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1306,7 +1306,7 @@ void ut_instruct_scalar() {
     ins.bit = 8;
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT(r.acc.u == 0x22); //A
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1319,7 +1319,7 @@ void ut_instruct_scalar() {
     ins.bit = 8;
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT(p.m[1].V == 0x22); //A
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1335,7 +1335,7 @@ void ut_instruct_scalar() {
     uint8_t _while = pc;
     uint8_t _endwhile = pc + 12;
 
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT(r.acc.u == 0xff); //A
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1348,7 +1348,7 @@ void ut_instruct_scalar() {
     ins.bit = 8;
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT(r.acc.u == false); //A != B
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1361,7 +1361,7 @@ void ut_instruct_scalar() {
     ins.bit = 0;
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT(pc == r.insno); //dont jump
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1374,7 +1374,7 @@ void ut_instruct_scalar() {
     ins.bit = 8;
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT(r.acc.u == 0xff); //A
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1389,7 +1389,7 @@ void ut_instruct_scalar() {
     pc = r.insno - 1;
     uint8_t _reverse = pc + 6;
 
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT(r.acc.u == false); //A > B
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1402,7 +1402,7 @@ void ut_instruct_scalar() {
     ins.bit = 0;
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
 
     CU_ASSERT(pc == r.insno); //dont jump
 
@@ -1414,7 +1414,7 @@ void ut_instruct_scalar() {
     ins.bit = 8;
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT(r.acc.u == 0xff); //A
 
     // SUB %m1     ; A - B
@@ -1425,7 +1425,7 @@ void ut_instruct_scalar() {
     ins.bit = 8;
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT(r.acc.u == 0xdd); //A
 
     //ST  %m0   ;A = 0xdd
@@ -1436,7 +1436,7 @@ void ut_instruct_scalar() {
     ins.bit = 8;
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT(p.m[0].V == 0xdd); //A
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1451,11 +1451,11 @@ void ut_instruct_scalar() {
 
     pc = r.insno - 1;
 
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT(pc == _while); //jump!
 
     while (p.m[0].V != 0x11 && pc < r.insno) {
-        result = instruct(&p, &r, &pc);
+        result = vm_instruct(&p, &r, &pc);
     }
 
     CU_ASSERT(r.acc.u == 0x11);
@@ -1471,7 +1471,7 @@ void ut_instruct_scalar() {
     ins.bit = 8;
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT(r.acc.u == 0x22);
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1484,7 +1484,7 @@ void ut_instruct_scalar() {
     ins.bit = 8;
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
 
     CU_ASSERT(r.acc.u == 0x11); //B
 
@@ -1498,7 +1498,7 @@ void ut_instruct_scalar() {
     ins.bit = 8;
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT(p.m[0].V == 0x11); //A
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1513,19 +1513,19 @@ void ut_instruct_scalar() {
 
     pc = r.insno - 1;
 
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT(pc == _while); //jump!
 
     //while:LD  %m0   ;A = 0x11
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT(r.acc.u == 0x11);
 
     // EQ %m1          ; A == B
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT(r.acc.u == true); //A == B
 
     //JMP?endwhile    ; while(A != B)
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT(pc == _endwhile); //dont jump
 
     rung_clear(&r);
@@ -1615,7 +1615,7 @@ void ut_instruct_real() {
     int result = rung_append(&ins, &r);
     CU_ASSERT(result == STATUS_OK);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT_DOUBLE_EQUAL(r.acc.r, 1.0l, FLOAT_PRECISION);
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1627,7 +1627,7 @@ void ut_instruct_real() {
 
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT_DOUBLE_EQUAL(r.acc.r, 2.0l, FLOAT_PRECISION);
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1639,7 +1639,7 @@ void ut_instruct_real() {
 
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT_DOUBLE_EQUAL(p.mr[0].V, 2.0l, FLOAT_PRECISION);
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1655,7 +1655,7 @@ void ut_instruct_real() {
 
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT_DOUBLE_EQUAL(r.acc.r, 7.5l, FLOAT_PRECISION);
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1667,7 +1667,7 @@ void ut_instruct_real() {
 
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT_DOUBLE_EQUAL(r.acc.r, 2.5l, FLOAT_PRECISION);
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1679,7 +1679,7 @@ void ut_instruct_real() {
 
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT_DOUBLE_EQUAL(p.mr[3].V, 2.5l, FLOAT_PRECISION);
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1691,7 +1691,7 @@ void ut_instruct_real() {
 
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT_DOUBLE_EQUAL(r.acc.r, 5.0l, FLOAT_PRECISION);
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1703,7 +1703,7 @@ void ut_instruct_real() {
 
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT_DOUBLE_EQUAL(r.acc.r, 2.5l, FLOAT_PRECISION);
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1715,7 +1715,7 @@ void ut_instruct_real() {
 
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT_DOUBLE_EQUAL(r.acc.r, 1.25l, FLOAT_PRECISION);
 //printf("%f\n", r.acc.r);
     memset(&ins, 0, sizeof(struct instruction));
@@ -1723,7 +1723,7 @@ void ut_instruct_real() {
     ins.operation = IL_POP;
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT_DOUBLE_EQUAL(r.acc.r, 6.25l, FLOAT_PRECISION);
     CU_ASSERT(r.stack == NULL);
 //11.    ST %M1  ; mean = mean + ( delta/n )
@@ -1734,7 +1734,7 @@ void ut_instruct_real() {
 
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT_DOUBLE_EQUAL(p.mr[1].V, 6.25l, FLOAT_PRECISION);
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1746,7 +1746,7 @@ void ut_instruct_real() {
 
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT_DOUBLE_EQUAL(r.acc.r, 3.0l, FLOAT_PRECISION);
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1758,7 +1758,7 @@ void ut_instruct_real() {
 
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT_DOUBLE_EQUAL(r.acc.r, 2.5l, FLOAT_PRECISION);
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1770,7 +1770,7 @@ void ut_instruct_real() {
 
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT_DOUBLE_EQUAL(r.acc.r, 7.5l, FLOAT_PRECISION);
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1782,7 +1782,7 @@ void ut_instruct_real() {
 
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT_DOUBLE_EQUAL(r.acc.r, 1.25l, FLOAT_PRECISION);
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1790,7 +1790,7 @@ void ut_instruct_real() {
     ins.operation = IL_POP;
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT_DOUBLE_EQUAL(r.acc.r, 3.125l, FLOAT_PRECISION);
 
 //printf("%f\n", r.acc.r);
@@ -1800,7 +1800,7 @@ void ut_instruct_real() {
     ins.operation = IL_POP;
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT_DOUBLE_EQUAL(r.acc.r, 6.125l, FLOAT_PRECISION);
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1813,7 +1813,7 @@ void ut_instruct_real() {
 
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT_DOUBLE_EQUAL(p.mr[2].V, 6.125l, FLOAT_PRECISION);
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1825,7 +1825,7 @@ void ut_instruct_real() {
 
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT_DOUBLE_EQUAL(r.acc.r, 6.125l, FLOAT_PRECISION);
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1837,7 +1837,7 @@ void ut_instruct_real() {
 
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT_DOUBLE_EQUAL(r.acc.r, 2.0l, FLOAT_PRECISION);
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1849,7 +1849,7 @@ void ut_instruct_real() {
 
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT_DOUBLE_EQUAL(r.acc.r, 1.0l, FLOAT_PRECISION);
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1857,7 +1857,7 @@ void ut_instruct_real() {
     ins.operation = IL_POP;
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     CU_ASSERT_DOUBLE_EQUAL(r.acc.r, 6.125l, FLOAT_PRECISION);
 
     memset(&ins, 0, sizeof(struct instruction));
@@ -1872,7 +1872,7 @@ void ut_instruct_real() {
 
     result = rung_append(&ins, &r);
     pc = r.insno - 1;
-    result = instruct(&p, &r, &pc);
+    result = vm_instruct(&p, &r, &pc);
     //6.125 - 5 = 1.125  
     //0x10000 * 1.125 / 4 = 0x4800
 
@@ -1893,7 +1893,7 @@ void ut_task_scalar() {
     memset(&r, 0, sizeof(struct rung));
 
     //degenerates
-    int result = task(0, NULL, NULL);
+    int result = vm_task(0, NULL, NULL);
     CU_ASSERT(result == STATUS_ERR);
 
     uint8_t _reverse = 18;
@@ -2140,7 +2140,7 @@ void ut_task_scalar() {
 
     //printf("GCD (0x%x, 0x%x) = 0x%x\n", 0, 0, gcd(0,0));
 
-    result = task(1000, &p, &r);
+    result = vm_task(1000, &p, &r);
     CU_ASSERT(p.outputs[0] == 0);
     CU_ASSERT(result == STATUS_OK);
 
@@ -2151,7 +2151,7 @@ void ut_task_scalar() {
     p.inputs[0] = a;
     p.inputs[1] = b;
 
-    result = task(1000, &p, &r);
+    result = vm_task(1000, &p, &r);
     CU_ASSERT(p.outputs[0] == expected);
     // printf("found 0x%x\n", p.outputs[0]);
     CU_ASSERT(result == STATUS_OK);
@@ -2376,7 +2376,7 @@ void ut_task_real() {
     int i = 0;
     for (; i < 16; i++) {
         p.ai[0].V = (double) i;
-        result = task(1000, &p, &r);
+        result = vm_task(1000, &p, &r);
 
         //printf("Input: %lg\n", p.ai[0].V);
         //printf("Mean: %lg\n", p.m[1].V.r);
@@ -2398,7 +2398,7 @@ void ut_task_bitwise() {
     memset(&r, 0, sizeof(struct rung));
 
     //degenerates
-    int result = task(1000, NULL, NULL);
+    int result = vm_task(1000, NULL, NULL);
     CU_ASSERT(result == STATUS_ERR);
 
     //LD  %I0.0   ;A = true
@@ -2473,14 +2473,14 @@ void ut_task_bitwise() {
     p.di[0].I = false;
     p.di[1].I = false;
     p.di[2].I = false;
-    result = task(1000, &p, &r);
+    result = vm_task(1000, &p, &r);
     CU_ASSERT(p.dq[0].Q == false);
     CU_ASSERT(result == STATUS_OK);
 
     p.di[0].I = true;
     p.di[1].I = false;
     p.di[2].I = false;
-    result = task(1000, &p, &r);
+    result = vm_task(1000, &p, &r);
     CU_ASSERT(p.dq[0].Q == false);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(r.acc.u == false);
@@ -2489,42 +2489,42 @@ void ut_task_bitwise() {
     p.di[0].I = false;
     p.di[1].I = true;
     p.di[2].I = false;
-    result = task(1000, &p, &r);
+    result = vm_task(1000, &p, &r);
     CU_ASSERT(p.dq[0].Q == false);
     CU_ASSERT(result == STATUS_OK);
 
     p.di[0].I = false;
     p.di[1].I = false;
     p.di[2].I = true;
-    result = task(1000, &p, &r);
+    result = vm_task(1000, &p, &r);
     CU_ASSERT(p.dq[0].Q == false);
     CU_ASSERT(result == STATUS_OK);
 
     p.di[0].I = true;
     p.di[1].I = true;
     p.di[2].I = false;
-    result = task(1000, &p, &r);
+    result = vm_task(1000, &p, &r);
     CU_ASSERT(p.dq[0].Q == true);
     CU_ASSERT(result == STATUS_OK);
 
     p.di[0].I = true;
     p.di[1].I = false;
     p.di[2].I = true;
-    result = task(1000, &p, &r);
+    result = vm_task(1000, &p, &r);
     CU_ASSERT(p.dq[0].Q == true);
     CU_ASSERT(result == STATUS_OK);
 
     p.di[0].I = false;
     p.di[1].I = true;
     p.di[2].I = true;
-    result = task(1000, &p, &r);
+    result = vm_task(1000, &p, &r);
     CU_ASSERT(p.dq[0].Q == true);
     CU_ASSERT(result == STATUS_OK);
 
     p.di[0].I = true;
     p.di[1].I = true;
     p.di[2].I = true;
-    result = task(1000, &p, &r);
+    result = vm_task(1000, &p, &r);
     CU_ASSERT(p.dq[0].Q == true);
     CU_ASSERT(result == STATUS_OK);
 
@@ -2554,7 +2554,7 @@ void ut_task_timeout() {
 
     long timeout = 0;
 
-    result = task(timeout, &p, &r);
+    result = vm_task(timeout, &p, &r);
     CU_ASSERT(result == ERR_TIMEOUT);
 
     //JMP while
@@ -2569,7 +2569,7 @@ void ut_task_timeout() {
 
     timeout = 10000;
 
-    result = task(timeout, &p, &r);
+    result = vm_task(timeout, &p, &r);
     CU_ASSERT(result == ERR_TIMEOUT);
 
 }
@@ -2577,19 +2577,19 @@ void ut_task_timeout() {
 void ut_rung() {
 //degenerates
     instruction_t pi = NULL;
-    int result = get(NULL, -1, NULL);
+    int result = vm_get(NULL, -1, NULL);
     CU_ASSERT(result == STATUS_ERR);
 
     struct instruction i;
     memset(&i, 0, sizeof(struct instruction));
 
-    result = get(NULL, -1, &pi);
+    result = vm_get(NULL, -1, &pi);
     CU_ASSERT(result == STATUS_ERR);
 
     struct rung r;
     memset(&r, 0, sizeof(struct rung));
 
-    result = get(&r, 0, &pi);
+    result = vm_get(&r, 0, &pi);
     CU_ASSERT(result == STATUS_ERR);
 
     result = rung_append(NULL, NULL);
@@ -2611,11 +2611,11 @@ void ut_rung() {
     CU_ASSERT(r.insno == 2);
     CU_ASSERT(result == STATUS_OK);
 
-    result = get(&r, 0, &pi);
+    result = vm_get(&r, 0, &pi);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(pi->operation == i.operation);
 
-    result = get(&r, 1, &pi);
+    result = vm_get(&r, 1, &pi);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(memcmp(pi, &pop, sizeof(struct instruction)) == 0);
 
@@ -2651,7 +2651,7 @@ void ut_rung() {
     result = rung_intern(&r);        //find all labels
     CU_ASSERT(result == STATUS_OK);
 
-    result = get(&r, 2, &pi);
+    result = vm_get(&r, 2, &pi);
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(pi->operand == 1); //they are interned
 
@@ -2701,7 +2701,7 @@ void ut_stack() {
     //pop with empty stack
     data_t val;
     val.u = 5;
-    data_t res = pop(val, &(r.stack));
+    data_t res = vm_pop(val, &(r.stack));
     CU_ASSERT(res.u == val.u);
 
     //push any one, pop one
@@ -2715,29 +2715,29 @@ void ut_stack() {
     int result;
 
     for (; op <= N_IL_INSN; op++) {
-        data_t t = operate(op, T_BYTE, a, b);
+        data_t t = vm_operate(op, T_BYTE, a, b);
         //push one pop one
-        push(op, T_BYTE, a, &r);
+        vm_push(op, T_BYTE, a, &r);
         //&stack);
         CU_ASSERT(r.stack->depth == 1);
-        res = pop(b, &(r.stack));
+        res = vm_pop(b, &(r.stack));
         CU_ASSERT(res.u == t.u);
         CU_ASSERT(r.stack == NULL);
         //push one pop two
-        res = pop(b, &(r.stack));
+        res = vm_pop(b, &(r.stack));
         CU_ASSERT(res.u == b.u);
         CU_ASSERT(r.stack == NULL);
         //push two pop one
-        push(op, T_BYTE, a, &r);
-        push(op, T_BYTE, c, &r);
-        t = operate(op, T_BYTE, c, b);
+        vm_push(op, T_BYTE, a, &r);
+        vm_push(op, T_BYTE, c, &r);
+        t = vm_operate(op, T_BYTE, c, b);
         CU_ASSERT(r.stack->depth == 2);
-        res = pop(b, &(r.stack));
+        res = vm_pop(b, &(r.stack));
         CU_ASSERT(res.u == t.u);
         CU_ASSERT(r.stack->depth == 1);
         //push two pop two
-        t = operate(op, T_BYTE, a, b);
-        res = pop(b, &(r.stack));
+        t = vm_operate(op, T_BYTE, a, b);
+        res = vm_pop(b, &(r.stack));
         CU_ASSERT(res.u == t.u);
         CU_ASSERT(r.stack == NULL);
     }
@@ -2745,11 +2745,11 @@ void ut_stack() {
     int i = 0;
 
     for (; i < MAXBUF - 1; i++)
-        result = push(op, T_BYTE, a, &r);
+        result = vm_push(op, T_BYTE, a, &r);
 
     CU_ASSERT(result == STATUS_OK);
 
-    result = push(op, T_BYTE, a, &r);
+    result = vm_push(op, T_BYTE, a, &r);
     CU_ASSERT(result == STATUS_ERR);
 }
 
@@ -2804,26 +2804,26 @@ void ut_type() {
 void ut_force() {
     struct PLC_regs plc;
     //degenerates
-    plc_t r = force(NULL, -1, -1, NULL);
-    CU_ASSERT(is_forced(NULL, -1, -1) == STATUS_ERR);
-    CU_ASSERT_PTR_NULL(unforce(NULL, -1, -1));
+    plc_t r = vm_force(NULL, -1, -1, NULL);
+    CU_ASSERT(vm_is_forced(NULL, -1, -1) == STATUS_ERR);
+    CU_ASSERT_PTR_NULL(vm_unforce(NULL, -1, -1));
     CU_ASSERT_PTR_NULL(r);
     //unsupported returns NULL
-    r = force(&plc, N_OPERANDS, -1, NULL);
-    CU_ASSERT(is_forced(&plc, -1, -1) == STATUS_ERR);
-    CU_ASSERT_PTR_NULL(unforce(&plc, -1, -1));
+    r = vm_force(&plc, N_OPERANDS, -1, NULL);
+    CU_ASSERT(vm_is_forced(&plc, -1, -1) == STATUS_ERR);
+    CU_ASSERT_PTR_NULL(vm_unforce(&plc, -1, -1));
     CU_ASSERT_PTR_NULL(r);
 
-    r = force(&plc, OP_INPUT, -1, NULL);
+    r = vm_force(&plc, OP_INPUT, -1, NULL);
 
-    CU_ASSERT(is_forced(&plc, OP_INPUT, -1) == STATUS_ERR);
-    CU_ASSERT_PTR_NULL(unforce(&plc, OP_INPUT, -1));
+    CU_ASSERT(vm_is_forced(&plc, OP_INPUT, -1) == STATUS_ERR);
+    CU_ASSERT_PTR_NULL(vm_unforce(&plc, OP_INPUT, -1));
     CU_ASSERT_PTR_NULL(r);
 
-    r = force(&plc, OP_INPUT, 1, NULL);
+    r = vm_force(&plc, OP_INPUT, 1, NULL);
     CU_ASSERT_PTR_NULL(r);
 
-    r = force(&plc, OP_INPUT, -1, "1");
+    r = vm_force(&plc, OP_INPUT, -1, "1");
     CU_ASSERT_PTR_NULL(r);
 //regular behavior        
     init_mock_plc(&plc);
@@ -2831,60 +2831,60 @@ void ut_force() {
     plc.ai[1].max = 2.0;
     plc.aq[1].min = 0.0;
     plc.aq[1].max = 2.0;
-    r = force(&plc, OP_INPUT, 1, "1");
+    r = vm_force(&plc, OP_INPUT, 1, "1");
 
     CU_ASSERT_PTR_NOT_NULL(r);
     CU_ASSERT(r->di[1].MASK == 1);
-    r = force(&plc, OP_INPUT, 1, "0");
+    r = vm_force(&plc, OP_INPUT, 1, "0");
     CU_ASSERT(r->di[1].N_MASK == 1);
-    CU_ASSERT(is_forced(r, OP_INPUT, 1) == 1);
-    r = unforce(&plc, OP_INPUT, 1);
+    CU_ASSERT(vm_is_forced(r, OP_INPUT, 1) == 1);
+    r = vm_unforce(&plc, OP_INPUT, 1);
 
     CU_ASSERT(r->di[1].MASK == 0);
     CU_ASSERT(r->di[1].N_MASK == 0);
-    CU_ASSERT(is_forced(r, OP_INPUT, 1) == 0);
+    CU_ASSERT(vm_is_forced(r, OP_INPUT, 1) == 0);
 
-    r = force(&plc, OP_OUTPUT, 1, "1");
+    r = vm_force(&plc, OP_OUTPUT, 1, "1");
 
     CU_ASSERT_PTR_NOT_NULL(r);
     CU_ASSERT(r->dq[1].MASK == 1);
-    r = force(&plc, OP_OUTPUT, 1, "0");
+    r = vm_force(&plc, OP_OUTPUT, 1, "0");
     CU_ASSERT(r->dq[1].N_MASK == 1);
-    CU_ASSERT(is_forced(r, OP_OUTPUT, 1) == 1);
-    r = unforce(&plc, OP_OUTPUT, 1);
+    CU_ASSERT(vm_is_forced(r, OP_OUTPUT, 1) == 1);
+    r = vm_unforce(&plc, OP_OUTPUT, 1);
 
     CU_ASSERT(r->dq[1].MASK == 0);
     CU_ASSERT(r->dq[1].N_MASK == 0);
-    CU_ASSERT(is_forced(r, OP_OUTPUT, 1) == 0);
+    CU_ASSERT(vm_is_forced(r, OP_OUTPUT, 1) == 0);
 
-    r = force(&plc, OP_REAL_INPUT, 1, "-1.5");
+    r = vm_force(&plc, OP_REAL_INPUT, 1, "-1.5");
     //value less than min should not apply force
-    CU_ASSERT(is_forced(r, OP_REAL_INPUT, 1) == 0);
+    CU_ASSERT(vm_is_forced(r, OP_REAL_INPUT, 1) == 0);
 
-    r = force(&plc, OP_REAL_INPUT, 1, "1.5");
+    r = vm_force(&plc, OP_REAL_INPUT, 1, "1.5");
 
     CU_ASSERT_PTR_NOT_NULL(r);
     CU_ASSERT_DOUBLE_EQUAL(r->ai[1].mask, 1.5, FLOAT_PRECISION);
 
-    CU_ASSERT(is_forced(r, OP_REAL_INPUT, 1) == 1);
-    r = unforce(&plc, OP_REAL_INPUT, 1);
+    CU_ASSERT(vm_is_forced(r, OP_REAL_INPUT, 1) == 1);
+    r = vm_unforce(&plc, OP_REAL_INPUT, 1);
 
     CU_ASSERT(r->ai[1].mask <= r->ai[1].min);
-    CU_ASSERT(is_forced(r, OP_REAL_INPUT, 1) == 0);
+    CU_ASSERT(vm_is_forced(r, OP_REAL_INPUT, 1) == 0);
 
-    r = force(&plc, OP_REAL_OUTPUT, 1, "-1.5");
+    r = vm_force(&plc, OP_REAL_OUTPUT, 1, "-1.5");
     //value less than min should not apply force
-    CU_ASSERT(is_forced(r, OP_REAL_OUTPUT, 1) == 0);
+    CU_ASSERT(vm_is_forced(r, OP_REAL_OUTPUT, 1) == 0);
 
-    r = force(&plc, OP_REAL_OUTPUT, 1, "1.3");
+    r = vm_force(&plc, OP_REAL_OUTPUT, 1, "1.3");
 
     CU_ASSERT_PTR_NOT_NULL(r);
     CU_ASSERT_DOUBLE_EQUAL(r->aq[1].mask, 1.3, FLOAT_PRECISION);
 
-    CU_ASSERT(is_forced(r, OP_REAL_OUTPUT, 1) == 1);
-    r = unforce(&plc, OP_REAL_OUTPUT, 1);
+    CU_ASSERT(vm_is_forced(r, OP_REAL_OUTPUT, 1) == 1);
+    r = vm_unforce(&plc, OP_REAL_OUTPUT, 1);
 
-    CU_ASSERT(is_forced(r, OP_OUTPUT, 1) == 0);
+    CU_ASSERT(vm_is_forced(r, OP_OUTPUT, 1) == 0);
     CU_ASSERT(r->aq[1].mask <= r->aq[1].min);
 }
 

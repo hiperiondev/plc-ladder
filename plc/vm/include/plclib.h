@@ -209,14 +209,14 @@ typedef struct PLC_regs {
  * @param the plc
  * @return plc with updated status
  */
-plc_t plc_start(plc_t p);
+plc_t vm_plc_start(plc_t p);
 
 /**
  * @brief stop PLC 
  * @param the plc
  * @return plc with updated status
  */
-plc_t plc_stop(plc_t p);
+plc_t vm_plc_stop(plc_t p);
 
 /**
  * @brief parse IL program
@@ -232,7 +232,7 @@ plc_t plc_stop(plc_t p);
  * @param the plc
  * @return plc with updated status
  */
-plc_t plc_load_program_file(const char *path, plc_t plc);
+plc_t vm_plc_load_program_file(const char *path, plc_t plc);
 
 /**
  * @brief execute JMP instruction
@@ -240,7 +240,7 @@ plc_t plc_load_program_file(const char *path, plc_t plc);
  * @param the program counter (index of instruction in the rung)
  * @return OK or error
  */
-int handle_jmp(const rung_t r, unsigned int *pc);
+int vm_handle_jmp(const rung_t r, unsigned int *pc);
 
 /**
  * @brief execute RESET instruction
@@ -251,7 +251,7 @@ int handle_jmp(const rung_t r, unsigned int *pc);
  * @param reference to the plc
  * @return OK or error
  */
-int handle_reset(const instruction_t op, const data_t acc, uint8_t is_bit, plc_t p);
+int vm_handle_reset(const instruction_t op, const data_t acc, uint8_t is_bit, plc_t p);
 
 /**
  * @brief execute SET instruction
@@ -262,7 +262,7 @@ int handle_reset(const instruction_t op, const data_t acc, uint8_t is_bit, plc_t
  * @param reference to the plc
  * @return OK or error
  */
-int handle_set(const instruction_t op, const data_t acc, uint8_t is_bit, plc_t p);
+int vm_handle_set(const instruction_t op, const data_t acc, uint8_t is_bit, plc_t p);
 
 /**
  * @brief store value to digital outputs
@@ -271,7 +271,7 @@ int handle_set(const instruction_t op, const data_t acc, uint8_t is_bit, plc_t p
  * @reference to the plc
  * @return OK or error
  */
-int st_out(const instruction_t op, uint64_t val, plc_t p);
+int vm_st_out(const instruction_t op, uint64_t val, plc_t p);
 
 /**
  * @brief store value to analog outputs
@@ -279,7 +279,7 @@ int st_out(const instruction_t op, uint64_t val, plc_t p);
  * @reference to the plc
  * @return OK or error
  */
-int st_out_r(const instruction_t op, double val, plc_t p);
+int vm_st_out_r(const instruction_t op, double val, plc_t p);
 
 /**
  * @brief store value to memory registers
@@ -287,7 +287,7 @@ int st_out_r(const instruction_t op, double val, plc_t p);
  * @reference to the plc
  * @return OK or error
  */
-int st_mem(const instruction_t op, uint64_t val, plc_t p);
+int vm_st_mem(const instruction_t op, uint64_t val, plc_t p);
 
 /**
  * @brief store value to floating point memory registers 
@@ -295,7 +295,7 @@ int st_mem(const instruction_t op, uint64_t val, plc_t p);
  * @reference to the plc
  * @return OK or error
  */
-int st_mem_r(const instruction_t op, double val, plc_t p);
+int vm_st_mem_r(const instruction_t op, double val, plc_t p);
 
 /**
  * @brief execute STORE instruction
@@ -304,7 +304,7 @@ int st_mem_r(const instruction_t op, double val, plc_t p);
  * @param reference to the plc
  * @return OK or error
  */
-int handle_st(const instruction_t op, const data_t val, plc_t p);
+int vm_handle_st(const instruction_t op, const data_t val, plc_t p);
 
 /**
  * @brief load value from digital inputs
@@ -313,7 +313,7 @@ int handle_st(const instruction_t op, const data_t val, plc_t p);
  * @reference to the plc
  * @return OK or error
  */
-int ld_in(const instruction_t op, uint64_t *val, plc_t p);
+int vm_ld_in(const instruction_t op, uint64_t *val, plc_t p);
 
 /**
  * @brief load rising edge from digital inputs
@@ -321,7 +321,7 @@ int ld_in(const instruction_t op, uint64_t *val, plc_t p);
  * @reference to the plc
  * @return OK or error
  */
-int ld_re(const instruction_t op, uint8_t *val, plc_t p);
+int vm_ld_re(const instruction_t op, uint8_t *val, plc_t p);
 
 /**
  * @brief load falling edge from digital inputs
@@ -329,7 +329,7 @@ int ld_re(const instruction_t op, uint8_t *val, plc_t p);
  * @reference to the plc
  * @return OK or error
  */
-int ld_fe(const instruction_t op, uint8_t *val, plc_t p);
+int vm_ld_fe(const instruction_t op, uint8_t *val, plc_t p);
 
 /**
  * @brief load value from analog inputs
@@ -337,7 +337,7 @@ int ld_fe(const instruction_t op, uint8_t *val, plc_t p);
  * @reference to the plc
  * @return OK or error
  */
-int ld_in_r(const instruction_t op, double *val, plc_t p);
+int vm_ld_in_r(const instruction_t op, double *val, plc_t p);
 
 /**
  * @brief load value from digital outputs
@@ -345,7 +345,7 @@ int ld_in_r(const instruction_t op, double *val, plc_t p);
  * @reference to the plc
  * @return OK or error
  */
-int ld_out(const instruction_t op, uint64_t *val, plc_t p);
+int vm_ld_out(const instruction_t op, uint64_t *val, plc_t p);
 
 /**
  * @brief load value from analog outputs
@@ -353,7 +353,7 @@ int ld_out(const instruction_t op, uint64_t *val, plc_t p);
  * @reference to the plc
  * @return OK or error
  */
-int ld_out_r(const instruction_t op, double *val, plc_t p);
+int vm_ld_out_r(const instruction_t op, double *val, plc_t p);
 
 /**
  * @brief load value from memory registers
@@ -361,7 +361,7 @@ int ld_out_r(const instruction_t op, double *val, plc_t p);
  * @reference to the plc
  * @return OK or error
  */
-int ld_mem(const instruction_t op, uint64_t *val, plc_t p);
+int vm_ld_mem(const instruction_t op, uint64_t *val, plc_t p);
 
 /**
  * @brief load value from floating point memory 
@@ -369,7 +369,7 @@ int ld_mem(const instruction_t op, uint64_t *val, plc_t p);
  * @reference to the plc
  * @return OK or error
  */
-int ld_mem_r(const instruction_t op, double *val, plc_t p);
+int vm_ld_mem_r(const instruction_t op, double *val, plc_t p);
 
 /**
  * @brief load value from timer 
@@ -377,7 +377,7 @@ int ld_mem_r(const instruction_t op, double *val, plc_t p);
  * @reference to the plc
  * @return OK or error
  */
-int ld_timer(const instruction_t op, uint64_t *val, plc_t p);
+int vm_ld_timer(const instruction_t op, uint64_t *val, plc_t p);
 
 /**
  * @brief execute LOAD instruction
@@ -386,7 +386,7 @@ int ld_timer(const instruction_t op, uint64_t *val, plc_t p);
  * @param reference to the plc
  * @return OK or error
  */
-int handle_ld(const instruction_t op, data_t *acc, plc_t p);
+int vm_handle_ld(const instruction_t op, data_t *acc, plc_t p);
 
 /**
  * @brief execute any stack operation
@@ -395,7 +395,7 @@ int handle_ld(const instruction_t op, data_t *acc, plc_t p);
  * @param reference to the plc
  * @return OK or error
  */
-int handle_stackable(const instruction_t op, rung_t r, plc_t p);
+int vm_handle_stackable(const instruction_t op, rung_t r, plc_t p);
 
 /**
  * @brief execute IL instruction
@@ -403,7 +403,7 @@ int handle_stackable(const instruction_t op, rung_t r, plc_t p);
  * @param the rung
  * @return OK or error
  */
-int instruct(plc_t p, rung_t r, unsigned int *pc);
+int vm_instruct(plc_t p, rung_t r, unsigned int *pc);
 
 /**
  * @brief add a new rung to a plc
@@ -411,7 +411,7 @@ int instruct(plc_t p, rung_t r, unsigned int *pc);
  * @param the plc
  * @return reference to the new rung
  */
-rung_t mk_rung(const char *name, plc_t p);
+rung_t vm_mk_rung(const char *name, plc_t p);
 
 /**
  * @brief get rung reference from plc
@@ -420,7 +420,7 @@ rung_t mk_rung(const char *name, plc_t p);
  * @param idx the index
  * @return reference to rung or NULL
  */
-rung_t get_rung(const plc_t p, unsigned int idx);
+rung_t vm_get_rung(const plc_t p, unsigned int idx);
 
 /**
  * @brief task to execute IL rung
@@ -429,7 +429,7 @@ rung_t get_rung(const plc_t p, unsigned int idx);
  * @param pointer to IL rung
  * @return OK or error
  */
-int task(long timeout, plc_t p, rung_t r);
+int vm_task(long timeout, plc_t p, rung_t r);
 
 /**
  * @brief task to execute all rungs
@@ -437,20 +437,20 @@ int task(long timeout, plc_t p, rung_t r);
  * @param pointer to PLC registers
  * @return OK or error
  */
-int all_tasks(long timeout, plc_t p);
+int vm_all_tasks(long timeout, plc_t p);
 
 /**
  * @brief custom project init code as plugin
  * @return OK or error
  */
-int project_init();
+int vm_project_init();
 
 /**
  * @brief custom project task code as plugin
  * @param pointer to PLC registers
  * @return OK or error
  */
-int project_task(plc_t p);
+int vm_project_task(plc_t p);
 
 /**
  * @brief PLC task executed in a loop
@@ -465,7 +465,7 @@ int plc_task(plc_t p);
  * @param ref to plc
  * @return OK or error
  */
-int open_pipe(const char *pipe, plc_t p);
+int vm_open_pipe(const char *pipe, plc_t p);
 
 /**
  * @brief PLC realtime loop
@@ -480,7 +480,7 @@ int open_pipe(const char *pipe, plc_t p);
  * @param the PLC
  * @return PLC with updated state
  */
-plc_t plc_func(plc_t p);
+plc_t vm_plc_func(plc_t p);
 
 /**
  * @brief force operand with value
@@ -490,7 +490,7 @@ plc_t plc_func(plc_t p);
  * @param the value
  * @return new plc state, or NULL in error
  */
-plc_t force(plc_t p, int op, uint8_t i, char *val);
+plc_t vm_force(plc_t p, int op, uint8_t i, char *val);
 
 /**
  * @brief unforce operand
@@ -499,7 +499,7 @@ plc_t force(plc_t p, int op, uint8_t i, char *val);
  * @param the operand index
  * @param new plc state, or null in error
  */
-plc_t unforce(plc_t p, int op, uint8_t i);
+plc_t vm_unforce(plc_t p, int op, uint8_t i);
 
 /**
  * @brief is an operand forced
@@ -508,33 +508,33 @@ plc_t unforce(plc_t p, int op, uint8_t i);
  * @param input index
  * @return true if forced, false if not, error if out of bounds
  */
-int is_forced(plc_t p, int op, uint8_t i);
+int vm_is_forced(plc_t p, int op, uint8_t i);
 
 /**
  * @brief decode inputs
  * @param pointer to PLC registers
  * @return true if input changed
  */
-unsigned char dec_inp(plc_t p);
+unsigned char vm_dec_inp(plc_t p);
 
 /**
  * @brief encode outputs
  * @param pointer to PLC registers
  * @return true if output changed
  */
-unsigned char enc_out(plc_t p);
+unsigned char vm_enc_out(plc_t p);
 
 /**
  * @brief write values to memory variables
  * @param pointer to PLC registers
  */
-void write_mvars(plc_t p);
+void vm_write_mvars(plc_t p);
 
 /**
  * @brief read_mvars
  * @param pointer to PLC registers
  */
-void read_mvars(plc_t p);
+void vm_read_mvars(plc_t p);
 
 /**
  * @brief rising edge of input
@@ -543,7 +543,7 @@ void read_mvars(plc_t p);
  * @param index
  * @return true if rising edge of operand, false or error otherwise
  */
-int re(const plc_t p, int type, int idx);
+int vm_re(const plc_t p, int type, int idx);
 
 /**
  * @brief falling edge of input
@@ -552,7 +552,7 @@ int re(const plc_t p, int type, int idx);
  * @param index
  * @return true if falling edge of operand, false or error otherwise
  */
-int fe(const plc_t p, int type, int idx);
+int vm_fe(const plc_t p, int type, int idx);
 
 /**
  * @brief set output
@@ -561,7 +561,7 @@ int fe(const plc_t p, int type, int idx);
  * @param index
  * @return OK if success or error code
  */
-int set(plc_t p, int type, int idx);
+int vm_set(plc_t p, int type, int idx);
 
 /**
  * @brief reset output
@@ -570,7 +570,7 @@ int set(plc_t p, int type, int idx);
  * @param index
  * @return OK if success or error code
  */
-int reset(plc_t p, int type, int idx);
+int vm_reset(plc_t p, int type, int idx);
 
 /**
  * @brief contact value to output
@@ -580,7 +580,7 @@ int reset(plc_t p, int type, int idx);
  * @param value
  * @return OK if success or error code
  */
-int contact(plc_t p, int type, int idx, uint8_t val);
+int vm_contact(plc_t p, int type, int idx, uint8_t val);
 
 /**
  * @brief resolve an operand value
@@ -589,7 +589,7 @@ int contact(plc_t p, int type, int idx, uint8_t val);
  * @param index
  * @return return value or error code
  */
-int resolve(plc_t p, int type, int idx);
+int vm_resolve(plc_t p, int type, int idx);
 
 /**
  * @brief reset timer
@@ -597,7 +597,7 @@ int resolve(plc_t p, int type, int idx);
  * @param index
  * @return OK if success or error code
  */
-int down_timer(plc_t p, int idx);
+int vm_down_timer(plc_t p, int idx);
 
 /**
  * @brief construct a new plc with a configuration
@@ -614,19 +614,19 @@ int down_timer(plc_t p, int idx);
 
  * @return configured plc
  */
-plc_t new_plc(int di, int dq, int ai, int aq, int nt, int ns, int nm, int nr, int step, hardware_t hw);
+plc_t vm_new_plc(int di, int dq, int ai, int aq, int nt, int ns, int nm, int nr, int step, hardware_t hw);
 
 /**
  * @brief copy constructor
  * @param source plc
  * @return newly allocated copy
  */
-plc_t copy_plc(const plc_t plc);
+plc_t vm_copy_plc(const plc_t plc);
 
 /**
  * @brief dtor
  */
-void clear_plc(plc_t plc);
+void vm_clear_plc(plc_t plc);
 
 /*configurators*/
 
@@ -639,7 +639,7 @@ void clear_plc(plc_t plc);
  * @see also data.h
  * @return plc instance with saved change or updated error status
  */
-plc_t declare_variable(const plc_t p, int var, uint8_t idx, const char *val);
+plc_t vm_declare_variable(const plc_t p, int var, uint8_t idx, const char *val);
 
 /**
  * @brief assign initial value to a plc register variable
@@ -651,7 +651,7 @@ plc_t declare_variable(const plc_t p, int var, uint8_t idx, const char *val);
  * @see also data.h
  * @return plc instance with saved change or updated error status
  */
-plc_t init_variable(const plc_t p, int var, uint8_t idx, const char *val);
+plc_t vm_init_variable(const plc_t p, int var, uint8_t idx, const char *val);
 
 /**
  * @brief configure a plc register variable as readonly
@@ -662,7 +662,7 @@ plc_t init_variable(const plc_t p, int var, uint8_t idx, const char *val);
  * @see also data.h
  * @return plc instance with saved change or updated error status
  */
-plc_t configure_variable_readonly(const plc_t p, int var, uint8_t idx, const char *val);
+plc_t vm_configure_variable_readonly(const plc_t p, int var, uint8_t idx, const char *val);
 
 /**
  * @brief assign upper or lower limit to an analog input or output
@@ -674,7 +674,7 @@ plc_t configure_variable_readonly(const plc_t p, int var, uint8_t idx, const cha
  * @see also data.h
  * @return plc instance with saved change or updated error status
  */
-plc_t configure_io_limit(const plc_t p, int io, uint8_t idx, const char *val, uint8_t max);
+plc_t vm_configure_io_limit(const plc_t p, int io, uint8_t idx, const char *val, uint8_t max);
 
 /**
  * @brief configure a register as up or down counter
@@ -683,7 +683,7 @@ plc_t configure_io_limit(const plc_t p, int io, uint8_t idx, const char *val, ui
  * @param serialized direction flag (true if "DOWN", false otherwise)
  * @return plc instance with saved change or updated error status
  */
-plc_t configure_counter_direction(const plc_t p, uint8_t idx, const char *val);
+plc_t vm_configure_counter_direction(const plc_t p, uint8_t idx, const char *val);
 /**
  * @brief configure a timer scale
  * @param plc instance   
@@ -692,7 +692,7 @@ plc_t configure_counter_direction(const plc_t p, uint8_t idx, const char *val);
  * @see also timer_t
  * @return plc instance with saved change or updated error status
  */
-plc_t configure_timer_scale(const plc_t p, uint8_t idx, const char *val);
+plc_t vm_configure_timer_scale(const plc_t p, uint8_t idx, const char *val);
 
 /**
  * @brief configure a timer preset
@@ -702,7 +702,7 @@ plc_t configure_timer_scale(const plc_t p, uint8_t idx, const char *val);
  * @see also timer_t
  * @return plc instance with saved change or updated error status
  */
-plc_t configure_timer_preset(const plc_t p, uint8_t idx, const char *val);
+plc_t vm_configure_timer_preset(const plc_t p, uint8_t idx, const char *val);
 
 /**
  * @brief configure a timer delay mode
@@ -712,7 +712,7 @@ plc_t configure_timer_preset(const plc_t p, uint8_t idx, const char *val);
  * @see also timer_t
  * @return plc instance with saved change or updated error status
  */
-plc_t configure_timer_delay_mode(const plc_t p, uint8_t idx, const char *val);
+plc_t vm_configure_timer_delay_mode(const plc_t p, uint8_t idx, const char *val);
 
 /**
  * @brief configure a pulse scale
@@ -722,20 +722,20 @@ plc_t configure_timer_delay_mode(const plc_t p, uint8_t idx, const char *val);
  * @see also blink_t
  * @return plc instance with saved change or updated error status
  */
-plc_t configure_pulse_scale(const plc_t p, uint8_t idx, const char *val);
+plc_t vm_configure_pulse_scale(const plc_t p, uint8_t idx, const char *val);
 
 /**
  * @brief
  * @param
  * @return
  */
-void read_inputs(plc_t p);
+void vm_read_inputs(plc_t p);
 
 /**
  * @brief
  * @param
  * @return
  */
-void write_outputs(plc_t p);
+void vm_write_outputs(plc_t p);
 
 #endif //_PLCLIB_H_

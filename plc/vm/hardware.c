@@ -33,7 +33,7 @@ extern struct hardware Uspace;
 extern struct hardware Sim;
 extern struct hardware Dry;
 
-hardware_t get_hardware(int type) {
+hardware_t vm_get_hardware(int type) {
     switch (type) {
         case HW_USPACE:
             return &Uspace;
