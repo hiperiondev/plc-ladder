@@ -131,4 +131,3 @@ struct hardware Hw_stub = {
 //hardware_t get_hardware(int type) {
 //    return &Hw_stub;
 //}
-

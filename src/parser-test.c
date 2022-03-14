@@ -40,18 +40,17 @@
 
 int main() {
 
-    /*
     rung_t *rungs;
 
     char lines[MAXBUF][MAXSTR];
     memset(lines, 0, MAXBUF * MAXSTR);
-    sprintf(lines[0], "%s\n", " i0/1--+--+-!i0/5---+---i0/6--+--+--+---(Q0/0 ");
-    sprintf(lines[1], "%s\n", "       |  |         |         |  |  |         ");
-    sprintf(lines[2], "%s\n", " i0/2--+  |         +---i0/7--+  |  |         ");
-    sprintf(lines[3], "%s\n", "       |  |         |         |  |  |         ");
-    sprintf(lines[4], "%s\n", " i0/3--+  |         +---i1/0--+  |  |         ");
-    sprintf(lines[5], "%s\n", "          +------i1/2------------+  |         ");
-    sprintf(lines[6], "%s\n", " i0/4-------------------------------+         ");
+    sprintf(lines[0], "%s\n", " i0/1-----------+--+-!i0/5---+---i0/6--+--+--+---(Q0/0 ");
+    sprintf(lines[1], "%s\n", "                |  |         |         |  |  |         ");
+    sprintf(lines[2], "%s\n", " i0/2---!i1/1---+  |         +---i0/7--+  |  |         ");
+    sprintf(lines[3], "%s\n", "                |  |         |         |  |  |         ");
+    sprintf(lines[4], "%s\n", " i0/3-----------+  |         +---i1/0--+  |  |         ");
+    sprintf(lines[5], "%s\n", "                   +------i1/2------------+  |         ");
+    sprintf(lines[6], "%s\n", " i0/4----------------------------------------+         ");
 
     printf("\n");
     for (int n = 0; n <= 6; n++) {
@@ -93,7 +92,6 @@ int main() {
     printf("test 12: %s\n",               line.stmt->v.ass.right->v.exp.b == NULL                 ? "ok" : "error");
 
     printf("\n-- parse_ld_line END\n\n");
-    */
 
     vm_tests();
 }

@@ -216,7 +216,6 @@ void ut_find_next_node() {
     //printf("%d\n", result);
 
     parse_ld_destroy_program(6, program);
-
 }
 
 void ut_parse_ld_program() {

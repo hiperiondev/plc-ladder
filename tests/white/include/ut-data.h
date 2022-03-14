@@ -414,7 +414,6 @@ void ut_operate(void) {
     op = IL_LT + NEGATE; // LESS THAN
     r = vm_operate(op, T_BYTE, a, b); // 5 < 253
     CU_ASSERT(r.u == true);
-
 }
 
 #endif //_UT_DATA_H_

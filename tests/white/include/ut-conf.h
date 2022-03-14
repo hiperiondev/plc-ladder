@@ -93,7 +93,6 @@ void ut_store() {
     updated = store_seq_value(seq, CONFIG_AQ, "", NULL, conf);
     CU_ASSERT(updated->err == STATUS_ERR);
     clear_config(conf);
-
 }
 
 void ut_get() {

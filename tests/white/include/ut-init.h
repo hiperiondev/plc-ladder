@@ -292,5 +292,6 @@ void ut_start_stop() {
 
     vm_clear_plc(plc);
 }
+
 #endif //_UT_INIT_H_
 

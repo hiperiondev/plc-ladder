@@ -838,7 +838,6 @@ void ut_ld() {
     result = vm_handle_ld(&ins, &acc, &p);
     CU_ASSERT(acc.u == 1);
     init_mock_plc(&p);
-
 }
 
 void ut_ld_discrete() {
@@ -904,7 +903,6 @@ void ut_ld_discrete() {
 
     CU_ASSERT(result == STATUS_OK);
     CU_ASSERT(acc == 0xAABBCCDDEEFF1122);
-
 }
 
 void ut_ld_real() {
@@ -1045,7 +1043,6 @@ void ut_stackable() {
     acc = vm_pop(r.acc, &(r.stack));
 
     CU_ASSERT(acc.u == 11);
-
 }
 
 uint8_t gcd(uint8_t a, uint8_t b) {
@@ -1213,7 +1210,6 @@ void ut_instruct_bitwise() {
     CU_ASSERT(p.dq[0].Q == true);
 
     rung_clear(&r);
-
 }
 
 void ut_instruct_scalar() {
@@ -2571,7 +2567,6 @@ void ut_task_timeout() {
 
     result = vm_task(timeout, &p, &r);
     CU_ASSERT(result == ERR_TIMEOUT);
-
 }
 
 void ut_rung() {
@@ -2690,7 +2685,6 @@ void ut_codeline() {
     CU_ASSERT_STRING_EQUAL(res->next->line, "lala");
 
     CU_ASSERT_PTR_NULL(res->next->next);
-
 }
 
 void ut_stack() {
@@ -2889,4 +2883,3 @@ void ut_force() {
 }
 
 #endif //_UT_LIB_H_
-
