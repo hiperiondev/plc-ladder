@@ -31,9 +31,9 @@
 
 #include "common.h"
 #include "config.h"
-#include "instruction.h"
-#include "rung.h"
-#include "parser-tree.h"
+#include "cmp_instruction.h"
+#include "cmp_rung.h"
+#include "cmp_parser-tree.h"
 #include "mem.h"
 
 // TODO: memory optimization: create a factory to allocate different

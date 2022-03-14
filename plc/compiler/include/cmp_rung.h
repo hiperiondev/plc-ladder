@@ -29,8 +29,8 @@
 #define _RUNG_H_
 
 #include "common.h"
-#include "instruction.h"
-#include "data.h"
+#include "cmp_instruction.h"
+#include "vm_data.h"
 
 #define MAXSTACK 256
 #define MAXRUNG  256

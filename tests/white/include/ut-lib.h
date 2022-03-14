@@ -32,8 +32,8 @@
 #include <CUnit/CUnit.h>
 
 #include "common.h"
-#include "plclib.h"
-#include "rung_vm.h"
+#include "vm_plclib.h"
+#include "vm_rung.h"
 
 extern struct hardware Hw_stub;
 

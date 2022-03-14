@@ -32,11 +32,11 @@
 #include <CUnit/CUnit.h>
 
 #include "config.h"
-#include "hardware.h"
-#include "data.h"
-#include "instruction.h"
-#include "rung.h"
-#include "plclib.h"
+#include "vm_hardware.h"
+#include "vm_data.h"
+#include "cmp_instruction.h"
+#include "cmp_rung.h"
+#include "vm_plclib.h"
 #include "mem.h"
 #include "common.h"
 

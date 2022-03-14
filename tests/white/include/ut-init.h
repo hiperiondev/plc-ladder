@@ -32,7 +32,7 @@
 #include <CUnit/CUnit.h>
 
 #include "common.h"
-#include "plclib.h"
+#include "vm_plclib.h"
 
 void ut_construct() {
     plc_t plc = vm_new_plc(8, 8, 4, 4, 4, 4, 4, 4, 100, NULL);

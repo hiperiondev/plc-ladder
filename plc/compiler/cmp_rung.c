@@ -30,8 +30,8 @@
 #include <string.h>
 
 #include "common.h"
-#include "instruction.h"
-#include "rung.h"
+#include "cmp_instruction.h"
+#include "cmp_rung.h"
 #include "mem.h"
 
 int rung_get_instruction(const rung_t r, const unsigned int idx, instruction_t *i) {

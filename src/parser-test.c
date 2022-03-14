@@ -29,10 +29,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "parser-il.h"
-#include "parser-ld.h"
-#include "parser-tree.h"
-#include "plclib.h"
+#include "cmp_parser-il.h"
+#include "cmp_parser-ld.h"
+#include "cmp_parser-tree.h"
+#include "vm_plclib.h"
 #include "mem.h"
 #include "common.h"
 

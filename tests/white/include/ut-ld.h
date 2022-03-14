@@ -32,7 +32,7 @@
 #include <CUnit/CUnit.h>
 
 #include "common.h"
-#include "plclib.h"
+#include "vm_plclib.h"
 
 void ut_minmin() {
     int arr[5] = { 2, 4, 1, 8, 10 };

@@ -30,11 +30,11 @@
 
 #include "common.h"
 #include "config.h"
-#include "codegen.h"
-#include "instruction.h"
-#include "parser-ld.h"
-#include "parser-tree.h"
-#include "rung.h"
+#include "cmp_codegen.h"
+#include "cmp_instruction.h"
+#include "cmp_parser-ld.h"
+#include "cmp_parser-tree.h"
+#include "cmp_rung.h"
 #include "mem.h"
 
 int gen_expr(const item_t expression, rung_t rung, uint8_t recursive) {

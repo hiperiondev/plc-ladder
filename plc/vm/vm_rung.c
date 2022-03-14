@@ -29,8 +29,8 @@
 #include <string.h>
 
 #include "common.h"
-#include "rung.h"
-#include "data.h"
+#include "cmp_rung.h"
+#include "vm_data.h"
 #include "mem.h"
 
 opcode_t vm_take(rung_t r) {

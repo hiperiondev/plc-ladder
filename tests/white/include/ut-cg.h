@@ -32,8 +32,8 @@
 #include <CUnit/CUnit.h>
 
 #include "common.h"
-#include "parser-tree.h"
-#include "rung_vm.h"
+#include "cmp_parser-tree.h"
+#include "vm_rung.h"
 
 void ut_gen_expr() {
     struct rung ru;

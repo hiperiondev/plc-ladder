@@ -32,7 +32,7 @@
 #include <CUnit/CUnit.h>
 
 #include "common.h"
-#include "plclib.h"
+#include "vm_plclib.h"
 
 // boolean ops
 void ut_operate_b(void) {

@@ -26,33 +26,20 @@
  */
 
 #include "config.h"
-#include "hardware.h"
-#include "data.h"
-#include "instruction.h"
-#include "rung.h"
-#include "plclib.h"
+#include "vm_hardware.h"
 #include "mem.h"
 
-int vm_project_task(plc_t p) {
-// start editing here
-    uint8_t one, two, three;
-    one = vm_resolve(p, BOOL_DI, 1);
-    two = vm_fe(p, BOOL_DI, 2);
-    three = vm_re(p, BOOL_DI, 3);
-    //contact(p,BOOL_DQ,1,one);
-    //contact(p,BOOL_DQ,2,two);
-    //contact(p,BOOL_DQ,3,three);
-    if (one)
-        vm_set(p, BOOL_TIMER, 0);
-    if (three)
-        vm_reset(p, BOOL_TIMER, 0);
-    if (two)
-        vm_down_timer(p, 0);
-    return 0;
-// end of editable portion
+extern struct hardware Uspace;
+extern struct hardware Sim;
+extern struct hardware Dry;
 
-}
-int vm_project_init() {
-    // same here
-    return 0;
+hardware_t vm_get_hardware(int type) {
+    switch (type) {
+        case HW_USPACE:
+            return &Uspace;
+        case HW_SIM:
+            return &Sim;
+        default:
+            return &Dry;
+    }
 }

@@ -34,12 +34,12 @@
 
 #include "common.h"
 #include "config.h"
-#include "codegen.h"
-#include "instruction.h"
-#include "parser-il.h"
-#include "parser-tree.h"
-#include "parser-ld.h"
-#include "rung.h"
+#include "cmp_codegen.h"
+#include "cmp_instruction.h"
+#include "cmp_parser-il.h"
+#include "cmp_parser-tree.h"
+#include "cmp_parser-ld.h"
+#include "cmp_rung.h"
 #include "log.h"
 #include "mem.h"
 
@@ -111,7 +111,6 @@ static uint8_t parse_ld_digits(unsigned int i) {
         return 1;
 }
 
-/////////////////////
 static int parse_ld_handle_coil(const int type, ld_line_t line) {
     // (expect Q,T,M,W followed by byte / bit)
     int rv = STATUS_OK;
@@ -415,27 +414,21 @@ rung_t* parse_ld_program(const char *name, const char lines[][MAXSTR]) {
     int rv = STATUS_OK;
 
     unsigned int len = parse_ld_program_length(lines, MAXBUF);
-    if (len == 0) {
-        //plc_log("parse_ld_program-> len == 0");
+    if (len == 0)
         return NULL;
-    }
 
     ld_line_t *program = parse_ld_construct_program(lines, len);
     int node = 0;
     while (rv >= STATUS_OK && node >= 0) {
         rv = parse_ld_horizontal_parse(len, program);
-        if (rv >= STATUS_OK) {
-
+        if (rv >= STATUS_OK)
             node = parse_ld_find_next_node(program, node, len);
-        }
-        if (node >= 0) {
-
+        if (node >= 0)
             rv = parse_ld_vertical_parse(node, len, program);
-        }
     }
-    if (rv == STATUS_OK) {
+
+    if (rv == STATUS_OK)
         rungs = parse_ld_generate_code(len, name, program, rungs, &rungno);
-    }
 
     parse_ld_destroy_program(len, program);
     return rungs;

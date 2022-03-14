@@ -29,8 +29,8 @@
 #define _PARSER_IL_H_
 
 #include "common.h"
-#include "instruction.h"
-#include "rung.h"
+#include "cmp_instruction.h"
+#include "cmp_rung.h"
 
 /**
  * @brief read an unsigned integer value from string

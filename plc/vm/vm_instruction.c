@@ -29,7 +29,7 @@
 #include <string.h>
 
 #include "common.h"
-#include "instruction.h"
+#include "cmp_instruction.h"
 #include "mem.h"
 
 int vm_get_type(const instruction_t ins) {

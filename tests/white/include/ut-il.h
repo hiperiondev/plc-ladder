@@ -32,8 +32,8 @@
 #include <CUnit/CUnit.h>
 
 #include "common.h"
-#include "plclib.h"
-#include "rung.h"
+#include "vm_plclib.h"
+#include "cmp_rung.h"
 #include "ut-lib.h"
 
 void ut_char() {

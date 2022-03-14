@@ -32,8 +32,8 @@
 #include <CUnit/CUnit.h>
 
 #include "common.h"
-#include "plclib.h"
-#include "parser-tree.h"
+#include "vm_plclib.h"
+#include "cmp_parser-tree.h"
 
 void ut_mk_identifier() {
     uint8_t op = OP_INPUT;

@@ -26,7 +26,7 @@
  */
 
 #include "config.h"
-#include "schema.h"
+#include "vm_schema.h"
 #include "mem.h"
 
 struct entry HwSchema[N_HW_VARS] = {

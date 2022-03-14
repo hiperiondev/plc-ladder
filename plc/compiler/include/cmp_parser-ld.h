@@ -29,8 +29,8 @@
 #define _PARSER_LD_H_
 
 #include "common.h"
-#include "parser-tree.h"
-#include "rung.h"
+#include "cmp_parser-tree.h"
+#include "cmp_rung.h"
 
 #define IS_COIL(x)      (x>=LD_COIL && x<=LD_DOWN)
 #define IS_VERTICAL(x)  (x>=LD_OR && x<=LD_NODE)

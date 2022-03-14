@@ -29,8 +29,8 @@
 #define _CODEGEN_H_
 
 #include "common.h"
-#include "parser-tree.h"
-#include "rung.h"
+#include "cmp_parser-tree.h"
+#include "cmp_rung.h"
 
 /**
  * @brief generate code from an expression

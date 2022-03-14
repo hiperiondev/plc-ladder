@@ -30,7 +30,7 @@
 #include <stdio.h>
 
 #include "common.h"
-#include "instruction.h"
+#include "cmp_instruction.h"
 #include "mem.h"
 
 const char IlCommands[N_IL_INSN][LABELLEN] = {

@@ -25,7 +25,7 @@
  *
  */
 
-#include "data.h"
+#include "vm_data.h"
 #include "common.h"
 #include "mem.h"
 

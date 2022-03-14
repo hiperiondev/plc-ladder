@@ -32,7 +32,7 @@
 
 #include "common.h"
 #include "config.h"
-#include "schema.h"
+#include "vm_schema.h"
 
 extern struct entry ConfigSchema[];
 extern struct entry HwSchema[];
